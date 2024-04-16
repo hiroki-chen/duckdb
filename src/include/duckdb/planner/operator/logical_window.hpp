@@ -12,8 +12,7 @@
 
 namespace duckdb {
 
-//! LogicalAggregate represents an aggregate operation with (optional) GROUP BY
-//! operator.
+//! LogicalWindow represents a wundow operation related to a row.
 class LogicalWindow : public LogicalOperator {
 public:
 	static constexpr const LogicalOperatorType TYPE = LogicalOperatorType::LOGICAL_WINDOW;
