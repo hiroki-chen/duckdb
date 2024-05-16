@@ -52,6 +52,7 @@ DBConfig::~DBConfig() {
 }
 
 DatabaseInstance::DatabaseInstance() {
+	// TODO: We can initialize a monitor here.
 }
 
 DatabaseInstance::~DatabaseInstance() {
@@ -406,6 +407,10 @@ const unordered_map<std::string, ExtensionInfo> &DatabaseInstance::LoadedExtensi
 
 idx_t DuckDB::NumberOfThreads() {
 	return instance->NumberOfThreads();
+}
+
+ErrorCode DuckDB::InitializeMonitor() {
+	return init_monitor();
 }
 
 bool DatabaseInstance::ExtensionIsLoaded(const std::string &name) {

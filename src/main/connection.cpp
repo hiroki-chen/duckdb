@@ -15,6 +15,7 @@
 #include "duckdb/main/relation/view_relation.hpp"
 #include "duckdb/parser/parser.hpp"
 #include "duckdb/planner/logical_operator.hpp"
+#include "picachv_interfaces.h"
 
 namespace duckdb {
 
@@ -32,6 +33,14 @@ Connection::Connection(DuckDB &database) : Connection(*database.instance) {
 Connection::Connection(Connection &&other) noexcept {
 	std::swap(context, other.context);
 	std::swap(warning_cb, other.warning_cb);
+}
+
+ErrorCode Connection::InitializeCtx() {
+	return context->InitializeCtx();
+}
+
+ErrorCode Connection::RegisterPolicyDataFrame(const std::string& df, const std::string& path) {
+	return context->RegisterPolicyDataFrame(df, path);
 }
 
 Connection &Connection::operator=(Connection &&other) noexcept {

@@ -49,6 +49,9 @@ public:
 	//! The vectors owned by the DataChunk.
 	vector<Vector> data;
 
+	// //! The active uuid for this data chunk.
+	// duckdb_uuid_t active_uuid;
+
 public:
 	inline idx_t size() const { // NOLINT
 		return count;

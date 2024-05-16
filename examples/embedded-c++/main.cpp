@@ -1,14 +1,37 @@
 #include "duckdb.hpp"
 
+#include <iostream>
+
 using namespace duckdb;
 
 int main() {
 	DuckDB db(nullptr);
+	ErrorCode ec = db.InitializeMonitor();
+
+	if (ec != ErrorCode::Success) {
+		std::cout << "InitializeMonitor() returned " << ec << std::endl;
+		return 1;
+	}
 
 	Connection con(db);
 
-	con.Query("CREATE TABLE integers(i INTEGER)");
-	con.Query("INSERT INTO integers VALUES (3)");
+	ec = con.InitializeCtx();
+	if (ec != ErrorCode::Success) {
+		std::cout << "InitializeCtx() returned " << ec << std::endl;
+		return 1;
+	}
+
+	con.Query("CREATE TABLE integers(a INTEGER, b INTEGER)");
+	con.Query("INSERT INTO integers VALUES (3, 4)");
+
+	ec = con.RegisterPolicyDataFrame("integers", "../../data/json/simple_policy.json");
+	if (ec != ErrorCode::Success) {
+		std::cout << "RegisterPolicyDataFrame() returned " << ec << std::endl;
+		return 1;
+	}
+
 	auto result = con.Query("SELECT * FROM integers");
 	result->Print();
+	// result = con.Query("explain (SELECT * FROM integers)");
+	// result->Print();
 }

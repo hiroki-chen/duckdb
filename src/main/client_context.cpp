@@ -3,9 +3,10 @@
 #include "duckdb/catalog/catalog_entry/scalar_function_catalog_entry.hpp"
 #include "duckdb/catalog/catalog_entry/table_catalog_entry.hpp"
 #include "duckdb/catalog/catalog_search_path.hpp"
+#include "duckdb/common/error_data.hpp"
+#include "duckdb/common/exception/transaction_exception.hpp"
 #include "duckdb/common/file_system.hpp"
 #include "duckdb/common/http_state.hpp"
-#include "duckdb/common/error_data.hpp"
 #include "duckdb/common/progress_bar/progress_bar.hpp"
 #include "duckdb/common/serializer/buffered_file_writer.hpp"
 #include "duckdb/common/types/column/column_data_collection.hpp"
@@ -15,6 +16,7 @@
 #include "duckdb/main/appender.hpp"
 #include "duckdb/main/attached_database.hpp"
 #include "duckdb/main/client_context_file_opener.hpp"
+#include "duckdb/main/client_context_state.hpp"
 #include "duckdb/main/client_data.hpp"
 #include "duckdb/main/database.hpp"
 #include "duckdb/main/database_manager.hpp"
@@ -39,11 +41,12 @@
 #include "duckdb/planner/operator/logical_execute.hpp"
 #include "duckdb/planner/planner.hpp"
 #include "duckdb/planner/pragma_handler.hpp"
+#include "duckdb/storage/data_table.hpp"
 #include "duckdb/transaction/meta_transaction.hpp"
 #include "duckdb/transaction/transaction_manager.hpp"
-#include "duckdb/storage/data_table.hpp"
-#include "duckdb/common/exception/transaction_exception.hpp"
-#include "duckdb/main/client_context_state.hpp"
+
+#include <filesystem>
+#include <fstream>
 
 namespace duckdb {
 
@@ -474,6 +477,7 @@ ClientContext::PendingPreparedStatementInternal(ClientContextLock &lock, shared_
 	BindPreparedStatementParameters(statement, parameters);
 
 	active_query->executor = make_uniq<Executor>(*this);
+
 	auto &executor = *active_query->executor;
 	if (config.enable_progress_bar) {
 		progress_bar_display_create_func_t display_create_func = nullptr;
@@ -915,6 +919,8 @@ unique_ptr<QueryResult> ClientContext::Query(const string &query, bool allow_str
 	bool last_had_result = false;
 	for (idx_t i = 0; i < statements.size(); i++) {
 		auto &statement = statements[i];
+
+		std::cout << "processing " << statement.get()->query << "\n";
 		bool is_last_statement = i + 1 == statements.size();
 		PendingQueryParameters parameters;
 		parameters.allow_stream_result = allow_stream_result && is_last_statement;
@@ -1014,6 +1020,39 @@ unique_ptr<QueryResult> ClientContext::ExecutePendingQueryInternal(ClientContext
 
 void ClientContext::Interrupt() {
 	interrupted = true;
+}
+
+ErrorCode ClientContext::InitializeCtx() {
+	return open_new(ctx_uuid, sizeof(ctx_uuid));
+}
+
+ErrorCode ClientContext::RegisterPolicyDataFrame(const std::string &df, const std::string &path) {
+	if (table_policy_map.find(df) != table_policy_map.end()) {
+		return ErrorCode::Already;
+	}
+
+	// Check if this path exists and is a file.
+	std::filesystem::path p(path);
+	if (!std::filesystem::exists(p) || !std::filesystem::is_regular_file(p)) {
+		return ErrorCode::FileNotFound;
+	}
+
+	// Read the file.
+	std::ifstream file(path);
+	std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+	uint8_t *uuid = new uint8_t[sizeof(duckdb_uuid_t)];
+	ErrorCode ec =
+	    register_policy_dataframe(ctx_uuid, sizeof(ctx_uuid), reinterpret_cast<const uint8_t *>(content.data()),
+	                              content.size(), uuid, sizeof(duckdb_uuid_t));
+
+	if (ec == ErrorCode::Success) {
+		table_policy_map[df] = uuid;
+		return ErrorCode::Success;
+	} else {
+		delete[] uuid;
+		return ec;
+	}
 }
 
 void ClientContext::EnableProfiling() {

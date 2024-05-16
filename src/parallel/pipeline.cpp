@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "duckdb/parallel/pipeline.hpp"
 
 #include "duckdb/common/algorithm.hpp"

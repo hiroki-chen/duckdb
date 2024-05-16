@@ -10,24 +10,25 @@
 
 #include "duckdb/catalog/catalog_entry/schema_catalog_entry.hpp"
 #include "duckdb/catalog/catalog_set.hpp"
-#include "duckdb/common/enums/pending_execution_result.hpp"
+#include "duckdb/common/atomic.hpp"
 #include "duckdb/common/deque.hpp"
+#include "duckdb/common/enums/pending_execution_result.hpp"
+#include "duckdb/common/enums/prepared_statement_mode.hpp"
+#include "duckdb/common/error_data.hpp"
 #include "duckdb/common/pair.hpp"
 #include "duckdb/common/unordered_set.hpp"
 #include "duckdb/common/winapi.hpp"
+#include "duckdb/main/client_config.hpp"
+#include "duckdb/main/client_context_state.hpp"
+#include "duckdb/main/client_properties.hpp"
+#include "duckdb/main/external_dependencies.hpp"
+#include "duckdb/main/pending_query_result.hpp"
 #include "duckdb/main/prepared_statement.hpp"
+#include "duckdb/main/settings.hpp"
 #include "duckdb/main/stream_query_result.hpp"
 #include "duckdb/main/table_description.hpp"
 #include "duckdb/transaction/transaction_context.hpp"
-#include "duckdb/main/pending_query_result.hpp"
-#include "duckdb/common/atomic.hpp"
-#include "duckdb/main/client_config.hpp"
-#include "duckdb/main/external_dependencies.hpp"
-#include "duckdb/common/error_data.hpp"
-#include "duckdb/common/enums/prepared_statement_mode.hpp"
-#include "duckdb/main/client_properties.hpp"
-#include "duckdb/main/client_context_state.hpp"
-#include "duckdb/main/settings.hpp"
+#include "picachv_interfaces.h"
 
 namespace duckdb {
 class Appender;
@@ -65,6 +66,13 @@ class ClientContext : public std::enable_shared_from_this<ClientContext> {
 	friend class StreamQueryResult;  // LockContext
 	friend class ConnectionManager;
 
+	//! The uuid that allows us to get the active analyzing context
+	//! for the current connection to fulfill the policy enforcement.
+	duckdb_uuid_t ctx_uuid;
+
+	//! This hashmap manages all the tables to their policy uuids.
+	std::unordered_map<std::string, uint8_t *> table_policy_map;
+
 public:
 	DUCKDB_API explicit ClientContext(shared_ptr<DatabaseInstance> db);
 	DUCKDB_API ~ClientContext();
@@ -95,6 +103,12 @@ public:
 	DUCKDB_API void EnableProfiling();
 	//! Disable query profiling
 	DUCKDB_API void DisableProfiling();
+
+	//! Initialize the context.
+	DUCKDB_API ErrorCode InitializeCtx();
+
+	//! Register policy to the context
+	DUCKDB_API ErrorCode RegisterPolicyDataFrame(const std::string &df, const std::string &name);
 
 	//! Issue a query, returning a QueryResult. The QueryResult can be either a StreamQueryResult or a
 	//! MaterializedQueryResult. The StreamQueryResult will only be returned in the case of a successful SELECT

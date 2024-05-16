@@ -1,3 +1,20 @@
+include(FetchContent)
+
+FetchContent_Declare(
+    Corrosion
+    GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
+    GIT_TAG v0.5 # Optionally specify a commit hash, version tag or branch here
+)
+FetchContent_MakeAvailable(Corrosion)
+set(Rust_TOOLCHAIN "nightly-2024-04-15" CACHE STRING "My lib requires nightly")
+corrosion_import_crate(
+  MANIFEST_PATH
+  ../../picachv/Cargo.toml
+  CRATES picachv-api
+  IMPORTED_CRATES imported_crate_list
+  NO_LINKER_OVERRIDE
+)
+
 add_definitions(-DDUCKDB)
 
 if(${DISABLE_THREADS})
@@ -94,12 +111,12 @@ else()
       duckdb_mbedtls)
 
   add_library(duckdb SHARED ${ALL_OBJECT_FILES})
-  target_link_libraries(duckdb ${DUCKDB_LINK_LIBS})
+  target_link_libraries(duckdb ${DUCKDB_LINK_LIBS} picachv_api)
   link_threads(duckdb)
   link_extension_libraries(duckdb)
 
   add_library(duckdb_static STATIC ${ALL_OBJECT_FILES})
-  target_link_libraries(duckdb_static ${DUCKDB_LINK_LIBS})
+  target_link_libraries(duckdb_static ${DUCKDB_LINK_LIBS} picachv_api)
   link_threads(duckdb_static)
   link_extension_libraries(duckdb_static)
 

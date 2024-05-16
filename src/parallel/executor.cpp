@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "duckdb/execution/executor.hpp"
 
 #include "duckdb/execution/execution_context.hpp"

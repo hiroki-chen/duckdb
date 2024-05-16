@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "duckdb/parallel/task.hpp"
 #include "duckdb/execution/executor.hpp"
 #include "duckdb/main/client_context.hpp"

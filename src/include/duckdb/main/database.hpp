@@ -14,6 +14,8 @@
 #include "duckdb/main/extension.hpp"
 #include "duckdb/main/settings.hpp"
 
+#include "picachv_interfaces.h"
+
 namespace duckdb {
 class BufferManager;
 class DatabaseManager;
@@ -47,6 +49,8 @@ public:
 	DBConfig config;
 
 public:
+	// TODO: We also need to manage the active contexs here by stashing the UUIDs.
+
 	BufferPool &GetBufferPool() const;
 	DUCKDB_API SecretManager &GetSecretManager();
 	DUCKDB_API BufferManager &GetBufferManager();
@@ -117,6 +121,7 @@ public:
 
 	DUCKDB_API FileSystem &GetFileSystem();
 
+	DUCKDB_API ErrorCode InitializeMonitor();
 	DUCKDB_API idx_t NumberOfThreads();
 	DUCKDB_API static const char *SourceID();
 	DUCKDB_API static const char *LibraryVersion();

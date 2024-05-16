@@ -21,6 +21,8 @@
 #include "duckdb/main/table_description.hpp"
 #include "duckdb/parser/sql_statement.hpp"
 
+#include "picachv_interfaces.h"
+
 namespace duckdb {
 
 class ColumnDataCollection;
@@ -54,6 +56,12 @@ public:
 public:
 	//! Returns query profiling information for the current query
 	DUCKDB_API string GetProfilingInformation(ProfilerPrintFormat format = ProfilerPrintFormat::QUERY_TREE);
+
+	//! Initialize the connection
+	DUCKDB_API ErrorCode InitializeCtx();
+
+	//! Register a policy to this table.
+	DUCKDB_API ErrorCode RegisterPolicyDataFrame(const std::string& df, const std::string& name);
 
 	//! Interrupt execution of the current query
 	DUCKDB_API void Interrupt();

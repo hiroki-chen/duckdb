@@ -17,6 +17,8 @@
 namespace duckdb {
 
 //! Represents a scan of a base table
+//!
+//! Since this only serves as the source there is no need to implement the sink interface
 class PhysicalTableScan : public PhysicalOperator {
 public:
 	static constexpr const PhysicalOperatorType TYPE = PhysicalOperatorType::TABLE_SCAN;
@@ -26,7 +28,7 @@ public:
 	PhysicalTableScan(vector<LogicalType> types, TableFunction function, unique_ptr<FunctionData> bind_data,
 	                  vector<LogicalType> returned_types, vector<column_t> column_ids, vector<idx_t> projection_ids,
 	                  vector<string> names, unique_ptr<TableFilterSet> table_filters, idx_t estimated_cardinality,
-	                  ExtraOperatorInfo extra_info);
+	                  ExtraOperatorInfo extra_info, string table_name);
 
 	//! The table function
 	TableFunction function;
@@ -44,6 +46,8 @@ public:
 	unique_ptr<TableFilterSet> table_filters;
 	//! Currently stores any filters applied to file names (as strings)
 	ExtraOperatorInfo extra_info;
+	//! Table name.
+	string table_name;
 
 public:
 	string GetName() const override;
