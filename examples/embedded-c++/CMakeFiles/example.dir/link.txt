@@ -1,1 +1,0 @@
-/usr/bin/c++ -g -rdynamic CMakeFiles/example.dir/main.cpp.o -o example   -L/home/haobchen/duckdb/examples/embedded-c++/../../build/debug/src  -Wl,-rpath,/home/haobchen/duckdb/examples/embedded-c++/../../build/debug/src -lduckdb 

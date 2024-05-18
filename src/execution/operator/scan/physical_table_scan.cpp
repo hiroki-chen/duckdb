@@ -14,11 +14,11 @@ PhysicalTableScan::PhysicalTableScan(vector<LogicalType> types, TableFunction fu
                                      unique_ptr<FunctionData> bind_data_p, vector<LogicalType> returned_types_p,
                                      vector<column_t> column_ids_p, vector<idx_t> projection_ids_p,
                                      vector<string> names_p, unique_ptr<TableFilterSet> table_filters_p,
-                                     idx_t estimated_cardinality, ExtraOperatorInfo extra_info, string table_name)
+                                     idx_t estimated_cardinality, ExtraOperatorInfo extra_info)
     : PhysicalOperator(PhysicalOperatorType::TABLE_SCAN, std::move(types), estimated_cardinality),
       function(std::move(function_p)), bind_data(std::move(bind_data_p)), returned_types(std::move(returned_types_p)),
       column_ids(std::move(column_ids_p)), projection_ids(std::move(projection_ids_p)), names(std::move(names_p)),
-      table_filters(std::move(table_filters_p)), extra_info(extra_info), table_name(std::move(table_name)) {
+      table_filters(std::move(table_filters_p)), extra_info(extra_info) {
 }
 
 class TableScanGlobalSourceState : public GlobalSourceState {
@@ -73,6 +73,8 @@ SourceResultType PhysicalTableScan::GetData(ExecutionContext &context, DataChunk
 
 	TableFunctionInput data(bind_data.get(), state.local_state.get(), gstate.global_state.get());
 	function.function(context.client, data, chunk);
+
+	std::cout << "table_scan: chunk.size() = " << chunk.size() << "\n";
 
 	return chunk.size() == 0 ? SourceResultType::FINISHED : SourceResultType::HAVE_MORE_OUTPUT;
 }

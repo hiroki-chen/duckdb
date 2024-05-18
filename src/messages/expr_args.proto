@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package PicachvMessages;
+
+import "basic.proto";
+
+message AggExpr {
+  bytes input_uuid = 1;
+  GroupByMethod method = 2;
+}
+
+message ColumnExpr {
+  message ColumnNameSpecifier { string column_name = 1; }
+  oneof column {
+    uint64 column_id = 1;
+    // This can be problematic since it relies solely on the column name
+    ColumnNameSpecifier column_name_specifier = 2;
+  }
+}
+
+message AliasExpr {
+  bytes input_uuid = 1;
+  string alias = 2;
+}
+
+message WildcardExpr {}
+message LiteralExpr {}
+
+message FilterExpr {
+  bytes input_uuid = 1;
+  bytes filter_uuid = 2;
+}
+
+message BinaryExpr {
+  bytes left_uuid = 1;
+  bytes right_uuid = 2;
+  BinaryOperator op = 3;
+}
+
+message UnaryExpr {
+  bytes input_uuid = 1;
+  UnaryOperator op = 2;
+}
+
+// Function application.
+message ApplyExpr {
+  repeated bytes input_uuids = 1;
+  string name = 2;
+}
+
+message ExprArgument {
+  oneof argument {
+    AggExpr agg = 1;
+    ColumnExpr column = 2;
+    AliasExpr alias = 3;
+    WildcardExpr wildcard = 4;
+    FilterExpr filter = 5;
+    BinaryExpr binary = 6;
+    UnaryExpr unary = 7;
+    LiteralExpr literal = 8;
+    ApplyExpr apply = 9;
+  }
+}

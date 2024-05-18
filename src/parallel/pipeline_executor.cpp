@@ -167,7 +167,6 @@ SinkNextBatchType PipelineExecutor::NextBatch(duckdb::DataChunk &source_chunk) {
 }
 
 PipelineExecuteResult PipelineExecutor::Execute(idx_t max_chunks) {
-	std::cout << "executing pipeline executor\n";
 	D_ASSERT(pipeline.sink);
 	auto &source_chunk = pipeline.operators.empty() ? final_chunk : *intermediate_chunks[0];
 	for (idx_t i = 0; i < max_chunks; i++) {
@@ -469,6 +468,7 @@ SourceResultType PipelineExecutor::GetData(DataChunk &chunk, OperatorSourceInput
 	}
 #endif
 
+	std::cout << "GetData called " << pipeline.source->GetName() << std::endl;
 	return pipeline.source->GetData(context, chunk, input);
 }
 
@@ -493,8 +493,6 @@ SinkResultType PipelineExecutor::Sink(DataChunk &chunk, OperatorSinkInput &input
 
 // The pipeline's source.
 SourceResultType PipelineExecutor::FetchFromSource(DataChunk &result) {
-	std::cout << "PipelineExecutor::FetchFromSource\n";
-
 	StartOperator(*pipeline.source);
 
 	OperatorSourceInput source_input = {*pipeline.source_state, *local_source_state, interrupt_state};

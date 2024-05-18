@@ -28,7 +28,7 @@ public:
 	PhysicalTableScan(vector<LogicalType> types, TableFunction function, unique_ptr<FunctionData> bind_data,
 	                  vector<LogicalType> returned_types, vector<column_t> column_ids, vector<idx_t> projection_ids,
 	                  vector<string> names, unique_ptr<TableFilterSet> table_filters, idx_t estimated_cardinality,
-	                  ExtraOperatorInfo extra_info, string table_name);
+	                  ExtraOperatorInfo extra_info);
 
 	//! The table function
 	TableFunction function;
@@ -46,8 +46,6 @@ public:
 	unique_ptr<TableFilterSet> table_filters;
 	//! Currently stores any filters applied to file names (as strings)
 	ExtraOperatorInfo extra_info;
-	//! Table name.
-	string table_name;
 
 public:
 	string GetName() const override;

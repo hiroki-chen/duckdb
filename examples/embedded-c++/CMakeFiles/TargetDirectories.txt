@@ -1,3 +1,0 @@
-/home/haobchen/duckdb/examples/embedded-c++/CMakeFiles/example.dir
-/home/haobchen/duckdb/examples/embedded-c++/CMakeFiles/edit_cache.dir
-/home/haobchen/duckdb/examples/embedded-c++/CMakeFiles/rebuild_cache.dir

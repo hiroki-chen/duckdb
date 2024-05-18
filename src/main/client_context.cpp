@@ -920,7 +920,6 @@ unique_ptr<QueryResult> ClientContext::Query(const string &query, bool allow_str
 	for (idx_t i = 0; i < statements.size(); i++) {
 		auto &statement = statements[i];
 
-		std::cout << "processing " << statement.get()->query << "\n";
 		bool is_last_statement = i + 1 == statements.size();
 		PendingQueryParameters parameters;
 		parameters.allow_stream_result = allow_stream_result && is_last_statement;
