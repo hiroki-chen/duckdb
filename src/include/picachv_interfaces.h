@@ -8,16 +8,16 @@
  *
  */
 enum ErrorCode {
-	/// @brief The operation is successful.
-	Success = 0,
-	/// @brief The operation is invalid.
-	InvalidOperation = 1,
-	/// @brief The serialization error.
-	SerializeError = 2,
-	/// @brief The requested object is not found.
-	NoEntry = 3,
-	/// @brief The privacy breach is detected.
-	PrivacyBreach = 4,
+  /// @brief The operation is successful.
+  Success = 0,
+  /// @brief The operation is invalid.
+  InvalidOperation = 1,
+  /// @brief The serialization error.
+  SerializeError = 2,
+  /// @brief The requested object is not found.
+  NoEntry = 3,
+  /// @brief The privacy breach is detected.
+  PrivacyBreach = 4,
 	/// @brief The monitor is already opened or something already exists.
 	Already = 5,
 	/// @brief The file is not found.
@@ -53,8 +53,11 @@ ErrorCode open_new(uint8_t *uuid, std::size_t uuid_len);
  * @param [in] uuid_len The length of the UUID buffer.
  * @return ErrorCode
  */
-ErrorCode register_policy_dataframe(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, const uint8_t *dataframe,
-                                    std::size_t dataframe_len, uint8_t *uuid, std::size_t uuid_len);
+ErrorCode register_policy_dataframe(const uint8_t *ctx_uuid,
+                                    std::size_t ctx_uuid_len,
+                                    const uint8_t *dataframe,
+                                    std::size_t dataframe_len, uint8_t *uuid,
+                                    std::size_t uuid_len);
 
 /**
  * @brief Constructs the expression out of the argument which is a serialized
@@ -68,7 +71,8 @@ ErrorCode register_policy_dataframe(const uint8_t *ctx_uuid, std::size_t ctx_uui
  * @param [in] expr_uuid_len The length of the expression UUID buffer.
  * @return ErrorCode
  */
-ErrorCode expr_from_args(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, const uint8_t *args, std::size_t args_len,
+ErrorCode expr_from_args(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len,
+                         const uint8_t *args, std::size_t args_len,
                          uint8_t *expr_uuid, std::size_t expr_uuid_len);
 
 /**
@@ -84,8 +88,28 @@ ErrorCode expr_from_args(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, cons
  *
  * @note See https://arrow.apache.org/docs/format/Columnar.html
  */
-ErrorCode reify_expression(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, const uint8_t *expr_uuid,
-                           std::size_t expr_uuid_len, const uint8_t *value, std::size_t value_len);
+ErrorCode reify_expression(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len,
+                           const uint8_t *expr_uuid, std::size_t expr_uuid_len,
+                           const uint8_t *value, std::size_t value_len);
 }
+
+/**
+ * @brief Creates a sliced dataframe.
+ * 
+ * @param [in] ctx_uuid The UUID of the context.
+ * @param [in] ctx_uuid_len The length of the context UUID.
+ * @param [in] df_uuid The UUID of the dataframe.
+ * @param [in] df_uuid_len The length of the dataframe UUID.
+ * @param start The start index of the slice.
+ * @param end The end index of the slice.
+ * @param [out] slice_uuid The buffer for holding the UUID of the sliced
+ * @param [in] slice_uuid_len The length of the slice UUID buffer.
+ * @return ErrorCode 
+ */
+ErrorCode create_slice(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len,
+                       const uint8_t *df_uuid, std::size_t df_uuid_len,
+                       uint64_t start, uint64_t end,
+                       uint8_t *slice_uuid, std::size_t slice_uuid_len);
+
 
 #endif

@@ -130,10 +130,10 @@ static void TableScanFunc(ClientContext &context, TableFunctionInput &data_p, Da
 			                        TableScanType::TABLE_SCAN_COMMITTED_ROWS_OMIT_PERMANENTLY_DELETED);
 		} else if (gstate.CanRemoveFilterColumns()) {
 			state.all_columns.Reset();
-			storage.Scan(transaction, state.all_columns, state.scan_state);
+			storage.Scan(transaction, state.all_columns, state.scan_state, context);
 			output.ReferenceColumns(state.all_columns, gstate.projection_ids);
 		} else {
-			storage.Scan(transaction, output, state.scan_state);
+			storage.Scan(transaction, output, state.scan_state, context);
 		}
 		if (output.size() > 0) {
 			return;

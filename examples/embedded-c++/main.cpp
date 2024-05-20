@@ -22,7 +22,8 @@ int main() {
 	}
 
 	con.Query("CREATE TABLE integers(a INTEGER, b INTEGER)");
-	con.Query("INSERT INTO integers VALUES (3, 3)");
+	for (size_t i = 0; i < 4096; i++)
+		con.Query("INSERT INTO integers VALUES (3, 3)");
 
 	ec = con.RegisterPolicyDataFrame("integers", "../../../data/json/simple_policy.json");
 	if (ec != ErrorCode::Success) {

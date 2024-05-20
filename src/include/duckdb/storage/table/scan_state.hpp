@@ -127,6 +127,9 @@ public:
 	idx_t max_row;
 	//! The current batch index
 	idx_t batch_index;
+	ClientContext *context;
+	//! The name of the collection/table.
+	std::string name;
 
 public:
 	void Initialize(const vector<LogicalType> &types);

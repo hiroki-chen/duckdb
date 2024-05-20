@@ -2,9 +2,14 @@
 #include "duckdb/storage/table/row_group.hpp"
 #include "duckdb/storage/table/column_segment.hpp"
 #include "duckdb/transaction/duck_transaction.hpp"
+#include "duckdb/storage/data_table.hpp"
 #include "duckdb/storage/table/column_data.hpp"
 #include "duckdb/storage/table/row_group_collection.hpp"
 #include "duckdb/storage/table/row_group_segment_tree.hpp"
+
+#include "picachv_interfaces.h"
+
+#include <iostream>
 
 namespace duckdb {
 
@@ -84,6 +89,28 @@ bool CollectionScanState::Scan(DuckTransaction &transaction, DataChunk &result) 
 	while (row_group) {
 		row_group->Scan(transaction, *this, result);
 		if (result.size() > 0) {
+			// Let us slice the dataframe in the monitor.
+			duckdb_uuid_t sliced_uuid;
+			uint64_t start = (vector_index - 1) * duckdb_vector_size();
+			uint64_t end = vector_index * duckdb_vector_size();
+			// Get the UUID of the dataframe slice.
+			
+			if (context == nullptr) {
+				return false;
+			}
+
+			auto iter = context->table_policy_map.find(name);
+			if (iter == context->table_policy_map.end()) {
+				return false;
+			}
+
+			uint8_t *df_uuid = iter->second;
+			
+			if (create_slice(context->ctx_uuid, sizeof(duckdb_uuid_t), df_uuid,
+						sizeof(duckdb_uuid_t), start, end, sliced_uuid, sizeof(duckdb_uuid_t)) != 0) {
+				return false;
+			}
+
 			return true;
 		} else if (max_row <= row_group->start + row_group->count) {
 			row_group = nullptr;

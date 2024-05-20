@@ -66,13 +66,6 @@ class ClientContext : public std::enable_shared_from_this<ClientContext> {
 	friend class StreamQueryResult;  // LockContext
 	friend class ConnectionManager;
 
-	//! The uuid that allows us to get the active analyzing context
-	//! for the current connection to fulfill the policy enforcement.
-	duckdb_uuid_t ctx_uuid;
-
-	//! This hashmap manages all the tables to their policy uuids.
-	std::unordered_map<std::string, uint8_t *> table_policy_map;
-
 public:
 	DUCKDB_API explicit ClientContext(shared_ptr<DatabaseInstance> db);
 	DUCKDB_API ~ClientContext();
@@ -91,6 +84,11 @@ public:
 	unique_ptr<ClientData> client_data;
 	//! Data for the currently running transaction
 	TransactionContext transaction;
+	//! The uuid that allows us to get the active analyzing context
+	//! for the current connection to fulfill the policy enforcement.
+	duckdb_uuid_t ctx_uuid;
+	//! This hashmap manages all the tables to their policy uuids.
+	std::unordered_map<std::string, uint8_t *> table_policy_map;
 
 public:
 	MetaTransaction &ActiveTransaction() {

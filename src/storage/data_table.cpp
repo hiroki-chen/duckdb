@@ -242,8 +242,10 @@ bool DataTable::NextParallelScan(ClientContext &context, ParallelTableScanState 
 	}
 }
 
-void DataTable::Scan(DuckTransaction &transaction, DataChunk &result, TableScanState &state) {
+void DataTable::Scan(DuckTransaction &transaction, DataChunk &result, TableScanState &state, ClientContext &ctx) {
 	// scan the persistent segments
+	state.table_state.name = info->table;
+	state.table_state.context = &ctx;
 	if (state.table_state.Scan(transaction, result)) {
 		D_ASSERT(result.size() > 0);
 		return;

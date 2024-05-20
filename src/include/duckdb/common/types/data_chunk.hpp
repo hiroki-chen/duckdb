@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "duckdb.h"
 #include "duckdb/common/allocator.hpp"
 #include "duckdb/common/arrow/arrow_wrapper.hpp"
 #include "duckdb/common/common.hpp"
@@ -49,15 +50,15 @@ public:
 	//! The vectors owned by the DataChunk.
 	vector<Vector> data;
 
-	// //! The active uuid for this data chunk.
-	// duckdb_uuid_t active_uuid;
-
 public:
 	inline idx_t size() const { // NOLINT
 		return count;
 	}
 	inline idx_t ColumnCount() const {
 		return data.size();
+	}
+	inline const uint8_t* GetActiveUUID() const {
+		return active_uuid;
 	}
 	inline void SetCardinality(idx_t count_p) {
 		D_ASSERT(count_p <= capacity);
@@ -71,6 +72,9 @@ public:
 	}
 	inline void SetCapacity(const DataChunk &other) {
 		SetCapacity(other.capacity);
+	}
+	inline void SetActiveUUID(const uint8_t* uuid) {
+		memcpy(active_uuid, uuid, sizeof(duckdb_uuid_t));
 	}
 
 	DUCKDB_API Value GetValue(idx_t col_idx, idx_t index) const;
@@ -172,5 +176,7 @@ private:
 	idx_t capacity;
 	//! Vector caches, used to store data when ::Initialize is called
 	vector<VectorCache> vector_caches;
+	//! The active uuid for this data chunk.
+	duckdb_uuid_t active_uuid;
 };
 } // namespace duckdb
