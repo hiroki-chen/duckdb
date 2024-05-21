@@ -1,5 +1,5 @@
 include(FetchContent)
-
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/src/messages")
 FetchContent_Declare(
     Corrosion
     GIT_REPOSITORY https://github.com/corrosion-rs/corrosion.git
@@ -14,7 +14,6 @@ corrosion_import_crate(
   IMPORTED_CRATES imported_crate_list
   NO_LINKER_OVERRIDE
 )
-
 add_definitions(-DDUCKDB)
 
 if(${DISABLE_THREADS})

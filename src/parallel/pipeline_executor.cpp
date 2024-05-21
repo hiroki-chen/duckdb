@@ -1,12 +1,13 @@
+#include "duckdb/parallel/pipeline_executor.hpp"
+
+#include "duckdb/common/limits.hpp"
+#include "duckdb/main/client_context.hpp"
+
 #include <iostream>
 
-#include "duckdb/parallel/pipeline_executor.hpp"
-#include "duckdb/main/client_context.hpp"
-#include "duckdb/common/limits.hpp"
-
 #ifdef DUCKDB_DEBUG_ASYNC_SINK_SOURCE
-#include <thread>
 #include <chrono>
+#include <thread>
 #endif
 
 namespace duckdb {
@@ -274,6 +275,11 @@ OperatorResultType PipelineExecutor::ExecutePushInternal(DataChunk &input, idx_t
 		return OperatorResultType::NEED_MORE_INPUT;
 	} // LCOV_EXCL_STOP
 
+	std::cout << "PipelineExecutor::ExecutePushInternal input = "
+	          << StringUtil::ByteArrayToString(input.GetActiveUUID(), 16) << "\n";
+	std::cout << "PipelineExecutor::ExecutePushInternal final = "
+	          << StringUtil::ByteArrayToString(final_chunk.GetActiveUUID(), 16) << "\n";
+
 	// this loop will continuously push the input chunk through the pipeline as long as:
 	// - the OperatorResultType for the Execute is HAVE_MORE_OUTPUT
 	// - the Sink doesn't block
@@ -281,6 +287,7 @@ OperatorResultType PipelineExecutor::ExecutePushInternal(DataChunk &input, idx_t
 		OperatorResultType result;
 		// Note: if input is the final_chunk, we don't do any executing, the chunk just needs to be sinked
 		if (&input != &final_chunk) {
+			std::cout << "here\n";
 			final_chunk.Reset();
 			result = Execute(input, final_chunk, initial_idx);
 			if (result == OperatorResultType::FINISHED) {
@@ -289,6 +296,7 @@ OperatorResultType PipelineExecutor::ExecutePushInternal(DataChunk &input, idx_t
 		} else {
 			result = OperatorResultType::NEED_MORE_INPUT;
 		}
+
 		auto &sink_chunk = final_chunk;
 		if (sink_chunk.size() > 0) {
 			StartOperator(*pipeline.sink);
@@ -368,8 +376,6 @@ void PipelineExecutor::GoToSource(idx_t &current_idx, idx_t initial_idx) {
 }
 
 OperatorResultType PipelineExecutor::Execute(DataChunk &input, DataChunk &result, idx_t initial_idx) {
-	// std::cout << "PipelineExecutor::Execute\n";
-
 	if (input.size() == 0) { // LCOV_EXCL_START
 		return OperatorResultType::NEED_MORE_INPUT;
 	} // LCOV_EXCL_STOP
@@ -488,6 +494,9 @@ SinkResultType PipelineExecutor::Sink(DataChunk &chunk, OperatorSinkInput &input
 		return SinkResultType::BLOCKED;
 	}
 #endif
+	std::cout << "PipelineExecutor::Sink\n";
+	std::cout << "PipelineExecutor::Sink uuid = " << StringUtil::ByteArrayToString(chunk.GetActiveUUID(), 16) << std::endl;
+	std::cout << "now sinking to " << pipeline.sink->GetName() << "\n";
 	return pipeline.sink->Sink(context, chunk, input);
 }
 

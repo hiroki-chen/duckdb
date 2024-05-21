@@ -9,6 +9,7 @@
 #include "duckdb/function/function_set.hpp"
 #include "duckdb/main/attached_database.hpp"
 #include "duckdb/main/client_config.hpp"
+#include "duckdb/main/client_data.hpp"
 #include "duckdb/optimizer/matcher/expression_matcher.hpp"
 #include "duckdb/planner/expression/bound_between_expression.hpp"
 #include "duckdb/planner/expression_iterator.hpp"
@@ -17,7 +18,7 @@
 #include "duckdb/storage/table/scan_state.hpp"
 #include "duckdb/transaction/duck_transaction.hpp"
 #include "duckdb/transaction/local_storage.hpp"
-#include "duckdb/main/client_data.hpp"
+#include "picachv_interfaces.h"
 
 namespace duckdb {
 
@@ -132,9 +133,19 @@ static void TableScanFunc(ClientContext &context, TableFunctionInput &data_p, Da
 			state.all_columns.Reset();
 			storage.Scan(transaction, state.all_columns, state.scan_state, context);
 			output.ReferenceColumns(state.all_columns, gstate.projection_ids);
+
+			duckdb_uuid_t output_uuid;
+			if (early_projection(context.ctx_uuid, PICACHV_UUID_LEN, state.all_columns.GetActiveUUID(),
+			                     PICACHV_UUID_LEN, gstate.projection_ids.data(), gstate.projection_ids.size(),
+			                     output_uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
+				throw InternalException(GetErrorMessage());
+			}
+			output.SetActiveUUID(output_uuid);
 		} else {
+			// Simply do nothing here
 			storage.Scan(transaction, output, state.scan_state, context);
 		}
+
 		if (output.size() > 0) {
 			return;
 		}

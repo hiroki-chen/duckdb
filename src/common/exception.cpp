@@ -1,13 +1,16 @@
 #include "duckdb/common/exception.hpp"
+
+#include "duckdb/common/exception/list.hpp"
 #include "duckdb/common/string_util.hpp"
 #include "duckdb/common/to_string.hpp"
 #include "duckdb/common/types.hpp"
-#include "duckdb/common/exception/list.hpp"
 #include "duckdb/parser/tableref.hpp"
 #include "duckdb/planner/expression.hpp"
+#include "picachv_interfaces.h"
 
 #ifdef DUCKDB_CRASH_ON_ASSERT
 #include "duckdb/common/printer.hpp"
+
 #include <stdio.h>
 #include <stdlib.h>
 #endif
@@ -16,6 +19,14 @@
 #endif
 
 namespace duckdb {
+
+std::string GetErrorMessage() {
+	uint8_t err_msg[2048];
+	size_t len = sizeof(err_msg);
+
+	last_error(err_msg, &len);
+	return std::string(reinterpret_cast<char *>(err_msg), len);
+}
 
 Exception::Exception(ExceptionType exception_type, const string &message)
     : std::runtime_error(ToJSON(exception_type, message)) {

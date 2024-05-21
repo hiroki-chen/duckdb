@@ -74,7 +74,8 @@ SourceResultType PhysicalTableScan::GetData(ExecutionContext &context, DataChunk
 	TableFunctionInput data(bind_data.get(), state.local_state.get(), gstate.global_state.get());
 	function.function(context.client, data, chunk);
 
-	std::cout << "table_scan: chunk.size() = " << chunk.size() << "\n";
+	std::cout << "PhysicalTableScan::GetData: " << StringUtil::ByteArrayToString(chunk.GetActiveUUID(), 16)
+	          << std::endl;
 
 	return chunk.size() == 0 ? SourceResultType::FINISHED : SourceResultType::HAVE_MORE_OUTPUT;
 }

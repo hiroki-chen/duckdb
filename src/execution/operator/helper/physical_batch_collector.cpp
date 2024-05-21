@@ -4,6 +4,8 @@
 #include "duckdb/main/client_context.hpp"
 #include "duckdb/main/materialized_query_result.hpp"
 
+#include <iostream>
+
 namespace duckdb {
 
 PhysicalBatchCollector::PhysicalBatchCollector(PreparedStatementData &data) : PhysicalResultCollector(data) {
@@ -56,6 +58,7 @@ SinkFinalizeType PhysicalBatchCollector::Finalize(Pipeline &pipeline, Event &eve
 	auto result = make_uniq<MaterializedQueryResult>(statement_type, properties, names, std::move(collection),
 	                                                 context.GetClientProperties());
 	gstate.result = std::move(result);
+	// uuids = gstate.data.uuids;
 	return SinkFinalizeType::READY;
 }
 
@@ -69,6 +72,21 @@ unique_ptr<GlobalSinkState> PhysicalBatchCollector::GetGlobalSinkState(ClientCon
 
 unique_ptr<QueryResult> PhysicalBatchCollector::GetResult(GlobalSinkState &state) {
 	auto &gstate = state.Cast<BatchCollectorGlobalState>();
+	D_ASSERT(gstate.result);
+	return std::move(gstate.result);
+}
+
+unique_ptr<QueryResult> PhysicalBatchCollector::GetResult(GlobalSinkState &state, ClientContext &context) {
+	auto &gstate = state.Cast<BatchCollectorGlobalState>();
+	for (size_t i = 0; i < gstate.data.uuids.size(); i++) {
+		std::cout << "PhysicalBatchCollector::GetResult: " << StringUtil::ByteArrayToString(gstate.data.uuids[i].data(), 16)
+		          << std::endl;
+		if (finalize(context.ctx_uuid, sizeof(duckdb_uuid_t), gstate.data.uuids[i].data(), sizeof(duckdb_uuid_t)) !=
+		    ErrorCode::Success) {
+			throw InternalException("PhysicalBatchCollector: " + GetErrorMessage());
+		}
+	}
+
 	D_ASSERT(gstate.result);
 	return std::move(gstate.result);
 }

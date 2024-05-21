@@ -18,6 +18,7 @@ public:
 
 public:
 	unique_ptr<QueryResult> GetResult(GlobalSinkState &state) override;
+	unique_ptr<QueryResult> GetResult(GlobalSinkState &state, ClientContext &context) override;
 
 public:
 	// Sink interface

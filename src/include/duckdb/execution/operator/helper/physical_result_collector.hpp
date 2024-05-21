@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "duckdb/execution/physical_operator.hpp"
 #include "duckdb/common/enums/statement_type.hpp"
+#include "duckdb/execution/physical_operator.hpp"
 
 namespace duckdb {
 class PreparedStatementData;
@@ -33,6 +33,9 @@ public:
 public:
 	//! The final method used to fetch the query result from this operator
 	virtual unique_ptr<QueryResult> GetResult(GlobalSinkState &state) = 0;
+	virtual unique_ptr<QueryResult> GetResult(GlobalSinkState &state, ClientContext &context) {
+		return GetResult(state);
+	}
 
 	bool IsSink() const override {
 		return true;

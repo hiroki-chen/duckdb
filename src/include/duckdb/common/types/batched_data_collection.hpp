@@ -24,6 +24,8 @@ struct BatchedChunkScanState {
 //! Scans over a BatchedDataCollection are ordered by batch index
 class BatchedDataCollection {
 public:
+	vector<std::array<uint8_t, 16>> uuids;
+public:
 	DUCKDB_API BatchedDataCollection(ClientContext &context, vector<LogicalType> types, bool buffer_managed = false);
 
 	//! Appends a datachunk with the given batch index to the batched collection

@@ -1,12 +1,12 @@
 #include "duckdb/storage/table/scan_state.hpp"
-#include "duckdb/storage/table/row_group.hpp"
-#include "duckdb/storage/table/column_segment.hpp"
-#include "duckdb/transaction/duck_transaction.hpp"
+
 #include "duckdb/storage/data_table.hpp"
 #include "duckdb/storage/table/column_data.hpp"
+#include "duckdb/storage/table/column_segment.hpp"
+#include "duckdb/storage/table/row_group.hpp"
 #include "duckdb/storage/table/row_group_collection.hpp"
 #include "duckdb/storage/table/row_group_segment_tree.hpp"
-
+#include "duckdb/transaction/duck_transaction.hpp"
 #include "picachv_interfaces.h"
 
 #include <iostream>
@@ -82,22 +82,23 @@ ParallelCollectionScanState::ParallelCollectionScanState()
 
 CollectionScanState::CollectionScanState(TableScanState &parent_p)
     : row_group(nullptr), vector_index(0), max_row_group_row(0), row_groups(nullptr), max_row(0), batch_index(0),
-      parent(parent_p) {
+      parent(parent_p), name(""), context(nullptr) {
 }
 
 bool CollectionScanState::Scan(DuckTransaction &transaction, DataChunk &result) {
 	while (row_group) {
 		row_group->Scan(transaction, *this, result);
 		if (result.size() > 0) {
+			if (context == nullptr) {
+				return true;
+			}
+
 			// Let us slice the dataframe in the monitor.
 			duckdb_uuid_t sliced_uuid;
-			uint64_t start = (vector_index - 1) * duckdb_vector_size();
-			uint64_t end = vector_index * duckdb_vector_size();
+			idx_t start = (vector_index - 1) * duckdb_vector_size();
+			idx_t end = std::min(vector_index * duckdb_vector_size(), (idx_t)row_group->count);
+
 			// Get the UUID of the dataframe slice.
-			
-			if (context == nullptr) {
-				return false;
-			}
 
 			auto iter = context->table_policy_map.find(name);
 			if (iter == context->table_policy_map.end()) {
@@ -105,11 +106,14 @@ bool CollectionScanState::Scan(DuckTransaction &transaction, DataChunk &result) 
 			}
 
 			uint8_t *df_uuid = iter->second;
-			
-			if (create_slice(context->ctx_uuid, sizeof(duckdb_uuid_t), df_uuid,
-						sizeof(duckdb_uuid_t), start, end, sliced_uuid, sizeof(duckdb_uuid_t)) != 0) {
-				return false;
+
+			if (create_slice(context->ctx_uuid, sizeof(duckdb_uuid_t), df_uuid, sizeof(duckdb_uuid_t), start, end,
+			                 sliced_uuid, sizeof(duckdb_uuid_t)) != 0) {
+				throw InvalidInputException("Could not create a slice of the dataframe.");
 			}
+
+			// Set the UUID of the dataframe slice.
+			result.SetActiveUUID(sliced_uuid);
 
 			return true;
 		} else if (max_row <= row_group->start + row_group->count) {

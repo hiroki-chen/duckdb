@@ -4,18 +4,17 @@
 #include "duckdb/common/exception.hpp"
 #include "duckdb/common/helper.hpp"
 #include "duckdb/common/printer.hpp"
-#include "duckdb/common/serializer/serializer.hpp"
+#include "duckdb/common/serializer/binary_deserializer.hpp"
+#include "duckdb/common/serializer/binary_serializer.hpp"
 #include "duckdb/common/serializer/deserializer.hpp"
+#include "duckdb/common/serializer/memory_stream.hpp"
+#include "duckdb/common/serializer/serializer.hpp"
 #include "duckdb/common/types/interval.hpp"
 #include "duckdb/common/types/sel_cache.hpp"
 #include "duckdb/common/types/vector_cache.hpp"
 #include "duckdb/common/vector.hpp"
 #include "duckdb/common/vector_operations/vector_operations.hpp"
 #include "duckdb/execution/execution_context.hpp"
-
-#include "duckdb/common/serializer/memory_stream.hpp"
-#include "duckdb/common/serializer/binary_serializer.hpp"
-#include "duckdb/common/serializer/binary_deserializer.hpp"
 
 namespace duckdb {
 
@@ -109,6 +108,7 @@ void DataChunk::Reference(DataChunk &chunk) {
 	for (idx_t i = 0; i < chunk.ColumnCount(); i++) {
 		data[i].Reference(chunk.data[i]);
 	}
+	memcpy(active_uuid, chunk.active_uuid, sizeof(duckdb_uuid_t));
 }
 
 void DataChunk::Move(DataChunk &chunk) {
@@ -116,6 +116,7 @@ void DataChunk::Move(DataChunk &chunk) {
 	SetCapacity(chunk);
 	data = std::move(chunk.data);
 	vector_caches = std::move(chunk.vector_caches);
+	memcpy(active_uuid, chunk.active_uuid, sizeof(duckdb_uuid_t));
 
 	chunk.Destroy();
 }

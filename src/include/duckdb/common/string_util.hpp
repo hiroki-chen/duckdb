@@ -10,10 +10,11 @@
 
 #include "duckdb/common/constants.hpp"
 #include "duckdb/common/exception.hpp"
-#include "duckdb/common/vector.hpp"
 #include "duckdb/common/set.hpp"
+#include "duckdb/common/vector.hpp"
 
 #include <cstring>
+#include <iomanip>
 
 namespace duckdb {
 
@@ -49,6 +50,19 @@ public:
 			return c - 'A' + 10;
 		}
 		throw InvalidInputException("Invalid input for hex digit: %s", string(c, 1));
+	}
+
+	static std::string ByteArrayToString(const uint8_t *data, idx_t len) {
+		std::ostringstream oss;
+		oss << std::hex << std::setfill('0') << "[";
+		for (size_t i = 0; i < len; ++i) {
+			if (i != 0) {
+				oss << ", ";
+			}
+			oss << "0x" << std::setw(2) << static_cast<int>(data[i]);
+		}
+		oss << "]";
+		return oss.str();
 	}
 
 	static uint8_t GetBinaryValue(char c) {

@@ -4,6 +4,8 @@
 #include "duckdb/common/printer.hpp"
 #include "duckdb/storage/buffer_manager.hpp"
 
+#include <iostream>
+
 namespace duckdb {
 
 BatchedDataCollection::BatchedDataCollection(ClientContext &context_p, vector<LogicalType> types_p,
@@ -35,6 +37,11 @@ void BatchedDataCollection::Append(DataChunk &input, idx_t batch_index) {
 		data.insert(make_pair(batch_index, std::move(new_collection)));
 	}
 	collection->Append(last_collection.append_state, input);
+
+	// store the UUID of the chunk.
+	std::array<uint8_t, 16> uuid;
+	std::copy(input.GetActiveUUID(), input.GetActiveUUID() + 16, uuid.begin());
+	uuids.push_back(uuid);
 }
 
 void BatchedDataCollection::Merge(BatchedDataCollection &other) {
@@ -47,6 +54,9 @@ void BatchedDataCollection::Merge(BatchedDataCollection &other) {
 		}
 		data[entry.first] = std::move(entry.second);
 	}
+
+	uuids.insert(uuids.end(), other.uuids.begin(), other.uuids.end());
+	other.uuids.clear();
 	other.data.clear();
 }
 

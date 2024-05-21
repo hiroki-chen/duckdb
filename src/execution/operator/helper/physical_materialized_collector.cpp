@@ -1,7 +1,9 @@
 #include "duckdb/execution/operator/helper/physical_materialized_collector.hpp"
 
-#include "duckdb/main/materialized_query_result.hpp"
 #include "duckdb/main/client_context.hpp"
+#include "duckdb/main/materialized_query_result.hpp"
+
+#include <iostream>
 
 namespace duckdb {
 
@@ -28,6 +30,10 @@ public:
 SinkResultType PhysicalMaterializedCollector::Sink(ExecutionContext &context, DataChunk &chunk,
                                                    OperatorSinkInput &input) const {
 	auto &lstate = input.local_state.Cast<MaterializedCollectorLocalState>();
+
+	std::cout << "PhysicalMaterializedCollector::Sink\n";
+	std::cout << "uuid = " << StringUtil::ByteArrayToString(chunk.GetActiveUUID(), 16) << std::endl;
+
 	lstate.collection->Append(lstate.append_state, chunk);
 	return SinkResultType::NEED_MORE_INPUT;
 }
