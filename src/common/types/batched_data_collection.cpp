@@ -14,6 +14,9 @@ BatchedDataCollection::BatchedDataCollection(ClientContext &context_p, vector<Lo
 }
 
 void BatchedDataCollection::Append(DataChunk &input, idx_t batch_index) {
+	std::cout << "appending " << StringUtil::ByteArrayToString(input.GetActiveUUID(), 16) << "\n";
+	std::cout << "now uuids.size() = " << uuids.size() << "\n";
+
 	D_ASSERT(batch_index != DConstants::INVALID_INDEX);
 	optional_ptr<ColumnDataCollection> collection;
 	if (last_collection.collection && last_collection.batch_index == batch_index) {

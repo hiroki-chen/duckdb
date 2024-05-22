@@ -93,28 +93,6 @@ bool CollectionScanState::Scan(DuckTransaction &transaction, DataChunk &result) 
 				return true;
 			}
 
-			// Let us slice the dataframe in the monitor.
-			duckdb_uuid_t sliced_uuid;
-			idx_t start = (vector_index - 1) * duckdb_vector_size();
-			idx_t end = std::min(vector_index * duckdb_vector_size(), (idx_t)row_group->count);
-
-			// Get the UUID of the dataframe slice.
-
-			auto iter = context->table_policy_map.find(name);
-			if (iter == context->table_policy_map.end()) {
-				return false;
-			}
-
-			uint8_t *df_uuid = iter->second;
-
-			if (create_slice(context->ctx_uuid, sizeof(duckdb_uuid_t), df_uuid, sizeof(duckdb_uuid_t), start, end,
-			                 sliced_uuid, sizeof(duckdb_uuid_t)) != 0) {
-				throw InvalidInputException("Could not create a slice of the dataframe.");
-			}
-
-			// Set the UUID of the dataframe slice.
-			result.SetActiveUUID(sliced_uuid);
-
 			return true;
 		} else if (max_row <= row_group->start + row_group->count) {
 			row_group = nullptr;

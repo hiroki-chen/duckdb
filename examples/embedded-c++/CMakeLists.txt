@@ -7,5 +7,5 @@ include_directories(../../src/include ../../../picachv/picachv-api/c_headers)
 # link_directories(../../build/src)
 
 add_executable(example main.cpp)
-target_link_libraries(example duckdb)
-target_link_directories(example PUBLIC ${PROJECT_SOURCE_DIR}/../../build/debug/src)
+target_link_libraries(example duckdb messages)
+target_link_directories(example PUBLIC ${PROJECT_SOURCE_DIR}/../../build/debug/src ${PROJECT_SOURCE_DIR}/../../build/debug/src/messages)

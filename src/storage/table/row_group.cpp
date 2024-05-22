@@ -1,27 +1,31 @@
 #include "duckdb/storage/table/row_group.hpp"
-#include "duckdb/common/types/vector.hpp"
-#include "duckdb/common/exception.hpp"
-#include "duckdb/storage/table/column_data.hpp"
-#include "duckdb/storage/table/column_checkpoint_state.hpp"
-#include "duckdb/storage/table/update_segment.hpp"
-#include "duckdb/storage/table_storage_info.hpp"
+
 #include "duckdb/common/chrono.hpp"
-#include "duckdb/planner/table_filter.hpp"
-#include "duckdb/execution/expression_executor.hpp"
-#include "duckdb/storage/checkpoint/table_data_writer.hpp"
-#include "duckdb/storage/metadata/metadata_reader.hpp"
-#include "duckdb/transaction/duck_transaction_manager.hpp"
-#include "duckdb/main/database.hpp"
-#include "duckdb/main/attached_database.hpp"
-#include "duckdb/transaction/duck_transaction.hpp"
-#include "duckdb/storage/table/append_state.hpp"
-#include "duckdb/storage/table/scan_state.hpp"
-#include "duckdb/storage/table/row_version_manager.hpp"
-#include "duckdb/common/serializer/serializer.hpp"
-#include "duckdb/common/serializer/deserializer.hpp"
+#include "duckdb/common/exception.hpp"
 #include "duckdb/common/serializer/binary_serializer.hpp"
+#include "duckdb/common/serializer/deserializer.hpp"
+#include "duckdb/common/serializer/serializer.hpp"
+#include "duckdb/common/types/vector.hpp"
+#include "duckdb/execution/expression_executor.hpp"
+#include "duckdb/main/attached_database.hpp"
+#include "duckdb/main/database.hpp"
 #include "duckdb/planner/filter/conjunction_filter.hpp"
 #include "duckdb/planner/filter/struct_filter.hpp"
+#include "duckdb/planner/table_filter.hpp"
+#include "duckdb/storage/checkpoint/table_data_writer.hpp"
+#include "duckdb/storage/metadata/metadata_reader.hpp"
+#include "duckdb/storage/table/append_state.hpp"
+#include "duckdb/storage/table/column_checkpoint_state.hpp"
+#include "duckdb/storage/table/column_data.hpp"
+#include "duckdb/storage/table/row_version_manager.hpp"
+#include "duckdb/storage/table/scan_state.hpp"
+#include "duckdb/storage/table/update_segment.hpp"
+#include "duckdb/storage/table_storage_info.hpp"
+#include "duckdb/transaction/duck_transaction.hpp"
+#include "duckdb/transaction/duck_transaction_manager.hpp"
+#include "picachv_interfaces.h"
+#include "plan_args.pb.h"
+#include "transform.pb.h"
 
 namespace duckdb {
 
@@ -580,6 +584,45 @@ void RowGroup::TemplatedScan(TransactionData transaction, CollectionScanState &s
 
 void RowGroup::Scan(TransactionData transaction, CollectionScanState &state, DataChunk &result) {
 	TemplatedScan<TableScanType::TABLE_SCAN_REGULAR>(transaction, state, result);
+	ClientContext *context = state.context;
+
+	if (context != nullptr) {
+		auto iter = context->table_policy_map.find(state.name);
+		if (iter == context->table_policy_map.end()) {
+			throw InvalidInputException("Could not find the dataframe.");
+		}
+
+		// Here we do a slice first because the DuckDB processes data in chunks.
+		duckdb_uuid_t uuid, output;
+		idx_t start = (state.vector_index - 1) * duckdb_vector_size();
+		idx_t end = std::min(state.vector_index * duckdb_vector_size(), (idx_t)count);
+		if (create_slice(context->ctx_uuid, sizeof(duckdb_uuid_t), iter->second, sizeof(duckdb_uuid_t), start, end,
+		                 uuid, sizeof(duckdb_uuid_t)) != 0) {
+			throw InvalidInputException("Could not create a slice of the dataframe.");
+		}
+
+		PicachvMessages::PlanArgument plan_arg;
+		PicachvMessages::TransformInfo *ti = plan_arg.mutable_transform_info();
+		PicachvMessages::GetDataInMemory *get = plan_arg.mutable_get_data()->mutable_in_memory();
+
+		const auto &column_ids = state.GetColumnIds();
+		// Set the early projection.
+		get->mutable_by_id()->mutable_project_list()->Assign(column_ids.begin(), column_ids.end());
+		get->mutable_df_uuid()->assign(reinterpret_cast<const char *>(uuid), 16);
+		// Slicing is easy due to "filter".
+		// TODO: Add the filter requirement.
+
+		if (execute_epilogue(state.context->ctx_uuid, PICACHV_UUID_LEN,
+		                     (const uint8_t *)plan_arg.SerializeAsString().c_str(), plan_arg.ByteSizeLong(), uuid,
+		                     PICACHV_UUID_LEN, output, PICACHV_UUID_LEN) != ErrorCode::Success) {
+			throw InternalException(GetErrorMessage());
+		}
+
+		// Finally, we are done and set the uuid.
+		result.SetActiveUUID(output);
+
+		std::cout << "after execute_epilogue: " << StringUtil::ByteArrayToString(output, 16) << "\n";
+	}
 }
 
 void RowGroup::ScanCommitted(CollectionScanState &state, DataChunk &result, TableScanType type) {

@@ -30,11 +30,11 @@ extern "C" {
 /**
  * @brief Get the last error message. Please be aware that the error message does NOT include
  * 			  the trailing zero '\0'.
- * 
+ *
  * @param [out] err_msg The buffer for holding the error message.
  * @param [in, out] err_msg_len The length of the error message buffer.
  */
-void last_error(uint8_t *err_msg, std::size_t* err_msg_len);
+void last_error(uint8_t *err_msg, std::size_t *err_msg_len);
 
 /**
  * @brief Initialize the global instance of the monitor.
@@ -143,6 +143,23 @@ ErrorCode finalize(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, const uint
 ErrorCode early_projection(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, const uint8_t *df_uuid,
                            std::size_t df_uuid_len, const std::size_t *project_list, std::size_t project_list_len,
                            uint8_t *result_uuid, std::size_t result_uuid_len);
+
+/**
+ * @brief Check if the policy is met after the execution.
+ *
+ * @param ctx_uuid
+ * @param ctx_uuid_len
+ * @param plan_arg
+ * @param plan_arg_len
+ * @param df_uuid
+ * @param df_uuid_len
+ * @param output
+ * @param output_len
+ * @return ErrorCode
+ */
+ErrorCode execute_epilogue(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, const uint8_t *plan_arg,
+                           std::size_t plan_arg_len, const uint8_t *df_uuid, std::size_t df_uuid_len, uint8_t *output,
+                           std::size_t output_len);
 }
 
 #endif
