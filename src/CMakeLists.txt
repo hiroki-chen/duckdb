@@ -60,13 +60,13 @@ endif()
 if(AMALGAMATION_BUILD)
 
   add_library(duckdb SHARED "${PROJECT_SOURCE_DIR}/src/amalgamation/duckdb.cpp")
-  target_link_libraries(duckdb ${DUCKDB_SYSTEM_LIBS} picachv-api)
+  target_link_libraries(duckdb ${DUCKDB_SYSTEM_LIBS} picachv-api arrow)
   link_threads(duckdb)
   link_extension_libraries(duckdb)
 
   add_library(duckdb_static STATIC
               "${PROJECT_SOURCE_DIR}/src/amalgamation/duckdb.cpp")
-  target_link_libraries(duckdb_static ${DUCKDB_SYSTEM_LIBS} picachv-api)
+  target_link_libraries(duckdb_static ${DUCKDB_SYSTEM_LIBS} picachv-api arrow)
   link_threads(duckdb_static)
   link_extension_libraries(duckdb_static)
 
@@ -111,12 +111,12 @@ else()
       duckdb_mbedtls)
 
   add_library(duckdb SHARED ${ALL_OBJECT_FILES})
-  target_link_libraries(duckdb ${DUCKDB_LINK_LIBS} picachv_api ${PROTOBUF_LIBRARY})
+  target_link_libraries(duckdb ${DUCKDB_LINK_LIBS} picachv_api arrow ${PROTOBUF_LIBRARY})
   link_threads(duckdb)
   link_extension_libraries(duckdb)
 
   add_library(duckdb_static STATIC ${ALL_OBJECT_FILES})
-  target_link_libraries(duckdb_static ${DUCKDB_LINK_LIBS} picachv_api ${PROTOBUF_LIBRARY})
+  target_link_libraries(duckdb_static ${DUCKDB_LINK_LIBS} picachv_api arrow ${PROTOBUF_LIBRARY})
   link_threads(duckdb_static)
   link_extension_libraries(duckdb_static)
 

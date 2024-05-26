@@ -1,3 +1,4 @@
+#include "duckdb/common/arrow/arrow_converter.hpp"
 #include "duckdb/execution/expression_executor.hpp"
 #include "duckdb/planner/expression/bound_function_expression.hpp"
 
@@ -58,6 +59,8 @@ static void VerifyNullHandling(const BoundFunctionExpression &expr, DataChunk &a
 
 void ExpressionExecutor::Execute(const BoundFunctionExpression &expr, ExpressionState *state,
                                  const SelectionVector *sel, idx_t count, Vector &result) {
+	D_ASSERT(context);
+
 	state->intermediate_chunk.Reset();
 	auto &arguments = state->intermediate_chunk;
 	if (!state->types.empty()) {
@@ -73,6 +76,13 @@ void ExpressionExecutor::Execute(const BoundFunctionExpression &expr, Expression
 	}
 	arguments.SetCardinality(count);
 	arguments.Verify();
+
+	auto arrow_buffer = arguments.ToArrowIpc();
+	// TODO: Find a way to store the uuid of the expression.
+	// if (reify_expression(context.get()->ctx_uuid.uuid, PICACHV_UUID_LEN, expr_uuids[idx].uuid, PICACHV_UUID_LEN,
+	//                      arrow_buffer->data(), arrow_buffer->size()) != 0) {
+	// 	throw InternalException(GetErrorMessage());
+	// }
 
 	D_ASSERT(expr.function.function);
 	expr.function.function(arguments, *state, result);

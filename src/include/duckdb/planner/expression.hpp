@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include "duckdb/parser/base_expression.hpp"
+#include "duckdb.h"
 #include "duckdb/common/types.hpp"
+#include "duckdb/parser/base_expression.hpp"
 
 namespace duckdb {
 class BaseStatistics;
@@ -36,6 +37,12 @@ public:
 	virtual bool IsConsistent() const;
 	virtual bool PropagatesNullValues() const;
 	virtual bool IsFoldable() const;
+
+	//! Create the expression in the arena.
+	virtual duckdb_uuid_t CreateExprInArena(ClientContext &context) const {
+		throw NotImplementedException("CreateExprInArena is not implemented for this expression: " +
+		                              std::to_string((uint8_t)GetExpressionType()));
+	}
 
 	hash_t Hash() const override;
 

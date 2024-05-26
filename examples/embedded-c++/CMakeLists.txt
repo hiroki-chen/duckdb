@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(example-c++)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 include_directories(../../src/include ../../../picachv/picachv-api/c_headers)
 # link_directories(../../build/src)

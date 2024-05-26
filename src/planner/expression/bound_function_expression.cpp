@@ -1,11 +1,14 @@
 #include "duckdb/planner/expression/bound_function_expression.hpp"
-#include "duckdb/parser/expression/function_expression.hpp"
+
 #include "duckdb/catalog/catalog_entry/scalar_function_catalog_entry.hpp"
-#include "duckdb/common/types/hash.hpp"
-#include "duckdb/function/function_serialization.hpp"
-#include "duckdb/common/serializer/serializer.hpp"
 #include "duckdb/common/serializer/deserializer.hpp"
+#include "duckdb/common/serializer/serializer.hpp"
+#include "duckdb/common/types/hash.hpp"
 #include "duckdb/core_functions/lambda_functions.hpp"
+#include "duckdb/function/function_serialization.hpp"
+#include "duckdb/parser/expression/function_expression.hpp"
+#include "expr_args.pb.h"
+#include "picachv_interfaces.h"
 
 namespace duckdb {
 
@@ -108,6 +111,27 @@ unique_ptr<Expression> BoundFunctionExpression::Deserialize(Deserializer &deseri
 	                                                 std::move(children), std::move(entry.second));
 	deserializer.ReadProperty(202, "is_operator", result->is_operator);
 	return std::move(result);
+}
+
+duckdb_uuid_t BoundFunctionExpression::CreateExprInArena(ClientContext &context) const {
+	duckdb_uuid_t expr_uuid;
+	PicachvMessages::ExprArgument arg;
+	PicachvMessages::ApplyExpr *expr = arg.mutable_apply();
+
+	// Call all its children's CreateExprInArena.
+	for (auto &child : children) {
+		duckdb_uuid_t child_uuid = child->CreateExprInArena(context);
+		expr->mutable_input_uuids()->Add(string((char *)child_uuid.uuid, PICACHV_UUID_LEN));
+	}
+
+	expr->set_name(function.name);
+
+	if (expr_from_args(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (const uint8_t *)arg.SerializeAsString().c_str(),
+	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
+		throw InternalException(GetErrorMessage());
+	}
+
+	return expr_uuid;
 }
 
 } // namespace duckdb

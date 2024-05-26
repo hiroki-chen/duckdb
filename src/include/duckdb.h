@@ -189,7 +189,9 @@ typedef enum {
 //===--------------------------------------------------------------------===//
 
 //! The Uuid.
-typedef uint8_t duckdb_uuid_t[16];
+typedef struct {
+	uint8_t uuid[16];
+} duckdb_uuid_t;
 
 //! DuckDB's index type.
 typedef uint64_t idx_t;

@@ -1,6 +1,10 @@
 #include "duckdb/common/types/data_chunk.hpp"
 
+#include "arrow/c/bridge.h"
+#include "arrow/ipc/api.h"
+#include "arrow/record_batch.h"
 #include "duckdb/common/array.hpp"
+#include "duckdb/common/arrow/arrow_converter.hpp"
 #include "duckdb/common/exception.hpp"
 #include "duckdb/common/helper.hpp"
 #include "duckdb/common/printer.hpp"
@@ -108,7 +112,7 @@ void DataChunk::Reference(DataChunk &chunk) {
 	for (idx_t i = 0; i < chunk.ColumnCount(); i++) {
 		data[i].Reference(chunk.data[i]);
 	}
-	memcpy(active_uuid, chunk.active_uuid, sizeof(duckdb_uuid_t));
+	memcpy(active_uuid.uuid, chunk.active_uuid.uuid, sizeof(duckdb_uuid_t));
 }
 
 void DataChunk::Move(DataChunk &chunk) {
@@ -116,7 +120,7 @@ void DataChunk::Move(DataChunk &chunk) {
 	SetCapacity(chunk);
 	data = std::move(chunk.data);
 	vector_caches = std::move(chunk.vector_caches);
-	memcpy(active_uuid, chunk.active_uuid, sizeof(duckdb_uuid_t));
+	memcpy(active_uuid.uuid, chunk.active_uuid.uuid, sizeof(duckdb_uuid_t));
 
 	chunk.Destroy();
 }
@@ -380,6 +384,23 @@ void DataChunk::Verify() {
 
 void DataChunk::Print() const {
 	Printer::Print(ToString());
+}
+
+shared_ptr<arrow::Buffer> DataChunk::ToArrowIpc() {
+	vector<string> names(data.size(), "");
+	vector<LogicalType> types;
+	std::for_each(data.begin(), data.end(), [&](const Vector &v) { types.emplace_back(v.GetType()); });
+
+	ArrowArray arrow_array;
+	ArrowSchema arrow_schema;
+	ArrowConverter::ToArrowSchema(&arrow_schema, types, names, ClientProperties());
+	ArrowConverter::ToArrowArray(*this, &arrow_array, ClientProperties());
+	auto record_batch = arrow::ImportRecordBatch(&arrow_array, &arrow_schema).ValueOrDie();
+	// Serialize recordbatch
+	auto options = arrow::ipc::IpcWriteOptions::Defaults();
+	auto result = arrow::ipc::SerializeRecordBatch(*record_batch, options);
+
+	return result.ValueOrDie();
 }
 
 } // namespace duckdb

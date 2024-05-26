@@ -10,9 +10,9 @@
 
 #include "duckdb/common/unordered_map.hpp"
 #include "duckdb/execution/expression_executor_state.hpp"
+#include "duckdb/main/client_context.hpp"
 #include "duckdb/planner/bound_tokens.hpp"
 #include "duckdb/planner/expression.hpp"
-#include "duckdb/main/client_context.hpp"
 
 namespace duckdb {
 class Allocator;
@@ -32,6 +32,8 @@ public:
 
 	//! The expressions of the executor
 	vector<const Expression *> expressions;
+	//! The UUIDs of the sub-expressions.
+	vector<duckdb_uuid_t> expr_uuids;
 	//! The data chunk of the current physical operator, used to resolve
 	//! column references and determines the output cardinality
 	DataChunk *chunk = nullptr;

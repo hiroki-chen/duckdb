@@ -82,10 +82,10 @@ unique_ptr<QueryResult> PhysicalBatchCollector::GetResult(GlobalSinkState &state
 unique_ptr<QueryResult> PhysicalBatchCollector::GetResult(GlobalSinkState &state, ClientContext &context) {
 	auto &gstate = state.Cast<BatchCollectorGlobalState>();
 	for (size_t i = 0; i < gstate.data.uuids.size(); i++) {
-		std::cout << "PhysicalBatchCollector::GetResult: " << StringUtil::ByteArrayToString(gstate.data.uuids[i].data(), 16)
-		          << std::endl;
-		if (finalize(context.ctx_uuid, sizeof(duckdb_uuid_t), gstate.data.uuids[i].data(), sizeof(duckdb_uuid_t)) !=
-		    ErrorCode::Success) {
+		std::cout << "PhysicalBatchCollector::GetResult: "
+		          << StringUtil::ByteArrayToString(gstate.data.uuids[i].data(), 16) << std::endl;
+		if (finalize(context.ctx_uuid.uuid, sizeof(duckdb_uuid_t), gstate.data.uuids[i].data(),
+		             sizeof(duckdb_uuid_t)) != ErrorCode::Success) {
 			throw InternalException("PhysicalBatchCollector: " + GetErrorMessage());
 		}
 	}

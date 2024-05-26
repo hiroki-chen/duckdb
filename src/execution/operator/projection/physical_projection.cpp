@@ -1,7 +1,11 @@
 #include "duckdb/execution/operator/projection/physical_projection.hpp"
-#include "duckdb/parallel/thread_context.hpp"
+
 #include "duckdb/execution/expression_executor.hpp"
+#include "duckdb/parallel/thread_context.hpp"
 #include "duckdb/planner/expression/bound_reference_expression.hpp"
+#include "plan_args.pb.h"
+
+#include <iostream>
 
 namespace duckdb {
 
@@ -27,8 +31,28 @@ PhysicalProjection::PhysicalProjection(vector<LogicalType> types, vector<unique_
 
 OperatorResultType PhysicalProjection::Execute(ExecutionContext &context, DataChunk &input, DataChunk &chunk,
                                                GlobalOperatorState &gstate, OperatorState &state_p) const {
+	PicachvMessages::PlanArgument arg;
+	PicachvMessages::ProjectionArgument *proj = arg.mutable_projection();
+	duckdb_uuid_t out;
 	auto &state = state_p.Cast<ProjectionState>();
+
+	for (auto &child : select_list) {
+		auto child_uuid = child->CreateExprInArena(context.client);
+		proj->mutable_expression()->Add(string((char *)child_uuid.uuid, PICACHV_UUID_LEN));
+		state.executor.expr_uuids.emplace_back(child_uuid);
+	}
+
 	state.executor.Execute(input, chunk);
+
+	if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
+	                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, out.uuid,
+	                     PICACHV_UUID_LEN) != ErrorCode::Success) {
+		throw InternalException(GetErrorMessage());
+	}
+
+	chunk.SetActiveUUID(out.uuid);
+	state.executor.expr_uuids.clear();
+
 	return OperatorResultType::NEED_MORE_INPUT;
 }
 

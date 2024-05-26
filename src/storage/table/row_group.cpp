@@ -596,8 +596,8 @@ void RowGroup::Scan(TransactionData transaction, CollectionScanState &state, Dat
 		duckdb_uuid_t uuid, output;
 		idx_t start = (state.vector_index - 1) * duckdb_vector_size();
 		idx_t end = std::min(state.vector_index * duckdb_vector_size(), (idx_t)count);
-		if (create_slice(context->ctx_uuid, sizeof(duckdb_uuid_t), iter->second, sizeof(duckdb_uuid_t), start, end,
-		                 uuid, sizeof(duckdb_uuid_t)) != 0) {
+		if (create_slice(context->ctx_uuid.uuid, sizeof(duckdb_uuid_t), iter->second, sizeof(duckdb_uuid_t), start, end,
+		                 uuid.uuid, sizeof(duckdb_uuid_t)) != 0) {
 			throw InvalidInputException("Could not create a slice of the dataframe.");
 		}
 
@@ -608,20 +608,19 @@ void RowGroup::Scan(TransactionData transaction, CollectionScanState &state, Dat
 		const auto &column_ids = state.GetColumnIds();
 		// Set the early projection.
 		get->mutable_by_id()->mutable_project_list()->Assign(column_ids.begin(), column_ids.end());
-		get->mutable_df_uuid()->assign(reinterpret_cast<const char *>(uuid), 16);
+		get->mutable_df_uuid()->assign(reinterpret_cast<const char *>(uuid.uuid), 16);
 		// Slicing is easy due to "filter".
-		// TODO: Add the filter requirement.
+		// TODO: Add the filter:
+		// After evaluating the filter, we should be able to get the boolean array.
 
-		if (execute_epilogue(state.context->ctx_uuid, PICACHV_UUID_LEN,
-		                     (const uint8_t *)plan_arg.SerializeAsString().c_str(), plan_arg.ByteSizeLong(), uuid,
-		                     PICACHV_UUID_LEN, output, PICACHV_UUID_LEN) != ErrorCode::Success) {
+		if (execute_epilogue(state.context->ctx_uuid.uuid, PICACHV_UUID_LEN,
+		                     (const uint8_t *)plan_arg.SerializeAsString().c_str(), plan_arg.ByteSizeLong(), uuid.uuid,
+		                     PICACHV_UUID_LEN, output.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
 			throw InternalException(GetErrorMessage());
 		}
 
 		// Finally, we are done and set the uuid.
-		result.SetActiveUUID(output);
-
-		std::cout << "after execute_epilogue: " << StringUtil::ByteArrayToString(output, 16) << "\n";
+		result.SetActiveUUID(output.uuid);
 	}
 }
 

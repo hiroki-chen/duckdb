@@ -104,6 +104,9 @@ private:
 	bool PreserveInsertionOrder(PhysicalOperator &plan);
 	bool UseBatchIndex(PhysicalOperator &plan);
 
+	//! Visit the expression and create a copy in the arena.
+	void ConstructExpression(Expression &expr);
+
 private:
 	ClientContext &context;
 };

@@ -1022,7 +1022,7 @@ void ClientContext::Interrupt() {
 }
 
 ErrorCode ClientContext::InitializeCtx() {
-	return open_new(ctx_uuid, sizeof(ctx_uuid));
+	return open_new(ctx_uuid.uuid, sizeof(ctx_uuid));
 }
 
 ErrorCode ClientContext::RegisterPolicyDataFrame(const std::string &df, const std::string &path) {
@@ -1042,7 +1042,7 @@ ErrorCode ClientContext::RegisterPolicyDataFrame(const std::string &df, const st
 
 	uint8_t *uuid = new uint8_t[sizeof(duckdb_uuid_t)];
 	ErrorCode ec =
-	    register_policy_dataframe(ctx_uuid, sizeof(ctx_uuid), reinterpret_cast<const uint8_t *>(content.data()),
+	    register_policy_dataframe(ctx_uuid.uuid, sizeof(ctx_uuid), reinterpret_cast<const uint8_t *>(content.data()),
 	                              content.size(), uuid, sizeof(duckdb_uuid_t));
 
 	if (ec == ErrorCode::Success) {

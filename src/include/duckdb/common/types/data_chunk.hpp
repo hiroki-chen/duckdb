@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "arrow/buffer.h"
 #include "duckdb.h"
 #include "duckdb/common/allocator.hpp"
 #include "duckdb/common/arrow/arrow_wrapper.hpp"
@@ -57,8 +58,8 @@ public:
 	inline idx_t ColumnCount() const {
 		return data.size();
 	}
-	inline const uint8_t* GetActiveUUID() const {
-		return active_uuid;
+	inline const uint8_t *GetActiveUUID() const {
+		return active_uuid.uuid;
 	}
 	inline void SetCardinality(idx_t count_p) {
 		D_ASSERT(count_p <= capacity);
@@ -73,8 +74,8 @@ public:
 	inline void SetCapacity(const DataChunk &other) {
 		SetCapacity(other.capacity);
 	}
-	inline void SetActiveUUID(const uint8_t* uuid) {
-		memcpy(active_uuid, uuid, sizeof(duckdb_uuid_t));
+	inline void SetActiveUUID(const uint8_t *uuid) {
+		memcpy(active_uuid.uuid, uuid, sizeof(duckdb_uuid_t));
 	}
 
 	DUCKDB_API Value GetValue(idx_t col_idx, idx_t index) const;
@@ -150,6 +151,7 @@ public:
 
 	DUCKDB_API void Serialize(Serializer &serializer) const;
 	DUCKDB_API void Deserialize(Deserializer &source);
+	DUCKDB_API shared_ptr<arrow::Buffer> ToArrowIpc();
 
 	//! Hashes the DataChunk to the target vector
 	DUCKDB_API void Hash(Vector &result);

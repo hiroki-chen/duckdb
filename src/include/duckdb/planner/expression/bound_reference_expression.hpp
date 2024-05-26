@@ -32,6 +32,8 @@ public:
 		return false;
 	}
 
+	duckdb_uuid_t CreateExprInArena(ClientContext &context) const override;
+
 	string ToString() const override;
 
 	hash_t Hash() const override;

@@ -1,7 +1,12 @@
 #include "duckdb/execution/operator/filter/physical_filter.hpp"
+
 #include "duckdb/execution/expression_executor.hpp"
-#include "duckdb/planner/expression/bound_conjunction_expression.hpp"
 #include "duckdb/parallel/thread_context.hpp"
+#include "duckdb/planner/expression/bound_conjunction_expression.hpp"
+#include "picachv_interfaces.h"
+#include "plan_args.pb.h"
+#include "transform.pb.h"
+
 namespace duckdb {
 
 PhysicalFilter::PhysicalFilter(vector<LogicalType> types, vector<unique_ptr<Expression>> select_list,
@@ -48,6 +53,28 @@ OperatorResultType PhysicalFilter::ExecuteInternal(ExecutionContext &context, Da
 		chunk.Reference(input);
 	} else {
 		chunk.Slice(input, state.sel, result_count);
+		// Here we need to tell the security monitor what is filtered.
+		PicachvMessages::PlanArgument arg;
+		// Just tell protobuf that we need to filter the data;
+		// but this message does not contain any argument.
+		(void)arg.mutable_transform();
+
+		// Convert the selection vector into a boolean one.
+		auto filter = arg.mutable_transform_info()->mutable_filter()->mutable_filter();
+		filter->Resize(input.size(), false);
+
+		for (idx_t i = 0; i < result_count; i++) {
+			filter->Set(state.sel.get_index(i), true);
+		}
+
+		duckdb_uuid_t uuid;
+		if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().data(),
+		                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, uuid.uuid,
+		                     PICACHV_UUID_LEN) != ErrorCode::Success) {
+			throw InternalException(GetErrorMessage());
+		}
+
+		chunk.SetActiveUUID(uuid.uuid);
 	}
 	return OperatorResultType::NEED_MORE_INPUT;
 }

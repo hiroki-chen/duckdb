@@ -3,6 +3,8 @@
 #include "duckdb/common/to_string.hpp"
 #include "duckdb/common/types/hash.hpp"
 #include "duckdb/main/config.hpp"
+#include "expr_args.pb.h"
+#include "picachv_interfaces.h"
 
 namespace duckdb {
 
@@ -40,6 +42,21 @@ hash_t BoundReferenceExpression::Hash() const {
 
 unique_ptr<Expression> BoundReferenceExpression::Copy() {
 	return make_uniq<BoundReferenceExpression>(alias, return_type, index);
+}
+
+duckdb_uuid_t BoundReferenceExpression::CreateExprInArena(ClientContext &context) const {
+	duckdb_uuid_t expr_uuid;
+	PicachvMessages::ExprArgument arg;
+	PicachvMessages::ColumnExpr *expr = arg.mutable_column();
+
+	expr->set_column_id(index);
+
+	if (expr_from_args(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
+	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
+		throw InternalException(GetErrorMessage());
+	}
+
+	return expr_uuid;
 }
 
 } // namespace duckdb
