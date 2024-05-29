@@ -113,15 +113,14 @@ unique_ptr<Expression> BoundFunctionExpression::Deserialize(Deserializer &deseri
 	return std::move(result);
 }
 
-duckdb_uuid_t BoundFunctionExpression::CreateExprInArena(ClientContext &context) const {
-	duckdb_uuid_t expr_uuid;
+void BoundFunctionExpression::CreateExprInArena(ClientContext &context) const {
 	PicachvMessages::ExprArgument arg;
 	PicachvMessages::ApplyExpr *expr = arg.mutable_apply();
 
 	// Call all its children's CreateExprInArena.
 	for (auto &child : children) {
-		duckdb_uuid_t child_uuid = child->CreateExprInArena(context);
-		expr->mutable_input_uuids()->Add(string((char *)child_uuid.uuid, PICACHV_UUID_LEN));
+		child->CreateExprInArena(context);
+		expr->mutable_input_uuids()->Add(string((char *)child->expr_uuid.uuid, PICACHV_UUID_LEN));
 	}
 
 	expr->set_name(function.name);
@@ -130,8 +129,6 @@ duckdb_uuid_t BoundFunctionExpression::CreateExprInArena(ClientContext &context)
 	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
 		throw InternalException(GetErrorMessage());
 	}
-
-	return expr_uuid;
 }
 
 } // namespace duckdb

@@ -26,6 +26,8 @@ public:
 	LogicalType return_type;
 	//! Expression statistics (if any) - ONLY USED FOR VERIFICATION
 	unique_ptr<BaseStatistics> verification_stats;
+	//! The UUID of this expression.
+	mutable duckdb_uuid_t expr_uuid;
 
 public:
 	bool IsAggregate() const override;
@@ -39,7 +41,7 @@ public:
 	virtual bool IsFoldable() const;
 
 	//! Create the expression in the arena.
-	virtual duckdb_uuid_t CreateExprInArena(ClientContext &context) const {
+	virtual void CreateExprInArena(ClientContext &context) const {
 		throw NotImplementedException("CreateExprInArena is not implemented for this expression: " +
 		                              std::to_string((uint8_t)GetExpressionType()));
 	}

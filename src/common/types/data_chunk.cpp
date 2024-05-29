@@ -1,6 +1,7 @@
 #include "duckdb/common/types/data_chunk.hpp"
 
 #include "arrow/c/bridge.h"
+#include "arrow/io/api.h"
 #include "arrow/ipc/api.h"
 #include "arrow/record_batch.h"
 #include "duckdb/common/array.hpp"
@@ -387,20 +388,28 @@ void DataChunk::Print() const {
 }
 
 shared_ptr<arrow::Buffer> DataChunk::ToArrowIpc() {
-	vector<string> names(data.size(), "");
+	vector<string> names(data.size(), "col");
 	vector<LogicalType> types;
 	std::for_each(data.begin(), data.end(), [&](const Vector &v) { types.emplace_back(v.GetType()); });
 
 	ArrowArray arrow_array;
 	ArrowSchema arrow_schema;
+	auto out = arrow::io::BufferOutputStream::Create().ValueOrDie();
+
 	ArrowConverter::ToArrowSchema(&arrow_schema, types, names, ClientProperties());
 	ArrowConverter::ToArrowArray(*this, &arrow_array, ClientProperties());
 	auto record_batch = arrow::ImportRecordBatch(&arrow_array, &arrow_schema).ValueOrDie();
 	// Serialize recordbatch
 	auto options = arrow::ipc::IpcWriteOptions::Defaults();
-	auto result = arrow::ipc::SerializeRecordBatch(*record_batch, options);
+	auto writer = arrow::ipc::MakeStreamWriter(out, record_batch->schema(), options).ValueOrDie();
+	if (!writer->WriteRecordBatch(*record_batch).ok()) {
+		throw SerializationException("Failed to write record batch");
+	}
+	if (!writer->Close().ok()) {
+		throw SerializationException("Failed to close record batch writer");
+	}
 
-	return result.ValueOrDie();
+	return out->Finish().ValueOrDie();
 }
 
 } // namespace duckdb

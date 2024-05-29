@@ -42,7 +42,7 @@ public:
 	hash_t Hash() const override;
 	bool Equals(const BaseExpression &other) const override;
 
-	duckdb_uuid_t CreateExprInArena(ClientContext &context) const override;
+	void CreateExprInArena(ClientContext &context) const override;
 
 	unique_ptr<Expression> Copy() override;
 	void Verify() const override;

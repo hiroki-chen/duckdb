@@ -44,8 +44,7 @@ unique_ptr<Expression> BoundReferenceExpression::Copy() {
 	return make_uniq<BoundReferenceExpression>(alias, return_type, index);
 }
 
-duckdb_uuid_t BoundReferenceExpression::CreateExprInArena(ClientContext &context) const {
-	duckdb_uuid_t expr_uuid;
+void BoundReferenceExpression::CreateExprInArena(ClientContext &context) const {
 	PicachvMessages::ExprArgument arg;
 	PicachvMessages::ColumnExpr *expr = arg.mutable_column();
 
@@ -55,8 +54,6 @@ duckdb_uuid_t BoundReferenceExpression::CreateExprInArena(ClientContext &context
 	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
 		throw InternalException(GetErrorMessage());
 	}
-
-	return expr_uuid;
 }
 
 } // namespace duckdb

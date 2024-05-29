@@ -32,8 +32,6 @@ public:
 
 	//! The expressions of the executor
 	vector<const Expression *> expressions;
-	//! The UUIDs of the sub-expressions.
-	vector<duckdb_uuid_t> expr_uuids;
 	//! The data chunk of the current physical operator, used to resolve
 	//! column references and determines the output cardinality
 	DataChunk *chunk = nullptr;

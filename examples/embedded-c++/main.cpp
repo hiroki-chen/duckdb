@@ -36,7 +36,7 @@ int main() {
 	// auto result = con.Query("explain(SELECT * FROM (integers t1 JOIN integers t2 ON t1.a = t2.b))");
 	// result->Print();
 	std::cout << "================\n";
-	auto result = con.Query("EXPLAIN (SELECT a + 1 FROM integers)");
+	auto result = con.Query("EXPLAIN (SELECT b + 1 FROM integers)");
 	result->Print();
 	// TODO: FIX the bug. The projection seems not working.
 	result = con.Query("SELECT a + 1 FROM integers");

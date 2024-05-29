@@ -78,11 +78,11 @@ void ExpressionExecutor::Execute(const BoundFunctionExpression &expr, Expression
 	arguments.Verify();
 
 	auto arrow_buffer = arguments.ToArrowIpc();
-	// TODO: Find a way to store the uuid of the expression.
-	// if (reify_expression(context.get()->ctx_uuid.uuid, PICACHV_UUID_LEN, expr_uuids[idx].uuid, PICACHV_UUID_LEN,
-	//                      arrow_buffer->data(), arrow_buffer->size()) != 0) {
-	// 	throw InternalException(GetErrorMessage());
-	// }
+
+	if (reify_expression(context.get()->ctx_uuid.uuid, PICACHV_UUID_LEN, expr.expr_uuid.uuid, PICACHV_UUID_LEN,
+	                     arrow_buffer->data(), arrow_buffer->size()) != 0) {
+		throw InternalException(GetErrorMessage());
+	}
 
 	D_ASSERT(expr.function.function);
 	expr.function.function(arguments, *state, result);

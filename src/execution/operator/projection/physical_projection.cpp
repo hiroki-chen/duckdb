@@ -37,9 +37,8 @@ OperatorResultType PhysicalProjection::Execute(ExecutionContext &context, DataCh
 	auto &state = state_p.Cast<ProjectionState>();
 
 	for (auto &child : select_list) {
-		auto child_uuid = child->CreateExprInArena(context.client);
-		proj->mutable_expression()->Add(string((char *)child_uuid.uuid, PICACHV_UUID_LEN));
-		state.executor.expr_uuids.emplace_back(child_uuid);
+		child->CreateExprInArena(context.client);
+		proj->mutable_expression()->Add(string((char *)child->expr_uuid.uuid, PICACHV_UUID_LEN));
 	}
 
 	state.executor.Execute(input, chunk);
@@ -51,7 +50,6 @@ OperatorResultType PhysicalProjection::Execute(ExecutionContext &context, DataCh
 	}
 
 	chunk.SetActiveUUID(out.uuid);
-	state.executor.expr_uuids.clear();
 
 	return OperatorResultType::NEED_MORE_INPUT;
 }
