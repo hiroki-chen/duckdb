@@ -7,15 +7,17 @@
 #include "duckdb/main/client_context.hpp"
 #include "duckdb/main/query_profiler.hpp"
 #include "duckdb/parallel/base_pipeline_event.hpp"
+#include "duckdb/parallel/executor_task.hpp"
 #include "duckdb/parallel/interrupt.hpp"
 #include "duckdb/parallel/pipeline.hpp"
 #include "duckdb/parallel/thread_context.hpp"
-#include "duckdb/parallel/executor_task.hpp"
 #include "duckdb/planner/expression/bound_aggregate_expression.hpp"
 #include "duckdb/planner/expression/bound_reference_expression.hpp"
 #include "duckdb/storage/buffer_manager.hpp"
 #include "duckdb/storage/storage_manager.hpp"
 #include "duckdb/storage/temporary_memory_manager.hpp"
+
+#include <iostream>
 
 namespace duckdb {
 
@@ -232,6 +234,11 @@ unique_ptr<LocalSinkState> PhysicalHashJoin::GetLocalSinkState(ExecutionContext 
 	return make_uniq<HashJoinLocalSinkState>(*this, context.client);
 }
 
+// For physicl hash join, the sink function is called when the pipeline that tries to build the
+// hash table is finished. The other side will call `Execute` to probe the hash table.
+//
+// This function will try to create the join keys from the left side and then leaves the remainder
+// as the payload. The hash table will then be built with the join keys and the payload.
 SinkResultType PhysicalHashJoin::Sink(ExecutionContext &context, DataChunk &chunk, OperatorSinkInput &input) const {
 	auto &lstate = input.local_state.Cast<HashJoinLocalSinkState>();
 
@@ -246,7 +253,6 @@ SinkResultType PhysicalHashJoin::Sink(ExecutionContext &context, DataChunk &chun
 		lstate.payload_chunk.SetCardinality(chunk.size());
 		ht.Build(lstate.append_state, lstate.join_keys, lstate.payload_chunk);
 	} else {
-		// there are payload columns
 		lstate.payload_chunk.Reset();
 		lstate.payload_chunk.SetCardinality(chunk);
 		for (idx_t i = 0; i < payload_column_idxs.size(); i++) {
@@ -254,6 +260,8 @@ SinkResultType PhysicalHashJoin::Sink(ExecutionContext &context, DataChunk &chun
 		}
 		ht.Build(lstate.append_state, lstate.join_keys, lstate.payload_chunk);
 	}
+
+	lstate.payload_chunk.Print();
 
 	if (++lstate.chunk_count % HashJoinLocalSinkState::CHUNK_COUNT_UPDATE_INTERVAL == 0) {
 		auto &gstate = input.global_state.Cast<HashJoinGlobalSinkState>();
@@ -268,6 +276,8 @@ SinkResultType PhysicalHashJoin::Sink(ExecutionContext &context, DataChunk &chun
 }
 
 SinkCombineResultType PhysicalHashJoin::Combine(ExecutionContext &context, OperatorSinkCombineInput &input) const {
+  std::cout << "join: combine called.\n";
+
 	auto &gstate = input.global_state.Cast<HashJoinGlobalSinkState>();
 	auto &lstate = input.local_state.Cast<HashJoinLocalSinkState>();
 	if (lstate.hash_table) {
@@ -457,6 +467,8 @@ public:
 
 SinkFinalizeType PhysicalHashJoin::Finalize(Pipeline &pipeline, Event &event, ClientContext &context,
                                             OperatorSinkFinalizeInput &input) const {
+  std::cout << "join: finalize called.\n";
+
 	auto &sink = input.global_state.Cast<HashJoinGlobalSinkState>();
 	auto &ht = *sink.hash_table;
 
@@ -563,12 +575,29 @@ unique_ptr<OperatorState> PhysicalHashJoin::GetOperatorState(ExecutionContext &c
 	return std::move(state);
 }
 
+// TODO:
+//
+// In this function we will need to tell the execute_epilogue api the details of the join.
 OperatorResultType PhysicalHashJoin::ExecuteInternal(ExecutionContext &context, DataChunk &input, DataChunk &chunk,
                                                      GlobalOperatorState &gstate, OperatorState &state_p) const {
+  std::cout << "join: execute internal called.\n";
+	// So at this point this input is valid?
+	std::cout << "input: \n";
+	input.Print();
+	chunk.Print();
+
 	auto &state = state_p.Cast<HashJoinOperatorState>();
 	auto &sink = sink_state->Cast<HashJoinGlobalSinkState>();
 	D_ASSERT(sink.finalized);
 	D_ASSERT(!sink.scanned_data);
+
+	for (auto id : payload_column_idxs) {
+		std::cout << "payload column idx: " << id << "\n";
+	}
+
+	for (auto id : rhs_output_columns) {
+		std::cout << "rhs output column: " << id << "\n";
+	}
 
 	// some initialization for external hash join
 	if (sink.external && !state.initialized) {
@@ -590,7 +619,7 @@ OperatorResultType PhysicalHashJoin::ExecuteInternal(ExecutionContext &context, 
 
 	if (state.scan_structure) {
 		// still have elements remaining (i.e. we got >STANDARD_VECTOR_SIZE elements in the previous probe)
-		state.scan_structure->Next(state.join_keys, input, chunk);
+		state.scan_structure->Next(context.client, state.join_keys, input, chunk);
 		if (!state.scan_structure->PointersExhausted() || chunk.size() > 0) {
 			return OperatorResultType::HAVE_MORE_OUTPUT;
 		}
@@ -615,7 +644,7 @@ OperatorResultType PhysicalHashJoin::ExecuteInternal(ExecutionContext &context, 
 	} else {
 		state.scan_structure = sink.hash_table->Probe(state.join_keys, state.join_key_state);
 	}
-	state.scan_structure->Next(state.join_keys, input, chunk);
+	state.scan_structure->Next(context.client, state.join_keys, input, chunk);
 	return OperatorResultType::HAVE_MORE_OUTPUT;
 }
 
@@ -956,43 +985,43 @@ void HashJoinLocalSourceState::ExternalBuild(HashJoinGlobalSinkState &sink, Hash
 
 void HashJoinLocalSourceState::ExternalProbe(HashJoinGlobalSinkState &sink, HashJoinGlobalSourceState &gstate,
                                              DataChunk &chunk) {
-	D_ASSERT(local_stage == HashJoinSourceStage::PROBE && sink.hash_table->finalized);
+	// D_ASSERT(local_stage == HashJoinSourceStage::PROBE && sink.hash_table->finalized);
 
-	if (scan_structure) {
-		// Still have elements remaining (i.e. we got >STANDARD_VECTOR_SIZE elements in the previous probe)
-		scan_structure->Next(join_keys, payload, chunk);
-		if (chunk.size() != 0 || !scan_structure->PointersExhausted()) {
-			return;
-		}
-	}
+	// if (scan_structure) {
+	// 	// Still have elements remaining (i.e. we got >STANDARD_VECTOR_SIZE elements in the previous probe)
+	// 	scan_structure->Next(join_keys, payload, chunk);
+	// 	if (chunk.size() != 0 || !scan_structure->PointersExhausted()) {
+	// 		return;
+	// 	}
+	// }
 
-	if (scan_structure || empty_ht_probe_in_progress) {
-		// Previous probe is done
-		scan_structure = nullptr;
-		empty_ht_probe_in_progress = false;
-		sink.probe_spill->consumer->FinishChunk(probe_local_scan);
-		lock_guard<mutex> lock(gstate.lock);
-		gstate.probe_chunk_done++;
-		return;
-	}
+	// if (scan_structure || empty_ht_probe_in_progress) {
+	// 	// Previous probe is done
+	// 	scan_structure = nullptr;
+	// 	empty_ht_probe_in_progress = false;
+	// 	sink.probe_spill->consumer->FinishChunk(probe_local_scan);
+	// 	lock_guard<mutex> lock(gstate.lock);
+	// 	gstate.probe_chunk_done++;
+	// 	return;
+	// }
 
-	// Scan input chunk for next probe
-	sink.probe_spill->consumer->ScanChunk(probe_local_scan, probe_chunk);
+	// // Scan input chunk for next probe
+	// sink.probe_spill->consumer->ScanChunk(probe_local_scan, probe_chunk);
 
-	// Get the probe chunk columns/hashes
-	join_keys.ReferenceColumns(probe_chunk, join_key_indices);
-	payload.ReferenceColumns(probe_chunk, payload_indices);
-	auto precomputed_hashes = &probe_chunk.data.back();
+	// // Get the probe chunk columns/hashes
+	// join_keys.ReferenceColumns(probe_chunk, join_key_indices);
+	// payload.ReferenceColumns(probe_chunk, payload_indices);
+	// auto precomputed_hashes = &probe_chunk.data.back();
 
-	if (sink.hash_table->Count() == 0 && !gstate.op.EmptyResultIfRHSIsEmpty()) {
-		gstate.op.ConstructEmptyJoinResult(sink.hash_table->join_type, sink.hash_table->has_null, payload, chunk);
-		empty_ht_probe_in_progress = true;
-		return;
-	}
+	// if (sink.hash_table->Count() == 0 && !gstate.op.EmptyResultIfRHSIsEmpty()) {
+	// 	gstate.op.ConstructEmptyJoinResult(sink.hash_table->join_type, sink.hash_table->has_null, payload, chunk);
+	// 	empty_ht_probe_in_progress = true;
+	// 	return;
+	// }
 
-	// Perform the probe
-	scan_structure = sink.hash_table->Probe(join_keys, join_key_state, precomputed_hashes);
-	scan_structure->Next(join_keys, payload, chunk);
+	// // Perform the probe
+	// scan_structure = sink.hash_table->Probe(join_keys, join_key_state, precomputed_hashes);
+	// scan_structure->Next(join_keys, payload, chunk);
 }
 
 void HashJoinLocalSourceState::ExternalScanHT(HashJoinGlobalSinkState &sink, HashJoinGlobalSourceState &gstate,
@@ -1014,6 +1043,8 @@ void HashJoinLocalSourceState::ExternalScanHT(HashJoinGlobalSinkState &sink, Has
 
 SourceResultType PhysicalHashJoin::GetData(ExecutionContext &context, DataChunk &chunk,
                                            OperatorSourceInput &input) const {
+  std::cout << "join: get_data called.\n";
+
 	auto &sink = sink_state->Cast<HashJoinGlobalSinkState>();
 	auto &gstate = input.global_state.Cast<HashJoinGlobalSourceState>();
 	auto &lstate = input.local_state.Cast<HashJoinLocalSourceState>();

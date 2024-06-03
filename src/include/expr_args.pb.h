@@ -62,9 +62,6 @@ extern BinaryExprDefaultTypeInternal _BinaryExpr_default_instance_;
 class ColumnExpr;
 struct ColumnExprDefaultTypeInternal;
 extern ColumnExprDefaultTypeInternal _ColumnExpr_default_instance_;
-class ColumnExpr_ColumnNameSpecifier;
-struct ColumnExpr_ColumnNameSpecifierDefaultTypeInternal;
-extern ColumnExpr_ColumnNameSpecifierDefaultTypeInternal _ColumnExpr_ColumnNameSpecifier_default_instance_;
 class ExprArgument;
 struct ExprArgumentDefaultTypeInternal;
 extern ExprArgumentDefaultTypeInternal _ExprArgument_default_instance_;
@@ -87,7 +84,6 @@ template<> ::PicachvMessages::AliasExpr* Arena::CreateMaybeMessage<::PicachvMess
 template<> ::PicachvMessages::ApplyExpr* Arena::CreateMaybeMessage<::PicachvMessages::ApplyExpr>(Arena*);
 template<> ::PicachvMessages::BinaryExpr* Arena::CreateMaybeMessage<::PicachvMessages::BinaryExpr>(Arena*);
 template<> ::PicachvMessages::ColumnExpr* Arena::CreateMaybeMessage<::PicachvMessages::ColumnExpr>(Arena*);
-template<> ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* Arena::CreateMaybeMessage<::PicachvMessages::ColumnExpr_ColumnNameSpecifier>(Arena*);
 template<> ::PicachvMessages::ExprArgument* Arena::CreateMaybeMessage<::PicachvMessages::ExprArgument>(Arena*);
 template<> ::PicachvMessages::FilterExpr* Arena::CreateMaybeMessage<::PicachvMessages::FilterExpr>(Arena*);
 template<> ::PicachvMessages::LiteralExpr* Arena::CreateMaybeMessage<::PicachvMessages::LiteralExpr>(Arena*);
@@ -262,159 +258,6 @@ class AggExpr final :
 };
 // -------------------------------------------------------------------
 
-class ColumnExpr_ColumnNameSpecifier final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.ColumnExpr.ColumnNameSpecifier) */ {
- public:
-  inline ColumnExpr_ColumnNameSpecifier() : ColumnExpr_ColumnNameSpecifier(nullptr) {}
-  ~ColumnExpr_ColumnNameSpecifier() override;
-  explicit PROTOBUF_CONSTEXPR ColumnExpr_ColumnNameSpecifier(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  ColumnExpr_ColumnNameSpecifier(const ColumnExpr_ColumnNameSpecifier& from);
-  ColumnExpr_ColumnNameSpecifier(ColumnExpr_ColumnNameSpecifier&& from) noexcept
-    : ColumnExpr_ColumnNameSpecifier() {
-    *this = ::std::move(from);
-  }
-
-  inline ColumnExpr_ColumnNameSpecifier& operator=(const ColumnExpr_ColumnNameSpecifier& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline ColumnExpr_ColumnNameSpecifier& operator=(ColumnExpr_ColumnNameSpecifier&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const ColumnExpr_ColumnNameSpecifier& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const ColumnExpr_ColumnNameSpecifier* internal_default_instance() {
-    return reinterpret_cast<const ColumnExpr_ColumnNameSpecifier*>(
-               &_ColumnExpr_ColumnNameSpecifier_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    1;
-
-  friend void swap(ColumnExpr_ColumnNameSpecifier& a, ColumnExpr_ColumnNameSpecifier& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(ColumnExpr_ColumnNameSpecifier* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(ColumnExpr_ColumnNameSpecifier* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  ColumnExpr_ColumnNameSpecifier* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<ColumnExpr_ColumnNameSpecifier>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const ColumnExpr_ColumnNameSpecifier& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const ColumnExpr_ColumnNameSpecifier& from) {
-    ColumnExpr_ColumnNameSpecifier::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(ColumnExpr_ColumnNameSpecifier* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "PicachvMessages.ColumnExpr.ColumnNameSpecifier";
-  }
-  protected:
-  explicit ColumnExpr_ColumnNameSpecifier(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kColumnNameFieldNumber = 1,
-  };
-  // string column_name = 1;
-  void clear_column_name();
-  const std::string& column_name() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_column_name(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_column_name();
-  PROTOBUF_NODISCARD std::string* release_column_name();
-  void set_allocated_column_name(std::string* column_name);
-  private:
-  const std::string& _internal_column_name() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_column_name(const std::string& value);
-  std::string* _internal_mutable_column_name();
-  public:
-
-  // @@protoc_insertion_point(class_scope:PicachvMessages.ColumnExpr.ColumnNameSpecifier)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr column_name_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_expr_5fargs_2eproto;
-};
-// -------------------------------------------------------------------
-
 class ColumnExpr final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.ColumnExpr) */ {
  public:
@@ -458,18 +301,12 @@ class ColumnExpr final :
   static const ColumnExpr& default_instance() {
     return *internal_default_instance();
   }
-  enum ColumnCase {
-    kColumnId = 1,
-    kColumnNameSpecifier = 2,
-    COLUMN_NOT_SET = 0,
-  };
-
   static inline const ColumnExpr* internal_default_instance() {
     return reinterpret_cast<const ColumnExpr*>(
                &_ColumnExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    1;
 
   friend void swap(ColumnExpr& a, ColumnExpr& b) {
     a.Swap(&b);
@@ -539,69 +376,39 @@ class ColumnExpr final :
 
   // nested types ----------------------------------------------------
 
-  typedef ColumnExpr_ColumnNameSpecifier ColumnNameSpecifier;
-
   // accessors -------------------------------------------------------
 
   enum : int {
-    kColumnIdFieldNumber = 1,
-    kColumnNameSpecifierFieldNumber = 2,
+    kColumnFieldNumber = 1,
   };
-  // uint64 column_id = 1;
-  bool has_column_id() const;
+  // .PicachvMessages.ColumnSpecifier column = 1;
+  bool has_column() const;
   private:
-  bool _internal_has_column_id() const;
+  bool _internal_has_column() const;
   public:
-  void clear_column_id();
-  uint64_t column_id() const;
-  void set_column_id(uint64_t value);
-  private:
-  uint64_t _internal_column_id() const;
-  void _internal_set_column_id(uint64_t value);
-  public:
-
-  // .PicachvMessages.ColumnExpr.ColumnNameSpecifier column_name_specifier = 2;
-  bool has_column_name_specifier() const;
-  private:
-  bool _internal_has_column_name_specifier() const;
-  public:
-  void clear_column_name_specifier();
-  const ::PicachvMessages::ColumnExpr_ColumnNameSpecifier& column_name_specifier() const;
-  PROTOBUF_NODISCARD ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* release_column_name_specifier();
-  ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* mutable_column_name_specifier();
-  void set_allocated_column_name_specifier(::PicachvMessages::ColumnExpr_ColumnNameSpecifier* column_name_specifier);
-  private:
-  const ::PicachvMessages::ColumnExpr_ColumnNameSpecifier& _internal_column_name_specifier() const;
-  ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* _internal_mutable_column_name_specifier();
-  public:
-  void unsafe_arena_set_allocated_column_name_specifier(
-      ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* column_name_specifier);
-  ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* unsafe_arena_release_column_name_specifier();
-
   void clear_column();
-  ColumnCase column_case() const;
+  const ::PicachvMessages::ColumnSpecifier& column() const;
+  PROTOBUF_NODISCARD ::PicachvMessages::ColumnSpecifier* release_column();
+  ::PicachvMessages::ColumnSpecifier* mutable_column();
+  void set_allocated_column(::PicachvMessages::ColumnSpecifier* column);
+  private:
+  const ::PicachvMessages::ColumnSpecifier& _internal_column() const;
+  ::PicachvMessages::ColumnSpecifier* _internal_mutable_column();
+  public:
+  void unsafe_arena_set_allocated_column(
+      ::PicachvMessages::ColumnSpecifier* column);
+  ::PicachvMessages::ColumnSpecifier* unsafe_arena_release_column();
+
   // @@protoc_insertion_point(class_scope:PicachvMessages.ColumnExpr)
  private:
   class _Internal;
-  void set_has_column_id();
-  void set_has_column_name_specifier();
-
-  inline bool has_column() const;
-  inline void clear_has_column();
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    union ColumnUnion {
-      constexpr ColumnUnion() : _constinit_{} {}
-        ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
-      uint64_t column_id_;
-      ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* column_name_specifier_;
-    } column_;
+    ::PicachvMessages::ColumnSpecifier* column_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-    uint32_t _oneof_case_[1];
-
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_expr_5fargs_2eproto;
@@ -656,7 +463,7 @@ class AliasExpr final :
                &_AliasExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    2;
 
   friend void swap(AliasExpr& a, AliasExpr& b) {
     a.Swap(&b);
@@ -824,7 +631,7 @@ class WildcardExpr final :
                &_WildcardExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    3;
 
   friend void swap(WildcardExpr& a, WildcardExpr& b) {
     a.Swap(&b);
@@ -942,7 +749,7 @@ class LiteralExpr final :
                &_LiteralExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    4;
 
   friend void swap(LiteralExpr& a, LiteralExpr& b) {
     a.Swap(&b);
@@ -1061,7 +868,7 @@ class FilterExpr final :
                &_FilterExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    5;
 
   friend void swap(FilterExpr& a, FilterExpr& b) {
     a.Swap(&b);
@@ -1230,7 +1037,7 @@ class BinaryExpr final :
                &_BinaryExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    6;
 
   friend void swap(BinaryExpr& a, BinaryExpr& b) {
     a.Swap(&b);
@@ -1419,7 +1226,7 @@ class UnaryExpr final :
                &_UnaryExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    7;
 
   friend void swap(UnaryExpr& a, UnaryExpr& b) {
     a.Swap(&b);
@@ -1583,7 +1390,7 @@ class ApplyExpr final :
                &_ApplyExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    8;
 
   friend void swap(ApplyExpr& a, ApplyExpr& b) {
     a.Swap(&b);
@@ -1775,7 +1582,7 @@ class ExprArgument final :
                &_ExprArgument_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    9;
 
   friend void swap(ExprArgument& a, ExprArgument& b) {
     a.Swap(&b);
@@ -2145,183 +1952,93 @@ inline void AggExpr::set_method(::PicachvMessages::GroupByMethod value) {
 
 // -------------------------------------------------------------------
 
-// ColumnExpr_ColumnNameSpecifier
-
-// string column_name = 1;
-inline void ColumnExpr_ColumnNameSpecifier::clear_column_name() {
-  _impl_.column_name_.ClearToEmpty();
-}
-inline const std::string& ColumnExpr_ColumnNameSpecifier::column_name() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.ColumnExpr.ColumnNameSpecifier.column_name)
-  return _internal_column_name();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void ColumnExpr_ColumnNameSpecifier::set_column_name(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.column_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:PicachvMessages.ColumnExpr.ColumnNameSpecifier.column_name)
-}
-inline std::string* ColumnExpr_ColumnNameSpecifier::mutable_column_name() {
-  std::string* _s = _internal_mutable_column_name();
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.ColumnExpr.ColumnNameSpecifier.column_name)
-  return _s;
-}
-inline const std::string& ColumnExpr_ColumnNameSpecifier::_internal_column_name() const {
-  return _impl_.column_name_.Get();
-}
-inline void ColumnExpr_ColumnNameSpecifier::_internal_set_column_name(const std::string& value) {
-  
-  _impl_.column_name_.Set(value, GetArenaForAllocation());
-}
-inline std::string* ColumnExpr_ColumnNameSpecifier::_internal_mutable_column_name() {
-  
-  return _impl_.column_name_.Mutable(GetArenaForAllocation());
-}
-inline std::string* ColumnExpr_ColumnNameSpecifier::release_column_name() {
-  // @@protoc_insertion_point(field_release:PicachvMessages.ColumnExpr.ColumnNameSpecifier.column_name)
-  return _impl_.column_name_.Release();
-}
-inline void ColumnExpr_ColumnNameSpecifier::set_allocated_column_name(std::string* column_name) {
-  if (column_name != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.column_name_.SetAllocated(column_name, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.column_name_.IsDefault()) {
-    _impl_.column_name_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.ColumnExpr.ColumnNameSpecifier.column_name)
-}
-
-// -------------------------------------------------------------------
-
 // ColumnExpr
 
-// uint64 column_id = 1;
-inline bool ColumnExpr::_internal_has_column_id() const {
-  return column_case() == kColumnId;
+// .PicachvMessages.ColumnSpecifier column = 1;
+inline bool ColumnExpr::_internal_has_column() const {
+  return this != internal_default_instance() && _impl_.column_ != nullptr;
 }
-inline bool ColumnExpr::has_column_id() const {
-  return _internal_has_column_id();
+inline bool ColumnExpr::has_column() const {
+  return _internal_has_column();
 }
-inline void ColumnExpr::set_has_column_id() {
-  _impl_._oneof_case_[0] = kColumnId;
+inline const ::PicachvMessages::ColumnSpecifier& ColumnExpr::_internal_column() const {
+  const ::PicachvMessages::ColumnSpecifier* p = _impl_.column_;
+  return p != nullptr ? *p : reinterpret_cast<const ::PicachvMessages::ColumnSpecifier&>(
+      ::PicachvMessages::_ColumnSpecifier_default_instance_);
 }
-inline void ColumnExpr::clear_column_id() {
-  if (_internal_has_column_id()) {
-    _impl_.column_.column_id_ = uint64_t{0u};
-    clear_has_column();
+inline const ::PicachvMessages::ColumnSpecifier& ColumnExpr::column() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.ColumnExpr.column)
+  return _internal_column();
+}
+inline void ColumnExpr::unsafe_arena_set_allocated_column(
+    ::PicachvMessages::ColumnSpecifier* column) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.column_);
   }
-}
-inline uint64_t ColumnExpr::_internal_column_id() const {
-  if (_internal_has_column_id()) {
-    return _impl_.column_.column_id_;
-  }
-  return uint64_t{0u};
-}
-inline void ColumnExpr::_internal_set_column_id(uint64_t value) {
-  if (!_internal_has_column_id()) {
-    clear_column();
-    set_has_column_id();
-  }
-  _impl_.column_.column_id_ = value;
-}
-inline uint64_t ColumnExpr::column_id() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.ColumnExpr.column_id)
-  return _internal_column_id();
-}
-inline void ColumnExpr::set_column_id(uint64_t value) {
-  _internal_set_column_id(value);
-  // @@protoc_insertion_point(field_set:PicachvMessages.ColumnExpr.column_id)
-}
-
-// .PicachvMessages.ColumnExpr.ColumnNameSpecifier column_name_specifier = 2;
-inline bool ColumnExpr::_internal_has_column_name_specifier() const {
-  return column_case() == kColumnNameSpecifier;
-}
-inline bool ColumnExpr::has_column_name_specifier() const {
-  return _internal_has_column_name_specifier();
-}
-inline void ColumnExpr::set_has_column_name_specifier() {
-  _impl_._oneof_case_[0] = kColumnNameSpecifier;
-}
-inline void ColumnExpr::clear_column_name_specifier() {
-  if (_internal_has_column_name_specifier()) {
-    if (GetArenaForAllocation() == nullptr) {
-      delete _impl_.column_.column_name_specifier_;
-    }
-    clear_has_column();
-  }
-}
-inline ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* ColumnExpr::release_column_name_specifier() {
-  // @@protoc_insertion_point(field_release:PicachvMessages.ColumnExpr.column_name_specifier)
-  if (_internal_has_column_name_specifier()) {
-    clear_has_column();
-    ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* temp = _impl_.column_.column_name_specifier_;
-    if (GetArenaForAllocation() != nullptr) {
-      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-    }
-    _impl_.column_.column_name_specifier_ = nullptr;
-    return temp;
+  _impl_.column_ = column;
+  if (column) {
+    
   } else {
-    return nullptr;
+    
   }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.ColumnExpr.column)
 }
-inline const ::PicachvMessages::ColumnExpr_ColumnNameSpecifier& ColumnExpr::_internal_column_name_specifier() const {
-  return _internal_has_column_name_specifier()
-      ? *_impl_.column_.column_name_specifier_
-      : reinterpret_cast< ::PicachvMessages::ColumnExpr_ColumnNameSpecifier&>(::PicachvMessages::_ColumnExpr_ColumnNameSpecifier_default_instance_);
-}
-inline const ::PicachvMessages::ColumnExpr_ColumnNameSpecifier& ColumnExpr::column_name_specifier() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.ColumnExpr.column_name_specifier)
-  return _internal_column_name_specifier();
-}
-inline ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* ColumnExpr::unsafe_arena_release_column_name_specifier() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:PicachvMessages.ColumnExpr.column_name_specifier)
-  if (_internal_has_column_name_specifier()) {
-    clear_has_column();
-    ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* temp = _impl_.column_.column_name_specifier_;
-    _impl_.column_.column_name_specifier_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
+inline ::PicachvMessages::ColumnSpecifier* ColumnExpr::release_column() {
+  
+  ::PicachvMessages::ColumnSpecifier* temp = _impl_.column_;
+  _impl_.column_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
 }
-inline void ColumnExpr::unsafe_arena_set_allocated_column_name_specifier(::PicachvMessages::ColumnExpr_ColumnNameSpecifier* column_name_specifier) {
-  clear_column();
-  if (column_name_specifier) {
-    set_has_column_name_specifier();
-    _impl_.column_.column_name_specifier_ = column_name_specifier;
+inline ::PicachvMessages::ColumnSpecifier* ColumnExpr::unsafe_arena_release_column() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.ColumnExpr.column)
+  
+  ::PicachvMessages::ColumnSpecifier* temp = _impl_.column_;
+  _impl_.column_ = nullptr;
+  return temp;
+}
+inline ::PicachvMessages::ColumnSpecifier* ColumnExpr::_internal_mutable_column() {
+  
+  if (_impl_.column_ == nullptr) {
+    auto* p = CreateMaybeMessage<::PicachvMessages::ColumnSpecifier>(GetArenaForAllocation());
+    _impl_.column_ = p;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.ColumnExpr.column_name_specifier)
+  return _impl_.column_;
 }
-inline ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* ColumnExpr::_internal_mutable_column_name_specifier() {
-  if (!_internal_has_column_name_specifier()) {
-    clear_column();
-    set_has_column_name_specifier();
-    _impl_.column_.column_name_specifier_ = CreateMaybeMessage< ::PicachvMessages::ColumnExpr_ColumnNameSpecifier >(GetArenaForAllocation());
-  }
-  return _impl_.column_.column_name_specifier_;
-}
-inline ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* ColumnExpr::mutable_column_name_specifier() {
-  ::PicachvMessages::ColumnExpr_ColumnNameSpecifier* _msg = _internal_mutable_column_name_specifier();
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.ColumnExpr.column_name_specifier)
+inline ::PicachvMessages::ColumnSpecifier* ColumnExpr::mutable_column() {
+  ::PicachvMessages::ColumnSpecifier* _msg = _internal_mutable_column();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.ColumnExpr.column)
   return _msg;
 }
+inline void ColumnExpr::set_allocated_column(::PicachvMessages::ColumnSpecifier* column) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.column_);
+  }
+  if (column) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(column));
+    if (message_arena != submessage_arena) {
+      column = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, column, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.column_ = column;
+  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.ColumnExpr.column)
+}
 
-inline bool ColumnExpr::has_column() const {
-  return column_case() != COLUMN_NOT_SET;
-}
-inline void ColumnExpr::clear_has_column() {
-  _impl_._oneof_case_[0] = COLUMN_NOT_SET;
-}
-inline ColumnExpr::ColumnCase ColumnExpr::column_case() const {
-  return ColumnExpr::ColumnCase(_impl_._oneof_case_[0]);
-}
 // -------------------------------------------------------------------
 
 // AliasExpr
@@ -3612,8 +3329,6 @@ inline ExprArgument::ArgumentCase ExprArgument::argument_case() const {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

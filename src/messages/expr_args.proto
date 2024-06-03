@@ -10,12 +10,7 @@ message AggExpr {
 }
 
 message ColumnExpr {
-  message ColumnNameSpecifier { string column_name = 1; }
-  oneof column {
-    uint64 column_id = 1;
-    // This can be problematic since it relies solely on the column name
-    ColumnNameSpecifier column_name_specifier = 2;
-  }
+  ColumnSpecifier column = 1;
 }
 
 message AliasExpr {

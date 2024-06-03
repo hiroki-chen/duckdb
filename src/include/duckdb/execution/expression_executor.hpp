@@ -35,6 +35,8 @@ public:
 	//! The data chunk of the current physical operator, used to resolve
 	//! column references and determines the output cardinality
 	DataChunk *chunk = nullptr;
+	//! Is the executor invoked for query execution
+	bool is_query_executor = false;
 
 public:
 	bool HasContext();

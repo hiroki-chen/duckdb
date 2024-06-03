@@ -41,7 +41,9 @@ OperatorResultType PhysicalProjection::Execute(ExecutionContext &context, DataCh
 		proj->mutable_expression()->Add(string((char *)child->expr_uuid.uuid, PICACHV_UUID_LEN));
 	}
 
+	state.executor.is_query_executor = true;
 	state.executor.Execute(input, chunk);
+	state.executor.is_query_executor = false;
 
 	if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
 	                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, out.uuid,

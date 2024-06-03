@@ -23,7 +23,7 @@ int main() {
 
 	con.Query("CREATE TABLE integers(a INTEGER, b INTEGER)");
 	for (size_t i = 0; i < 5; i++) {
-		std::string query = "INSERT INTO integers VALUES (" + std::to_string(i) + ", " + std::to_string(i) + ")";
+		std::string query = "INSERT INTO integers VALUES (" + std::to_string(i) + ", " + std::to_string(5 - i) + ")";
 		con.Query(query);
 	}
 
@@ -36,10 +36,10 @@ int main() {
 	// auto result = con.Query("explain(SELECT * FROM (integers t1 JOIN integers t2 ON t1.a = t2.b))");
 	// result->Print();
 	std::cout << "================\n";
-	auto result = con.Query("EXPLAIN (SELECT b + 1 FROM integers)");
+	auto result = con.Query("EXPLAIN (SELECT * from integers t1 JOIN integers t2 ON t1.a = t2.a)");
 	result->Print();
 	// TODO: FIX the bug. The projection seems not working.
-	result = con.Query("SELECT a + 1 FROM integers");
+	result = con.Query("(SELECT * from integers t1 JOIN integers t2 ON t1.a = t2.a)");
 	// result = con.Query("explain (SELECT * FROM integers)");
 	// auto res = result->Fetch();
 	// std::cout << "res == nullptr? " <<( res == nullptr) << "\n";

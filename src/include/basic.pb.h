@@ -49,6 +49,9 @@ namespace PicachvMessages {
 class BinaryOperator;
 struct BinaryOperatorDefaultTypeInternal;
 extern BinaryOperatorDefaultTypeInternal _BinaryOperator_default_instance_;
+class ColumnSpecifier;
+struct ColumnSpecifierDefaultTypeInternal;
+extern ColumnSpecifierDefaultTypeInternal _ColumnSpecifier_default_instance_;
 class GroupByProxy;
 struct GroupByProxyDefaultTypeInternal;
 extern GroupByProxyDefaultTypeInternal _GroupByProxy_default_instance_;
@@ -64,6 +67,7 @@ extern PrimitiveValue_DurationDefaultTypeInternal _PrimitiveValue_Duration_defau
 }  // namespace PicachvMessages
 PROTOBUF_NAMESPACE_OPEN
 template<> ::PicachvMessages::BinaryOperator* Arena::CreateMaybeMessage<::PicachvMessages::BinaryOperator>(Arena*);
+template<> ::PicachvMessages::ColumnSpecifier* Arena::CreateMaybeMessage<::PicachvMessages::ColumnSpecifier>(Arena*);
 template<> ::PicachvMessages::GroupByProxy* Arena::CreateMaybeMessage<::PicachvMessages::GroupByProxy>(Arena*);
 template<> ::PicachvMessages::GroupByProxy_Groups* Arena::CreateMaybeMessage<::PicachvMessages::GroupByProxy_Groups>(Arena*);
 template<> ::PicachvMessages::PrimitiveValue* Arena::CreateMaybeMessage<::PicachvMessages::PrimitiveValue>(Arena*);
@@ -332,6 +336,197 @@ inline bool ExprType_Parse(
 }
 // ===================================================================
 
+class ColumnSpecifier final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.ColumnSpecifier) */ {
+ public:
+  inline ColumnSpecifier() : ColumnSpecifier(nullptr) {}
+  ~ColumnSpecifier() override;
+  explicit PROTOBUF_CONSTEXPR ColumnSpecifier(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ColumnSpecifier(const ColumnSpecifier& from);
+  ColumnSpecifier(ColumnSpecifier&& from) noexcept
+    : ColumnSpecifier() {
+    *this = ::std::move(from);
+  }
+
+  inline ColumnSpecifier& operator=(const ColumnSpecifier& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ColumnSpecifier& operator=(ColumnSpecifier&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ColumnSpecifier& default_instance() {
+    return *internal_default_instance();
+  }
+  enum ColumnCase {
+    kColumnIndex = 1,
+    kColumnName = 2,
+    COLUMN_NOT_SET = 0,
+  };
+
+  static inline const ColumnSpecifier* internal_default_instance() {
+    return reinterpret_cast<const ColumnSpecifier*>(
+               &_ColumnSpecifier_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    0;
+
+  friend void swap(ColumnSpecifier& a, ColumnSpecifier& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ColumnSpecifier* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ColumnSpecifier* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  ColumnSpecifier* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ColumnSpecifier>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const ColumnSpecifier& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const ColumnSpecifier& from) {
+    ColumnSpecifier::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ColumnSpecifier* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "PicachvMessages.ColumnSpecifier";
+  }
+  protected:
+  explicit ColumnSpecifier(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kColumnIndexFieldNumber = 1,
+    kColumnNameFieldNumber = 2,
+  };
+  // uint64 column_index = 1;
+  bool has_column_index() const;
+  private:
+  bool _internal_has_column_index() const;
+  public:
+  void clear_column_index();
+  uint64_t column_index() const;
+  void set_column_index(uint64_t value);
+  private:
+  uint64_t _internal_column_index() const;
+  void _internal_set_column_index(uint64_t value);
+  public:
+
+  // string column_name = 2;
+  bool has_column_name() const;
+  private:
+  bool _internal_has_column_name() const;
+  public:
+  void clear_column_name();
+  const std::string& column_name() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_column_name(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_column_name();
+  PROTOBUF_NODISCARD std::string* release_column_name();
+  void set_allocated_column_name(std::string* column_name);
+  private:
+  const std::string& _internal_column_name() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_column_name(const std::string& value);
+  std::string* _internal_mutable_column_name();
+  public:
+
+  void clear_column();
+  ColumnCase column_case() const;
+  // @@protoc_insertion_point(class_scope:PicachvMessages.ColumnSpecifier)
+ private:
+  class _Internal;
+  void set_has_column_index();
+  void set_has_column_name();
+
+  inline bool has_column() const;
+  inline void clear_has_column();
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    union ColumnUnion {
+      constexpr ColumnUnion() : _constinit_{} {}
+        ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
+      uint64_t column_index_;
+      ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr column_name_;
+    } column_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint32_t _oneof_case_[1];
+
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_basic_2eproto;
+};
+// -------------------------------------------------------------------
+
 class GroupByProxy_Groups final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.GroupByProxy.Groups) */ {
  public:
@@ -380,7 +575,7 @@ class GroupByProxy_Groups final :
                &_GroupByProxy_Groups_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    0;
+    1;
 
   friend void swap(GroupByProxy_Groups& a, GroupByProxy_Groups& b) {
     a.Swap(&b);
@@ -542,7 +737,7 @@ class GroupByProxy final :
                &_GroupByProxy_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   friend void swap(GroupByProxy& a, GroupByProxy& b) {
     a.Swap(&b);
@@ -726,7 +921,7 @@ class PrimitiveValue_Duration final :
                &_PrimitiveValue_Duration_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    3;
 
   friend void swap(PrimitiveValue_Duration& a, PrimitiveValue_Duration& b) {
     a.Swap(&b);
@@ -902,7 +1097,7 @@ class PrimitiveValue final :
                &_PrimitiveValue_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    4;
 
   friend void swap(PrimitiveValue& a, PrimitiveValue& b) {
     a.Swap(&b);
@@ -1277,7 +1472,7 @@ class BinaryOperator final :
                &_BinaryOperator_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    5;
 
   friend void swap(BinaryOperator& a, BinaryOperator& b) {
     a.Swap(&b);
@@ -1432,6 +1627,134 @@ class BinaryOperator final :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
+// ColumnSpecifier
+
+// uint64 column_index = 1;
+inline bool ColumnSpecifier::_internal_has_column_index() const {
+  return column_case() == kColumnIndex;
+}
+inline bool ColumnSpecifier::has_column_index() const {
+  return _internal_has_column_index();
+}
+inline void ColumnSpecifier::set_has_column_index() {
+  _impl_._oneof_case_[0] = kColumnIndex;
+}
+inline void ColumnSpecifier::clear_column_index() {
+  if (_internal_has_column_index()) {
+    _impl_.column_.column_index_ = uint64_t{0u};
+    clear_has_column();
+  }
+}
+inline uint64_t ColumnSpecifier::_internal_column_index() const {
+  if (_internal_has_column_index()) {
+    return _impl_.column_.column_index_;
+  }
+  return uint64_t{0u};
+}
+inline void ColumnSpecifier::_internal_set_column_index(uint64_t value) {
+  if (!_internal_has_column_index()) {
+    clear_column();
+    set_has_column_index();
+  }
+  _impl_.column_.column_index_ = value;
+}
+inline uint64_t ColumnSpecifier::column_index() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.ColumnSpecifier.column_index)
+  return _internal_column_index();
+}
+inline void ColumnSpecifier::set_column_index(uint64_t value) {
+  _internal_set_column_index(value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.ColumnSpecifier.column_index)
+}
+
+// string column_name = 2;
+inline bool ColumnSpecifier::_internal_has_column_name() const {
+  return column_case() == kColumnName;
+}
+inline bool ColumnSpecifier::has_column_name() const {
+  return _internal_has_column_name();
+}
+inline void ColumnSpecifier::set_has_column_name() {
+  _impl_._oneof_case_[0] = kColumnName;
+}
+inline void ColumnSpecifier::clear_column_name() {
+  if (_internal_has_column_name()) {
+    _impl_.column_.column_name_.Destroy();
+    clear_has_column();
+  }
+}
+inline const std::string& ColumnSpecifier::column_name() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.ColumnSpecifier.column_name)
+  return _internal_column_name();
+}
+template <typename ArgT0, typename... ArgT>
+inline void ColumnSpecifier::set_column_name(ArgT0&& arg0, ArgT... args) {
+  if (!_internal_has_column_name()) {
+    clear_column();
+    set_has_column_name();
+    _impl_.column_.column_name_.InitDefault();
+  }
+  _impl_.column_.column_name_.Set( static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:PicachvMessages.ColumnSpecifier.column_name)
+}
+inline std::string* ColumnSpecifier::mutable_column_name() {
+  std::string* _s = _internal_mutable_column_name();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.ColumnSpecifier.column_name)
+  return _s;
+}
+inline const std::string& ColumnSpecifier::_internal_column_name() const {
+  if (_internal_has_column_name()) {
+    return _impl_.column_.column_name_.Get();
+  }
+  return ::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited();
+}
+inline void ColumnSpecifier::_internal_set_column_name(const std::string& value) {
+  if (!_internal_has_column_name()) {
+    clear_column();
+    set_has_column_name();
+    _impl_.column_.column_name_.InitDefault();
+  }
+  _impl_.column_.column_name_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ColumnSpecifier::_internal_mutable_column_name() {
+  if (!_internal_has_column_name()) {
+    clear_column();
+    set_has_column_name();
+    _impl_.column_.column_name_.InitDefault();
+  }
+  return _impl_.column_.column_name_.Mutable(      GetArenaForAllocation());
+}
+inline std::string* ColumnSpecifier::release_column_name() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.ColumnSpecifier.column_name)
+  if (_internal_has_column_name()) {
+    clear_has_column();
+    return _impl_.column_.column_name_.Release();
+  } else {
+    return nullptr;
+  }
+}
+inline void ColumnSpecifier::set_allocated_column_name(std::string* column_name) {
+  if (has_column()) {
+    clear_column();
+  }
+  if (column_name != nullptr) {
+    set_has_column_name();
+    _impl_.column_.column_name_.InitAllocated(column_name, GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.ColumnSpecifier.column_name)
+}
+
+inline bool ColumnSpecifier::has_column() const {
+  return column_case() != COLUMN_NOT_SET;
+}
+inline void ColumnSpecifier::clear_has_column() {
+  _impl_._oneof_case_[0] = COLUMN_NOT_SET;
+}
+inline ColumnSpecifier::ColumnCase ColumnSpecifier::column_case() const {
+  return ColumnSpecifier::ColumnCase(_impl_._oneof_case_[0]);
+}
+// -------------------------------------------------------------------
+
 // GroupByProxy_Groups
 
 // repeated uint64 group = 1;
@@ -2328,6 +2651,8 @@ inline BinaryOperator::OperatorCase BinaryOperator::operator_case() const {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

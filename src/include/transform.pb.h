@@ -57,18 +57,24 @@ extern GroupByInformationDefaultTypeInternal _GroupByInformation_default_instanc
 class GroupByInformation_GroupByEntry_DoNotUse;
 struct GroupByInformation_GroupByEntry_DoNotUseDefaultTypeInternal;
 extern GroupByInformation_GroupByEntry_DoNotUseDefaultTypeInternal _GroupByInformation_GroupByEntry_DoNotUse_default_instance_;
+class JoinByIdx;
+struct JoinByIdxDefaultTypeInternal;
+extern JoinByIdxDefaultTypeInternal _JoinByIdx_default_instance_;
+class JoinByName;
+struct JoinByNameDefaultTypeInternal;
+extern JoinByNameDefaultTypeInternal _JoinByName_default_instance_;
 class JoinInformation;
 struct JoinInformationDefaultTypeInternal;
 extern JoinInformationDefaultTypeInternal _JoinInformation_default_instance_;
-class JoinInformation_RenamingInformation;
-struct JoinInformation_RenamingInformationDefaultTypeInternal;
-extern JoinInformation_RenamingInformationDefaultTypeInternal _JoinInformation_RenamingInformation_default_instance_;
-class JoinInformation_RowJoinInformation;
-struct JoinInformation_RowJoinInformationDefaultTypeInternal;
-extern JoinInformation_RowJoinInformationDefaultTypeInternal _JoinInformation_RowJoinInformation_default_instance_;
+class RenamingInformation;
+struct RenamingInformationDefaultTypeInternal;
+extern RenamingInformationDefaultTypeInternal _RenamingInformation_default_instance_;
 class ReorderInformation;
 struct ReorderInformationDefaultTypeInternal;
 extern ReorderInformationDefaultTypeInternal _ReorderInformation_default_instance_;
+class RowJoinInformation;
+struct RowJoinInformationDefaultTypeInternal;
+extern RowJoinInformationDefaultTypeInternal _RowJoinInformation_default_instance_;
 class TransformInfo;
 struct TransformInfoDefaultTypeInternal;
 extern TransformInfoDefaultTypeInternal _TransformInfo_default_instance_;
@@ -80,10 +86,12 @@ PROTOBUF_NAMESPACE_OPEN
 template<> ::PicachvMessages::FilterInformation* Arena::CreateMaybeMessage<::PicachvMessages::FilterInformation>(Arena*);
 template<> ::PicachvMessages::GroupByInformation* Arena::CreateMaybeMessage<::PicachvMessages::GroupByInformation>(Arena*);
 template<> ::PicachvMessages::GroupByInformation_GroupByEntry_DoNotUse* Arena::CreateMaybeMessage<::PicachvMessages::GroupByInformation_GroupByEntry_DoNotUse>(Arena*);
+template<> ::PicachvMessages::JoinByIdx* Arena::CreateMaybeMessage<::PicachvMessages::JoinByIdx>(Arena*);
+template<> ::PicachvMessages::JoinByName* Arena::CreateMaybeMessage<::PicachvMessages::JoinByName>(Arena*);
 template<> ::PicachvMessages::JoinInformation* Arena::CreateMaybeMessage<::PicachvMessages::JoinInformation>(Arena*);
-template<> ::PicachvMessages::JoinInformation_RenamingInformation* Arena::CreateMaybeMessage<::PicachvMessages::JoinInformation_RenamingInformation>(Arena*);
-template<> ::PicachvMessages::JoinInformation_RowJoinInformation* Arena::CreateMaybeMessage<::PicachvMessages::JoinInformation_RowJoinInformation>(Arena*);
+template<> ::PicachvMessages::RenamingInformation* Arena::CreateMaybeMessage<::PicachvMessages::RenamingInformation>(Arena*);
 template<> ::PicachvMessages::ReorderInformation* Arena::CreateMaybeMessage<::PicachvMessages::ReorderInformation>(Arena*);
+template<> ::PicachvMessages::RowJoinInformation* Arena::CreateMaybeMessage<::PicachvMessages::RowJoinInformation>(Arena*);
 template<> ::PicachvMessages::TransformInfo* Arena::CreateMaybeMessage<::PicachvMessages::TransformInfo>(Arena*);
 template<> ::PicachvMessages::UnionInformation* Arena::CreateMaybeMessage<::PicachvMessages::UnionInformation>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -252,24 +260,24 @@ class FilterInformation final :
 };
 // -------------------------------------------------------------------
 
-class JoinInformation_RowJoinInformation final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.JoinInformation.RowJoinInformation) */ {
+class RowJoinInformation final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.RowJoinInformation) */ {
  public:
-  inline JoinInformation_RowJoinInformation() : JoinInformation_RowJoinInformation(nullptr) {}
-  ~JoinInformation_RowJoinInformation() override;
-  explicit PROTOBUF_CONSTEXPR JoinInformation_RowJoinInformation(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline RowJoinInformation() : RowJoinInformation(nullptr) {}
+  ~RowJoinInformation() override;
+  explicit PROTOBUF_CONSTEXPR RowJoinInformation(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  JoinInformation_RowJoinInformation(const JoinInformation_RowJoinInformation& from);
-  JoinInformation_RowJoinInformation(JoinInformation_RowJoinInformation&& from) noexcept
-    : JoinInformation_RowJoinInformation() {
+  RowJoinInformation(const RowJoinInformation& from);
+  RowJoinInformation(RowJoinInformation&& from) noexcept
+    : RowJoinInformation() {
     *this = ::std::move(from);
   }
 
-  inline JoinInformation_RowJoinInformation& operator=(const JoinInformation_RowJoinInformation& from) {
+  inline RowJoinInformation& operator=(const RowJoinInformation& from) {
     CopyFrom(from);
     return *this;
   }
-  inline JoinInformation_RowJoinInformation& operator=(JoinInformation_RowJoinInformation&& from) noexcept {
+  inline RowJoinInformation& operator=(RowJoinInformation&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -292,20 +300,20 @@ class JoinInformation_RowJoinInformation final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const JoinInformation_RowJoinInformation& default_instance() {
+  static const RowJoinInformation& default_instance() {
     return *internal_default_instance();
   }
-  static inline const JoinInformation_RowJoinInformation* internal_default_instance() {
-    return reinterpret_cast<const JoinInformation_RowJoinInformation*>(
-               &_JoinInformation_RowJoinInformation_default_instance_);
+  static inline const RowJoinInformation* internal_default_instance() {
+    return reinterpret_cast<const RowJoinInformation*>(
+               &_RowJoinInformation_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  friend void swap(JoinInformation_RowJoinInformation& a, JoinInformation_RowJoinInformation& b) {
+  friend void swap(RowJoinInformation& a, RowJoinInformation& b) {
     a.Swap(&b);
   }
-  inline void Swap(JoinInformation_RowJoinInformation* other) {
+  inline void Swap(RowJoinInformation* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -318,7 +326,7 @@ class JoinInformation_RowJoinInformation final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(JoinInformation_RowJoinInformation* other) {
+  void UnsafeArenaSwap(RowJoinInformation* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -326,14 +334,14 @@ class JoinInformation_RowJoinInformation final :
 
   // implements Message ----------------------------------------------
 
-  JoinInformation_RowJoinInformation* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<JoinInformation_RowJoinInformation>(arena);
+  RowJoinInformation* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<RowJoinInformation>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const JoinInformation_RowJoinInformation& from);
+  void CopyFrom(const RowJoinInformation& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const JoinInformation_RowJoinInformation& from) {
-    JoinInformation_RowJoinInformation::MergeImpl(*this, from);
+  void MergeFrom( const RowJoinInformation& from) {
+    RowJoinInformation::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -351,15 +359,15 @@ class JoinInformation_RowJoinInformation final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(JoinInformation_RowJoinInformation* other);
+  void InternalSwap(RowJoinInformation* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "PicachvMessages.JoinInformation.RowJoinInformation";
+    return "PicachvMessages.RowJoinInformation";
   }
   protected:
-  explicit JoinInformation_RowJoinInformation(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit RowJoinInformation(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -394,7 +402,7 @@ class JoinInformation_RowJoinInformation final :
   void _internal_set_right_row(uint64_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:PicachvMessages.JoinInformation.RowJoinInformation)
+  // @@protoc_insertion_point(class_scope:PicachvMessages.RowJoinInformation)
  private:
   class _Internal;
 
@@ -411,24 +419,24 @@ class JoinInformation_RowJoinInformation final :
 };
 // -------------------------------------------------------------------
 
-class JoinInformation_RenamingInformation final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.JoinInformation.RenamingInformation) */ {
+class RenamingInformation final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.RenamingInformation) */ {
  public:
-  inline JoinInformation_RenamingInformation() : JoinInformation_RenamingInformation(nullptr) {}
-  ~JoinInformation_RenamingInformation() override;
-  explicit PROTOBUF_CONSTEXPR JoinInformation_RenamingInformation(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline RenamingInformation() : RenamingInformation(nullptr) {}
+  ~RenamingInformation() override;
+  explicit PROTOBUF_CONSTEXPR RenamingInformation(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  JoinInformation_RenamingInformation(const JoinInformation_RenamingInformation& from);
-  JoinInformation_RenamingInformation(JoinInformation_RenamingInformation&& from) noexcept
-    : JoinInformation_RenamingInformation() {
+  RenamingInformation(const RenamingInformation& from);
+  RenamingInformation(RenamingInformation&& from) noexcept
+    : RenamingInformation() {
     *this = ::std::move(from);
   }
 
-  inline JoinInformation_RenamingInformation& operator=(const JoinInformation_RenamingInformation& from) {
+  inline RenamingInformation& operator=(const RenamingInformation& from) {
     CopyFrom(from);
     return *this;
   }
-  inline JoinInformation_RenamingInformation& operator=(JoinInformation_RenamingInformation&& from) noexcept {
+  inline RenamingInformation& operator=(RenamingInformation&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -451,20 +459,20 @@ class JoinInformation_RenamingInformation final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const JoinInformation_RenamingInformation& default_instance() {
+  static const RenamingInformation& default_instance() {
     return *internal_default_instance();
   }
-  static inline const JoinInformation_RenamingInformation* internal_default_instance() {
-    return reinterpret_cast<const JoinInformation_RenamingInformation*>(
-               &_JoinInformation_RenamingInformation_default_instance_);
+  static inline const RenamingInformation* internal_default_instance() {
+    return reinterpret_cast<const RenamingInformation*>(
+               &_RenamingInformation_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     2;
 
-  friend void swap(JoinInformation_RenamingInformation& a, JoinInformation_RenamingInformation& b) {
+  friend void swap(RenamingInformation& a, RenamingInformation& b) {
     a.Swap(&b);
   }
-  inline void Swap(JoinInformation_RenamingInformation* other) {
+  inline void Swap(RenamingInformation* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -477,7 +485,7 @@ class JoinInformation_RenamingInformation final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(JoinInformation_RenamingInformation* other) {
+  void UnsafeArenaSwap(RenamingInformation* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -485,14 +493,14 @@ class JoinInformation_RenamingInformation final :
 
   // implements Message ----------------------------------------------
 
-  JoinInformation_RenamingInformation* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<JoinInformation_RenamingInformation>(arena);
+  RenamingInformation* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<RenamingInformation>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const JoinInformation_RenamingInformation& from);
+  void CopyFrom(const RenamingInformation& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const JoinInformation_RenamingInformation& from) {
-    JoinInformation_RenamingInformation::MergeImpl(*this, from);
+  void MergeFrom( const RenamingInformation& from) {
+    RenamingInformation::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -510,15 +518,15 @@ class JoinInformation_RenamingInformation final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(JoinInformation_RenamingInformation* other);
+  void InternalSwap(RenamingInformation* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "PicachvMessages.JoinInformation.RenamingInformation";
+    return "PicachvMessages.RenamingInformation";
   }
   protected:
-  explicit JoinInformation_RenamingInformation(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit RenamingInformation(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -563,7 +571,7 @@ class JoinInformation_RenamingInformation final :
   std::string* _internal_mutable_new_name();
   public:
 
-  // @@protoc_insertion_point(class_scope:PicachvMessages.JoinInformation.RenamingInformation)
+  // @@protoc_insertion_point(class_scope:PicachvMessages.RenamingInformation)
  private:
   class _Internal;
 
@@ -573,6 +581,494 @@ class JoinInformation_RenamingInformation final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr old_name_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr new_name_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_transform_2eproto;
+};
+// -------------------------------------------------------------------
+
+class JoinByName final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.JoinByName) */ {
+ public:
+  inline JoinByName() : JoinByName(nullptr) {}
+  ~JoinByName() override;
+  explicit PROTOBUF_CONSTEXPR JoinByName(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  JoinByName(const JoinByName& from);
+  JoinByName(JoinByName&& from) noexcept
+    : JoinByName() {
+    *this = ::std::move(from);
+  }
+
+  inline JoinByName& operator=(const JoinByName& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline JoinByName& operator=(JoinByName&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const JoinByName& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const JoinByName* internal_default_instance() {
+    return reinterpret_cast<const JoinByName*>(
+               &_JoinByName_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(JoinByName& a, JoinByName& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(JoinByName* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(JoinByName* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  JoinByName* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<JoinByName>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const JoinByName& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const JoinByName& from) {
+    JoinByName::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(JoinByName* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "PicachvMessages.JoinByName";
+  }
+  protected:
+  explicit JoinByName(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kLeftOnFieldNumber = 1,
+    kRightOnFieldNumber = 2,
+    kRowJoinInfoFieldNumber = 3,
+    kLhsInputSchemaFieldNumber = 4,
+    kRhsInputSchemaFieldNumber = 5,
+    kRenamingFieldNumber = 6,
+  };
+  // repeated string left_on = 1;
+  int left_on_size() const;
+  private:
+  int _internal_left_on_size() const;
+  public:
+  void clear_left_on();
+  const std::string& left_on(int index) const;
+  std::string* mutable_left_on(int index);
+  void set_left_on(int index, const std::string& value);
+  void set_left_on(int index, std::string&& value);
+  void set_left_on(int index, const char* value);
+  void set_left_on(int index, const char* value, size_t size);
+  std::string* add_left_on();
+  void add_left_on(const std::string& value);
+  void add_left_on(std::string&& value);
+  void add_left_on(const char* value);
+  void add_left_on(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& left_on() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_left_on();
+  private:
+  const std::string& _internal_left_on(int index) const;
+  std::string* _internal_add_left_on();
+  public:
+
+  // repeated string right_on = 2;
+  int right_on_size() const;
+  private:
+  int _internal_right_on_size() const;
+  public:
+  void clear_right_on();
+  const std::string& right_on(int index) const;
+  std::string* mutable_right_on(int index);
+  void set_right_on(int index, const std::string& value);
+  void set_right_on(int index, std::string&& value);
+  void set_right_on(int index, const char* value);
+  void set_right_on(int index, const char* value, size_t size);
+  std::string* add_right_on();
+  void add_right_on(const std::string& value);
+  void add_right_on(std::string&& value);
+  void add_right_on(const char* value);
+  void add_right_on(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& right_on() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_right_on();
+  private:
+  const std::string& _internal_right_on(int index) const;
+  std::string* _internal_add_right_on();
+  public:
+
+  // repeated .PicachvMessages.RowJoinInformation row_join_info = 3;
+  int row_join_info_size() const;
+  private:
+  int _internal_row_join_info_size() const;
+  public:
+  void clear_row_join_info();
+  ::PicachvMessages::RowJoinInformation* mutable_row_join_info(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RowJoinInformation >*
+      mutable_row_join_info();
+  private:
+  const ::PicachvMessages::RowJoinInformation& _internal_row_join_info(int index) const;
+  ::PicachvMessages::RowJoinInformation* _internal_add_row_join_info();
+  public:
+  const ::PicachvMessages::RowJoinInformation& row_join_info(int index) const;
+  ::PicachvMessages::RowJoinInformation* add_row_join_info();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RowJoinInformation >&
+      row_join_info() const;
+
+  // repeated string lhs_input_schema = 4;
+  int lhs_input_schema_size() const;
+  private:
+  int _internal_lhs_input_schema_size() const;
+  public:
+  void clear_lhs_input_schema();
+  const std::string& lhs_input_schema(int index) const;
+  std::string* mutable_lhs_input_schema(int index);
+  void set_lhs_input_schema(int index, const std::string& value);
+  void set_lhs_input_schema(int index, std::string&& value);
+  void set_lhs_input_schema(int index, const char* value);
+  void set_lhs_input_schema(int index, const char* value, size_t size);
+  std::string* add_lhs_input_schema();
+  void add_lhs_input_schema(const std::string& value);
+  void add_lhs_input_schema(std::string&& value);
+  void add_lhs_input_schema(const char* value);
+  void add_lhs_input_schema(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& lhs_input_schema() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_lhs_input_schema();
+  private:
+  const std::string& _internal_lhs_input_schema(int index) const;
+  std::string* _internal_add_lhs_input_schema();
+  public:
+
+  // repeated string rhs_input_schema = 5;
+  int rhs_input_schema_size() const;
+  private:
+  int _internal_rhs_input_schema_size() const;
+  public:
+  void clear_rhs_input_schema();
+  const std::string& rhs_input_schema(int index) const;
+  std::string* mutable_rhs_input_schema(int index);
+  void set_rhs_input_schema(int index, const std::string& value);
+  void set_rhs_input_schema(int index, std::string&& value);
+  void set_rhs_input_schema(int index, const char* value);
+  void set_rhs_input_schema(int index, const char* value, size_t size);
+  std::string* add_rhs_input_schema();
+  void add_rhs_input_schema(const std::string& value);
+  void add_rhs_input_schema(std::string&& value);
+  void add_rhs_input_schema(const char* value);
+  void add_rhs_input_schema(const char* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& rhs_input_schema() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_rhs_input_schema();
+  private:
+  const std::string& _internal_rhs_input_schema(int index) const;
+  std::string* _internal_add_rhs_input_schema();
+  public:
+
+  // repeated .PicachvMessages.RenamingInformation renaming = 6;
+  int renaming_size() const;
+  private:
+  int _internal_renaming_size() const;
+  public:
+  void clear_renaming();
+  ::PicachvMessages::RenamingInformation* mutable_renaming(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RenamingInformation >*
+      mutable_renaming();
+  private:
+  const ::PicachvMessages::RenamingInformation& _internal_renaming(int index) const;
+  ::PicachvMessages::RenamingInformation* _internal_add_renaming();
+  public:
+  const ::PicachvMessages::RenamingInformation& renaming(int index) const;
+  ::PicachvMessages::RenamingInformation* add_renaming();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RenamingInformation >&
+      renaming() const;
+
+  // @@protoc_insertion_point(class_scope:PicachvMessages.JoinByName)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> left_on_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> right_on_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RowJoinInformation > row_join_info_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> lhs_input_schema_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> rhs_input_schema_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RenamingInformation > renaming_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_transform_2eproto;
+};
+// -------------------------------------------------------------------
+
+class JoinByIdx final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.JoinByIdx) */ {
+ public:
+  inline JoinByIdx() : JoinByIdx(nullptr) {}
+  ~JoinByIdx() override;
+  explicit PROTOBUF_CONSTEXPR JoinByIdx(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  JoinByIdx(const JoinByIdx& from);
+  JoinByIdx(JoinByIdx&& from) noexcept
+    : JoinByIdx() {
+    *this = ::std::move(from);
+  }
+
+  inline JoinByIdx& operator=(const JoinByIdx& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline JoinByIdx& operator=(JoinByIdx&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const JoinByIdx& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const JoinByIdx* internal_default_instance() {
+    return reinterpret_cast<const JoinByIdx*>(
+               &_JoinByIdx_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(JoinByIdx& a, JoinByIdx& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(JoinByIdx* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(JoinByIdx* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  JoinByIdx* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<JoinByIdx>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const JoinByIdx& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const JoinByIdx& from) {
+    JoinByIdx::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(JoinByIdx* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "PicachvMessages.JoinByIdx";
+  }
+  protected:
+  explicit JoinByIdx(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kLeftOnFieldNumber = 1,
+    kRightOnFieldNumber = 2,
+    kRowJoinInfoFieldNumber = 3,
+  };
+  // repeated uint64 left_on = 1;
+  int left_on_size() const;
+  private:
+  int _internal_left_on_size() const;
+  public:
+  void clear_left_on();
+  private:
+  uint64_t _internal_left_on(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      _internal_left_on() const;
+  void _internal_add_left_on(uint64_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      _internal_mutable_left_on();
+  public:
+  uint64_t left_on(int index) const;
+  void set_left_on(int index, uint64_t value);
+  void add_left_on(uint64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      left_on() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      mutable_left_on();
+
+  // repeated uint64 right_on = 2;
+  int right_on_size() const;
+  private:
+  int _internal_right_on_size() const;
+  public:
+  void clear_right_on();
+  private:
+  uint64_t _internal_right_on(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      _internal_right_on() const;
+  void _internal_add_right_on(uint64_t value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      _internal_mutable_right_on();
+  public:
+  uint64_t right_on(int index) const;
+  void set_right_on(int index, uint64_t value);
+  void add_right_on(uint64_t value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+      right_on() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+      mutable_right_on();
+
+  // repeated .PicachvMessages.RowJoinInformation row_join_info = 3;
+  int row_join_info_size() const;
+  private:
+  int _internal_row_join_info_size() const;
+  public:
+  void clear_row_join_info();
+  ::PicachvMessages::RowJoinInformation* mutable_row_join_info(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RowJoinInformation >*
+      mutable_row_join_info();
+  private:
+  const ::PicachvMessages::RowJoinInformation& _internal_row_join_info(int index) const;
+  ::PicachvMessages::RowJoinInformation* _internal_add_row_join_info();
+  public:
+  const ::PicachvMessages::RowJoinInformation& row_join_info(int index) const;
+  ::PicachvMessages::RowJoinInformation* add_row_join_info();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RowJoinInformation >&
+      row_join_info() const;
+
+  // @@protoc_insertion_point(class_scope:PicachvMessages.JoinByIdx)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > left_on_;
+    mutable std::atomic<int> _left_on_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > right_on_;
+    mutable std::atomic<int> _right_on_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RowJoinInformation > row_join_info_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -623,12 +1119,18 @@ class JoinInformation final :
   static const JoinInformation& default_instance() {
     return *internal_default_instance();
   }
+  enum HowCase {
+    kJoinByName = 3,
+    kJoinByIdx = 4,
+    HOW_NOT_SET = 0,
+  };
+
   static inline const JoinInformation* internal_default_instance() {
     return reinterpret_cast<const JoinInformation*>(
                &_JoinInformation_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    5;
 
   friend void swap(JoinInformation& a, JoinInformation& b) {
     a.Swap(&b);
@@ -698,153 +1200,14 @@ class JoinInformation final :
 
   // nested types ----------------------------------------------------
 
-  typedef JoinInformation_RowJoinInformation RowJoinInformation;
-  typedef JoinInformation_RenamingInformation RenamingInformation;
-
   // accessors -------------------------------------------------------
 
   enum : int {
-    kLeftOnFieldNumber = 3,
-    kRightOnFieldNumber = 4,
-    kRowJoinInfoFieldNumber = 5,
-    kLhsInputSchemaFieldNumber = 6,
-    kRhsInputSchemaFieldNumber = 7,
-    kRenamingFieldNumber = 8,
     kLhsDfUuidFieldNumber = 1,
     kRhsDfUuidFieldNumber = 2,
+    kJoinByNameFieldNumber = 3,
+    kJoinByIdxFieldNumber = 4,
   };
-  // repeated string left_on = 3;
-  int left_on_size() const;
-  private:
-  int _internal_left_on_size() const;
-  public:
-  void clear_left_on();
-  const std::string& left_on(int index) const;
-  std::string* mutable_left_on(int index);
-  void set_left_on(int index, const std::string& value);
-  void set_left_on(int index, std::string&& value);
-  void set_left_on(int index, const char* value);
-  void set_left_on(int index, const char* value, size_t size);
-  std::string* add_left_on();
-  void add_left_on(const std::string& value);
-  void add_left_on(std::string&& value);
-  void add_left_on(const char* value);
-  void add_left_on(const char* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& left_on() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_left_on();
-  private:
-  const std::string& _internal_left_on(int index) const;
-  std::string* _internal_add_left_on();
-  public:
-
-  // repeated string right_on = 4;
-  int right_on_size() const;
-  private:
-  int _internal_right_on_size() const;
-  public:
-  void clear_right_on();
-  const std::string& right_on(int index) const;
-  std::string* mutable_right_on(int index);
-  void set_right_on(int index, const std::string& value);
-  void set_right_on(int index, std::string&& value);
-  void set_right_on(int index, const char* value);
-  void set_right_on(int index, const char* value, size_t size);
-  std::string* add_right_on();
-  void add_right_on(const std::string& value);
-  void add_right_on(std::string&& value);
-  void add_right_on(const char* value);
-  void add_right_on(const char* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& right_on() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_right_on();
-  private:
-  const std::string& _internal_right_on(int index) const;
-  std::string* _internal_add_right_on();
-  public:
-
-  // repeated .PicachvMessages.JoinInformation.RowJoinInformation row_join_info = 5;
-  int row_join_info_size() const;
-  private:
-  int _internal_row_join_info_size() const;
-  public:
-  void clear_row_join_info();
-  ::PicachvMessages::JoinInformation_RowJoinInformation* mutable_row_join_info(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::JoinInformation_RowJoinInformation >*
-      mutable_row_join_info();
-  private:
-  const ::PicachvMessages::JoinInformation_RowJoinInformation& _internal_row_join_info(int index) const;
-  ::PicachvMessages::JoinInformation_RowJoinInformation* _internal_add_row_join_info();
-  public:
-  const ::PicachvMessages::JoinInformation_RowJoinInformation& row_join_info(int index) const;
-  ::PicachvMessages::JoinInformation_RowJoinInformation* add_row_join_info();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::JoinInformation_RowJoinInformation >&
-      row_join_info() const;
-
-  // repeated string lhs_input_schema = 6;
-  int lhs_input_schema_size() const;
-  private:
-  int _internal_lhs_input_schema_size() const;
-  public:
-  void clear_lhs_input_schema();
-  const std::string& lhs_input_schema(int index) const;
-  std::string* mutable_lhs_input_schema(int index);
-  void set_lhs_input_schema(int index, const std::string& value);
-  void set_lhs_input_schema(int index, std::string&& value);
-  void set_lhs_input_schema(int index, const char* value);
-  void set_lhs_input_schema(int index, const char* value, size_t size);
-  std::string* add_lhs_input_schema();
-  void add_lhs_input_schema(const std::string& value);
-  void add_lhs_input_schema(std::string&& value);
-  void add_lhs_input_schema(const char* value);
-  void add_lhs_input_schema(const char* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& lhs_input_schema() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_lhs_input_schema();
-  private:
-  const std::string& _internal_lhs_input_schema(int index) const;
-  std::string* _internal_add_lhs_input_schema();
-  public:
-
-  // repeated string rhs_input_schema = 7;
-  int rhs_input_schema_size() const;
-  private:
-  int _internal_rhs_input_schema_size() const;
-  public:
-  void clear_rhs_input_schema();
-  const std::string& rhs_input_schema(int index) const;
-  std::string* mutable_rhs_input_schema(int index);
-  void set_rhs_input_schema(int index, const std::string& value);
-  void set_rhs_input_schema(int index, std::string&& value);
-  void set_rhs_input_schema(int index, const char* value);
-  void set_rhs_input_schema(int index, const char* value, size_t size);
-  std::string* add_rhs_input_schema();
-  void add_rhs_input_schema(const std::string& value);
-  void add_rhs_input_schema(std::string&& value);
-  void add_rhs_input_schema(const char* value);
-  void add_rhs_input_schema(const char* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& rhs_input_schema() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_rhs_input_schema();
-  private:
-  const std::string& _internal_rhs_input_schema(int index) const;
-  std::string* _internal_add_rhs_input_schema();
-  public:
-
-  // repeated .PicachvMessages.JoinInformation.RenamingInformation renaming = 8;
-  int renaming_size() const;
-  private:
-  int _internal_renaming_size() const;
-  public:
-  void clear_renaming();
-  ::PicachvMessages::JoinInformation_RenamingInformation* mutable_renaming(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::JoinInformation_RenamingInformation >*
-      mutable_renaming();
-  private:
-  const ::PicachvMessages::JoinInformation_RenamingInformation& _internal_renaming(int index) const;
-  ::PicachvMessages::JoinInformation_RenamingInformation* _internal_add_renaming();
-  public:
-  const ::PicachvMessages::JoinInformation_RenamingInformation& renaming(int index) const;
-  ::PicachvMessages::JoinInformation_RenamingInformation* add_renaming();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::JoinInformation_RenamingInformation >&
-      renaming() const;
-
   // bytes lhs_df_uuid = 1;
   void clear_lhs_df_uuid();
   const std::string& lhs_df_uuid() const;
@@ -873,23 +1236,68 @@ class JoinInformation final :
   std::string* _internal_mutable_rhs_df_uuid();
   public:
 
+  // .PicachvMessages.JoinByName join_by_name = 3;
+  bool has_join_by_name() const;
+  private:
+  bool _internal_has_join_by_name() const;
+  public:
+  void clear_join_by_name();
+  const ::PicachvMessages::JoinByName& join_by_name() const;
+  PROTOBUF_NODISCARD ::PicachvMessages::JoinByName* release_join_by_name();
+  ::PicachvMessages::JoinByName* mutable_join_by_name();
+  void set_allocated_join_by_name(::PicachvMessages::JoinByName* join_by_name);
+  private:
+  const ::PicachvMessages::JoinByName& _internal_join_by_name() const;
+  ::PicachvMessages::JoinByName* _internal_mutable_join_by_name();
+  public:
+  void unsafe_arena_set_allocated_join_by_name(
+      ::PicachvMessages::JoinByName* join_by_name);
+  ::PicachvMessages::JoinByName* unsafe_arena_release_join_by_name();
+
+  // .PicachvMessages.JoinByIdx join_by_idx = 4;
+  bool has_join_by_idx() const;
+  private:
+  bool _internal_has_join_by_idx() const;
+  public:
+  void clear_join_by_idx();
+  const ::PicachvMessages::JoinByIdx& join_by_idx() const;
+  PROTOBUF_NODISCARD ::PicachvMessages::JoinByIdx* release_join_by_idx();
+  ::PicachvMessages::JoinByIdx* mutable_join_by_idx();
+  void set_allocated_join_by_idx(::PicachvMessages::JoinByIdx* join_by_idx);
+  private:
+  const ::PicachvMessages::JoinByIdx& _internal_join_by_idx() const;
+  ::PicachvMessages::JoinByIdx* _internal_mutable_join_by_idx();
+  public:
+  void unsafe_arena_set_allocated_join_by_idx(
+      ::PicachvMessages::JoinByIdx* join_by_idx);
+  ::PicachvMessages::JoinByIdx* unsafe_arena_release_join_by_idx();
+
+  void clear_how();
+  HowCase how_case() const;
   // @@protoc_insertion_point(class_scope:PicachvMessages.JoinInformation)
  private:
   class _Internal;
+  void set_has_join_by_name();
+  void set_has_join_by_idx();
+
+  inline bool has_how() const;
+  inline void clear_has_how();
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> left_on_;
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> right_on_;
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::JoinInformation_RowJoinInformation > row_join_info_;
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> lhs_input_schema_;
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> rhs_input_schema_;
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::JoinInformation_RenamingInformation > renaming_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr lhs_df_uuid_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr rhs_df_uuid_;
+    union HowUnion {
+      constexpr HowUnion() : _constinit_{} {}
+        ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
+      ::PicachvMessages::JoinByName* join_by_name_;
+      ::PicachvMessages::JoinByIdx* join_by_idx_;
+    } how_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint32_t _oneof_case_[1];
+
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_transform_2eproto;
@@ -968,7 +1376,7 @@ class GroupByInformation final :
                &_GroupByInformation_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    7;
 
   friend void swap(GroupByInformation& a, GroupByInformation& b) {
     a.Swap(&b);
@@ -1131,7 +1539,7 @@ class UnionInformation final :
                &_UnionInformation_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    8;
 
   friend void swap(UnionInformation& a, UnionInformation& b) {
     a.Swap(&b);
@@ -1300,7 +1708,7 @@ class ReorderInformation final :
                &_ReorderInformation_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    9;
 
   friend void swap(ReorderInformation& a, ReorderInformation& b) {
     a.Swap(&b);
@@ -1471,7 +1879,7 @@ class TransformInfo final :
                &_TransformInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    10;
 
   friend void swap(TransformInfo& a, TransformInfo& b) {
     a.Swap(&b);
@@ -1734,88 +2142,88 @@ FilterInformation::mutable_filter() {
 
 // -------------------------------------------------------------------
 
-// JoinInformation_RowJoinInformation
+// RowJoinInformation
 
 // uint64 left_row = 1;
-inline void JoinInformation_RowJoinInformation::clear_left_row() {
+inline void RowJoinInformation::clear_left_row() {
   _impl_.left_row_ = uint64_t{0u};
 }
-inline uint64_t JoinInformation_RowJoinInformation::_internal_left_row() const {
+inline uint64_t RowJoinInformation::_internal_left_row() const {
   return _impl_.left_row_;
 }
-inline uint64_t JoinInformation_RowJoinInformation::left_row() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.RowJoinInformation.left_row)
+inline uint64_t RowJoinInformation::left_row() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.RowJoinInformation.left_row)
   return _internal_left_row();
 }
-inline void JoinInformation_RowJoinInformation::_internal_set_left_row(uint64_t value) {
+inline void RowJoinInformation::_internal_set_left_row(uint64_t value) {
   
   _impl_.left_row_ = value;
 }
-inline void JoinInformation_RowJoinInformation::set_left_row(uint64_t value) {
+inline void RowJoinInformation::set_left_row(uint64_t value) {
   _internal_set_left_row(value);
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.RowJoinInformation.left_row)
+  // @@protoc_insertion_point(field_set:PicachvMessages.RowJoinInformation.left_row)
 }
 
 // uint64 right_row = 2;
-inline void JoinInformation_RowJoinInformation::clear_right_row() {
+inline void RowJoinInformation::clear_right_row() {
   _impl_.right_row_ = uint64_t{0u};
 }
-inline uint64_t JoinInformation_RowJoinInformation::_internal_right_row() const {
+inline uint64_t RowJoinInformation::_internal_right_row() const {
   return _impl_.right_row_;
 }
-inline uint64_t JoinInformation_RowJoinInformation::right_row() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.RowJoinInformation.right_row)
+inline uint64_t RowJoinInformation::right_row() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.RowJoinInformation.right_row)
   return _internal_right_row();
 }
-inline void JoinInformation_RowJoinInformation::_internal_set_right_row(uint64_t value) {
+inline void RowJoinInformation::_internal_set_right_row(uint64_t value) {
   
   _impl_.right_row_ = value;
 }
-inline void JoinInformation_RowJoinInformation::set_right_row(uint64_t value) {
+inline void RowJoinInformation::set_right_row(uint64_t value) {
   _internal_set_right_row(value);
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.RowJoinInformation.right_row)
+  // @@protoc_insertion_point(field_set:PicachvMessages.RowJoinInformation.right_row)
 }
 
 // -------------------------------------------------------------------
 
-// JoinInformation_RenamingInformation
+// RenamingInformation
 
 // string old_name = 1;
-inline void JoinInformation_RenamingInformation::clear_old_name() {
+inline void RenamingInformation::clear_old_name() {
   _impl_.old_name_.ClearToEmpty();
 }
-inline const std::string& JoinInformation_RenamingInformation::old_name() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.RenamingInformation.old_name)
+inline const std::string& RenamingInformation::old_name() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.RenamingInformation.old_name)
   return _internal_old_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void JoinInformation_RenamingInformation::set_old_name(ArgT0&& arg0, ArgT... args) {
+void RenamingInformation::set_old_name(ArgT0&& arg0, ArgT... args) {
  
  _impl_.old_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.RenamingInformation.old_name)
+  // @@protoc_insertion_point(field_set:PicachvMessages.RenamingInformation.old_name)
 }
-inline std::string* JoinInformation_RenamingInformation::mutable_old_name() {
+inline std::string* RenamingInformation::mutable_old_name() {
   std::string* _s = _internal_mutable_old_name();
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinInformation.RenamingInformation.old_name)
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.RenamingInformation.old_name)
   return _s;
 }
-inline const std::string& JoinInformation_RenamingInformation::_internal_old_name() const {
+inline const std::string& RenamingInformation::_internal_old_name() const {
   return _impl_.old_name_.Get();
 }
-inline void JoinInformation_RenamingInformation::_internal_set_old_name(const std::string& value) {
+inline void RenamingInformation::_internal_set_old_name(const std::string& value) {
   
   _impl_.old_name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* JoinInformation_RenamingInformation::_internal_mutable_old_name() {
+inline std::string* RenamingInformation::_internal_mutable_old_name() {
   
   return _impl_.old_name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* JoinInformation_RenamingInformation::release_old_name() {
-  // @@protoc_insertion_point(field_release:PicachvMessages.JoinInformation.RenamingInformation.old_name)
+inline std::string* RenamingInformation::release_old_name() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.RenamingInformation.old_name)
   return _impl_.old_name_.Release();
 }
-inline void JoinInformation_RenamingInformation::set_allocated_old_name(std::string* old_name) {
+inline void RenamingInformation::set_allocated_old_name(std::string* old_name) {
   if (old_name != nullptr) {
     
   } else {
@@ -1827,45 +2235,45 @@ inline void JoinInformation_RenamingInformation::set_allocated_old_name(std::str
     _impl_.old_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.JoinInformation.RenamingInformation.old_name)
+  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.RenamingInformation.old_name)
 }
 
 // string new_name = 2;
-inline void JoinInformation_RenamingInformation::clear_new_name() {
+inline void RenamingInformation::clear_new_name() {
   _impl_.new_name_.ClearToEmpty();
 }
-inline const std::string& JoinInformation_RenamingInformation::new_name() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.RenamingInformation.new_name)
+inline const std::string& RenamingInformation::new_name() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.RenamingInformation.new_name)
   return _internal_new_name();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void JoinInformation_RenamingInformation::set_new_name(ArgT0&& arg0, ArgT... args) {
+void RenamingInformation::set_new_name(ArgT0&& arg0, ArgT... args) {
  
  _impl_.new_name_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.RenamingInformation.new_name)
+  // @@protoc_insertion_point(field_set:PicachvMessages.RenamingInformation.new_name)
 }
-inline std::string* JoinInformation_RenamingInformation::mutable_new_name() {
+inline std::string* RenamingInformation::mutable_new_name() {
   std::string* _s = _internal_mutable_new_name();
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinInformation.RenamingInformation.new_name)
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.RenamingInformation.new_name)
   return _s;
 }
-inline const std::string& JoinInformation_RenamingInformation::_internal_new_name() const {
+inline const std::string& RenamingInformation::_internal_new_name() const {
   return _impl_.new_name_.Get();
 }
-inline void JoinInformation_RenamingInformation::_internal_set_new_name(const std::string& value) {
+inline void RenamingInformation::_internal_set_new_name(const std::string& value) {
   
   _impl_.new_name_.Set(value, GetArenaForAllocation());
 }
-inline std::string* JoinInformation_RenamingInformation::_internal_mutable_new_name() {
+inline std::string* RenamingInformation::_internal_mutable_new_name() {
   
   return _impl_.new_name_.Mutable(GetArenaForAllocation());
 }
-inline std::string* JoinInformation_RenamingInformation::release_new_name() {
-  // @@protoc_insertion_point(field_release:PicachvMessages.JoinInformation.RenamingInformation.new_name)
+inline std::string* RenamingInformation::release_new_name() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.RenamingInformation.new_name)
   return _impl_.new_name_.Release();
 }
-inline void JoinInformation_RenamingInformation::set_allocated_new_name(std::string* new_name) {
+inline void RenamingInformation::set_allocated_new_name(std::string* new_name) {
   if (new_name != nullptr) {
     
   } else {
@@ -1877,7 +2285,529 @@ inline void JoinInformation_RenamingInformation::set_allocated_new_name(std::str
     _impl_.new_name_.Set("", GetArenaForAllocation());
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.JoinInformation.RenamingInformation.new_name)
+  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.RenamingInformation.new_name)
+}
+
+// -------------------------------------------------------------------
+
+// JoinByName
+
+// repeated string left_on = 1;
+inline int JoinByName::_internal_left_on_size() const {
+  return _impl_.left_on_.size();
+}
+inline int JoinByName::left_on_size() const {
+  return _internal_left_on_size();
+}
+inline void JoinByName::clear_left_on() {
+  _impl_.left_on_.Clear();
+}
+inline std::string* JoinByName::add_left_on() {
+  std::string* _s = _internal_add_left_on();
+  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.JoinByName.left_on)
+  return _s;
+}
+inline const std::string& JoinByName::_internal_left_on(int index) const {
+  return _impl_.left_on_.Get(index);
+}
+inline const std::string& JoinByName::left_on(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinByName.left_on)
+  return _internal_left_on(index);
+}
+inline std::string* JoinByName::mutable_left_on(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinByName.left_on)
+  return _impl_.left_on_.Mutable(index);
+}
+inline void JoinByName::set_left_on(int index, const std::string& value) {
+  _impl_.left_on_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.JoinByName.left_on)
+}
+inline void JoinByName::set_left_on(int index, std::string&& value) {
+  _impl_.left_on_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:PicachvMessages.JoinByName.left_on)
+}
+inline void JoinByName::set_left_on(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.left_on_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:PicachvMessages.JoinByName.left_on)
+}
+inline void JoinByName::set_left_on(int index, const char* value, size_t size) {
+  _impl_.left_on_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.JoinByName.left_on)
+}
+inline std::string* JoinByName::_internal_add_left_on() {
+  return _impl_.left_on_.Add();
+}
+inline void JoinByName::add_left_on(const std::string& value) {
+  _impl_.left_on_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByName.left_on)
+}
+inline void JoinByName::add_left_on(std::string&& value) {
+  _impl_.left_on_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByName.left_on)
+}
+inline void JoinByName::add_left_on(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.left_on_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:PicachvMessages.JoinByName.left_on)
+}
+inline void JoinByName::add_left_on(const char* value, size_t size) {
+  _impl_.left_on_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.JoinByName.left_on)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+JoinByName::left_on() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.JoinByName.left_on)
+  return _impl_.left_on_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+JoinByName::mutable_left_on() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinByName.left_on)
+  return &_impl_.left_on_;
+}
+
+// repeated string right_on = 2;
+inline int JoinByName::_internal_right_on_size() const {
+  return _impl_.right_on_.size();
+}
+inline int JoinByName::right_on_size() const {
+  return _internal_right_on_size();
+}
+inline void JoinByName::clear_right_on() {
+  _impl_.right_on_.Clear();
+}
+inline std::string* JoinByName::add_right_on() {
+  std::string* _s = _internal_add_right_on();
+  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.JoinByName.right_on)
+  return _s;
+}
+inline const std::string& JoinByName::_internal_right_on(int index) const {
+  return _impl_.right_on_.Get(index);
+}
+inline const std::string& JoinByName::right_on(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinByName.right_on)
+  return _internal_right_on(index);
+}
+inline std::string* JoinByName::mutable_right_on(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinByName.right_on)
+  return _impl_.right_on_.Mutable(index);
+}
+inline void JoinByName::set_right_on(int index, const std::string& value) {
+  _impl_.right_on_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.JoinByName.right_on)
+}
+inline void JoinByName::set_right_on(int index, std::string&& value) {
+  _impl_.right_on_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:PicachvMessages.JoinByName.right_on)
+}
+inline void JoinByName::set_right_on(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.right_on_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:PicachvMessages.JoinByName.right_on)
+}
+inline void JoinByName::set_right_on(int index, const char* value, size_t size) {
+  _impl_.right_on_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.JoinByName.right_on)
+}
+inline std::string* JoinByName::_internal_add_right_on() {
+  return _impl_.right_on_.Add();
+}
+inline void JoinByName::add_right_on(const std::string& value) {
+  _impl_.right_on_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByName.right_on)
+}
+inline void JoinByName::add_right_on(std::string&& value) {
+  _impl_.right_on_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByName.right_on)
+}
+inline void JoinByName::add_right_on(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.right_on_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:PicachvMessages.JoinByName.right_on)
+}
+inline void JoinByName::add_right_on(const char* value, size_t size) {
+  _impl_.right_on_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.JoinByName.right_on)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+JoinByName::right_on() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.JoinByName.right_on)
+  return _impl_.right_on_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+JoinByName::mutable_right_on() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinByName.right_on)
+  return &_impl_.right_on_;
+}
+
+// repeated .PicachvMessages.RowJoinInformation row_join_info = 3;
+inline int JoinByName::_internal_row_join_info_size() const {
+  return _impl_.row_join_info_.size();
+}
+inline int JoinByName::row_join_info_size() const {
+  return _internal_row_join_info_size();
+}
+inline void JoinByName::clear_row_join_info() {
+  _impl_.row_join_info_.Clear();
+}
+inline ::PicachvMessages::RowJoinInformation* JoinByName::mutable_row_join_info(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinByName.row_join_info)
+  return _impl_.row_join_info_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RowJoinInformation >*
+JoinByName::mutable_row_join_info() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinByName.row_join_info)
+  return &_impl_.row_join_info_;
+}
+inline const ::PicachvMessages::RowJoinInformation& JoinByName::_internal_row_join_info(int index) const {
+  return _impl_.row_join_info_.Get(index);
+}
+inline const ::PicachvMessages::RowJoinInformation& JoinByName::row_join_info(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinByName.row_join_info)
+  return _internal_row_join_info(index);
+}
+inline ::PicachvMessages::RowJoinInformation* JoinByName::_internal_add_row_join_info() {
+  return _impl_.row_join_info_.Add();
+}
+inline ::PicachvMessages::RowJoinInformation* JoinByName::add_row_join_info() {
+  ::PicachvMessages::RowJoinInformation* _add = _internal_add_row_join_info();
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByName.row_join_info)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RowJoinInformation >&
+JoinByName::row_join_info() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.JoinByName.row_join_info)
+  return _impl_.row_join_info_;
+}
+
+// repeated string lhs_input_schema = 4;
+inline int JoinByName::_internal_lhs_input_schema_size() const {
+  return _impl_.lhs_input_schema_.size();
+}
+inline int JoinByName::lhs_input_schema_size() const {
+  return _internal_lhs_input_schema_size();
+}
+inline void JoinByName::clear_lhs_input_schema() {
+  _impl_.lhs_input_schema_.Clear();
+}
+inline std::string* JoinByName::add_lhs_input_schema() {
+  std::string* _s = _internal_add_lhs_input_schema();
+  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.JoinByName.lhs_input_schema)
+  return _s;
+}
+inline const std::string& JoinByName::_internal_lhs_input_schema(int index) const {
+  return _impl_.lhs_input_schema_.Get(index);
+}
+inline const std::string& JoinByName::lhs_input_schema(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinByName.lhs_input_schema)
+  return _internal_lhs_input_schema(index);
+}
+inline std::string* JoinByName::mutable_lhs_input_schema(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinByName.lhs_input_schema)
+  return _impl_.lhs_input_schema_.Mutable(index);
+}
+inline void JoinByName::set_lhs_input_schema(int index, const std::string& value) {
+  _impl_.lhs_input_schema_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.JoinByName.lhs_input_schema)
+}
+inline void JoinByName::set_lhs_input_schema(int index, std::string&& value) {
+  _impl_.lhs_input_schema_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:PicachvMessages.JoinByName.lhs_input_schema)
+}
+inline void JoinByName::set_lhs_input_schema(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.lhs_input_schema_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:PicachvMessages.JoinByName.lhs_input_schema)
+}
+inline void JoinByName::set_lhs_input_schema(int index, const char* value, size_t size) {
+  _impl_.lhs_input_schema_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.JoinByName.lhs_input_schema)
+}
+inline std::string* JoinByName::_internal_add_lhs_input_schema() {
+  return _impl_.lhs_input_schema_.Add();
+}
+inline void JoinByName::add_lhs_input_schema(const std::string& value) {
+  _impl_.lhs_input_schema_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByName.lhs_input_schema)
+}
+inline void JoinByName::add_lhs_input_schema(std::string&& value) {
+  _impl_.lhs_input_schema_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByName.lhs_input_schema)
+}
+inline void JoinByName::add_lhs_input_schema(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.lhs_input_schema_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:PicachvMessages.JoinByName.lhs_input_schema)
+}
+inline void JoinByName::add_lhs_input_schema(const char* value, size_t size) {
+  _impl_.lhs_input_schema_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.JoinByName.lhs_input_schema)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+JoinByName::lhs_input_schema() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.JoinByName.lhs_input_schema)
+  return _impl_.lhs_input_schema_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+JoinByName::mutable_lhs_input_schema() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinByName.lhs_input_schema)
+  return &_impl_.lhs_input_schema_;
+}
+
+// repeated string rhs_input_schema = 5;
+inline int JoinByName::_internal_rhs_input_schema_size() const {
+  return _impl_.rhs_input_schema_.size();
+}
+inline int JoinByName::rhs_input_schema_size() const {
+  return _internal_rhs_input_schema_size();
+}
+inline void JoinByName::clear_rhs_input_schema() {
+  _impl_.rhs_input_schema_.Clear();
+}
+inline std::string* JoinByName::add_rhs_input_schema() {
+  std::string* _s = _internal_add_rhs_input_schema();
+  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.JoinByName.rhs_input_schema)
+  return _s;
+}
+inline const std::string& JoinByName::_internal_rhs_input_schema(int index) const {
+  return _impl_.rhs_input_schema_.Get(index);
+}
+inline const std::string& JoinByName::rhs_input_schema(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinByName.rhs_input_schema)
+  return _internal_rhs_input_schema(index);
+}
+inline std::string* JoinByName::mutable_rhs_input_schema(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinByName.rhs_input_schema)
+  return _impl_.rhs_input_schema_.Mutable(index);
+}
+inline void JoinByName::set_rhs_input_schema(int index, const std::string& value) {
+  _impl_.rhs_input_schema_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.JoinByName.rhs_input_schema)
+}
+inline void JoinByName::set_rhs_input_schema(int index, std::string&& value) {
+  _impl_.rhs_input_schema_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:PicachvMessages.JoinByName.rhs_input_schema)
+}
+inline void JoinByName::set_rhs_input_schema(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.rhs_input_schema_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:PicachvMessages.JoinByName.rhs_input_schema)
+}
+inline void JoinByName::set_rhs_input_schema(int index, const char* value, size_t size) {
+  _impl_.rhs_input_schema_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.JoinByName.rhs_input_schema)
+}
+inline std::string* JoinByName::_internal_add_rhs_input_schema() {
+  return _impl_.rhs_input_schema_.Add();
+}
+inline void JoinByName::add_rhs_input_schema(const std::string& value) {
+  _impl_.rhs_input_schema_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByName.rhs_input_schema)
+}
+inline void JoinByName::add_rhs_input_schema(std::string&& value) {
+  _impl_.rhs_input_schema_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByName.rhs_input_schema)
+}
+inline void JoinByName::add_rhs_input_schema(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.rhs_input_schema_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:PicachvMessages.JoinByName.rhs_input_schema)
+}
+inline void JoinByName::add_rhs_input_schema(const char* value, size_t size) {
+  _impl_.rhs_input_schema_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.JoinByName.rhs_input_schema)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+JoinByName::rhs_input_schema() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.JoinByName.rhs_input_schema)
+  return _impl_.rhs_input_schema_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+JoinByName::mutable_rhs_input_schema() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinByName.rhs_input_schema)
+  return &_impl_.rhs_input_schema_;
+}
+
+// repeated .PicachvMessages.RenamingInformation renaming = 6;
+inline int JoinByName::_internal_renaming_size() const {
+  return _impl_.renaming_.size();
+}
+inline int JoinByName::renaming_size() const {
+  return _internal_renaming_size();
+}
+inline void JoinByName::clear_renaming() {
+  _impl_.renaming_.Clear();
+}
+inline ::PicachvMessages::RenamingInformation* JoinByName::mutable_renaming(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinByName.renaming)
+  return _impl_.renaming_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RenamingInformation >*
+JoinByName::mutable_renaming() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinByName.renaming)
+  return &_impl_.renaming_;
+}
+inline const ::PicachvMessages::RenamingInformation& JoinByName::_internal_renaming(int index) const {
+  return _impl_.renaming_.Get(index);
+}
+inline const ::PicachvMessages::RenamingInformation& JoinByName::renaming(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinByName.renaming)
+  return _internal_renaming(index);
+}
+inline ::PicachvMessages::RenamingInformation* JoinByName::_internal_add_renaming() {
+  return _impl_.renaming_.Add();
+}
+inline ::PicachvMessages::RenamingInformation* JoinByName::add_renaming() {
+  ::PicachvMessages::RenamingInformation* _add = _internal_add_renaming();
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByName.renaming)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RenamingInformation >&
+JoinByName::renaming() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.JoinByName.renaming)
+  return _impl_.renaming_;
+}
+
+// -------------------------------------------------------------------
+
+// JoinByIdx
+
+// repeated uint64 left_on = 1;
+inline int JoinByIdx::_internal_left_on_size() const {
+  return _impl_.left_on_.size();
+}
+inline int JoinByIdx::left_on_size() const {
+  return _internal_left_on_size();
+}
+inline void JoinByIdx::clear_left_on() {
+  _impl_.left_on_.Clear();
+}
+inline uint64_t JoinByIdx::_internal_left_on(int index) const {
+  return _impl_.left_on_.Get(index);
+}
+inline uint64_t JoinByIdx::left_on(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinByIdx.left_on)
+  return _internal_left_on(index);
+}
+inline void JoinByIdx::set_left_on(int index, uint64_t value) {
+  _impl_.left_on_.Set(index, value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.JoinByIdx.left_on)
+}
+inline void JoinByIdx::_internal_add_left_on(uint64_t value) {
+  _impl_.left_on_.Add(value);
+}
+inline void JoinByIdx::add_left_on(uint64_t value) {
+  _internal_add_left_on(value);
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByIdx.left_on)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+JoinByIdx::_internal_left_on() const {
+  return _impl_.left_on_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+JoinByIdx::left_on() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.JoinByIdx.left_on)
+  return _internal_left_on();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+JoinByIdx::_internal_mutable_left_on() {
+  return &_impl_.left_on_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+JoinByIdx::mutable_left_on() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinByIdx.left_on)
+  return _internal_mutable_left_on();
+}
+
+// repeated uint64 right_on = 2;
+inline int JoinByIdx::_internal_right_on_size() const {
+  return _impl_.right_on_.size();
+}
+inline int JoinByIdx::right_on_size() const {
+  return _internal_right_on_size();
+}
+inline void JoinByIdx::clear_right_on() {
+  _impl_.right_on_.Clear();
+}
+inline uint64_t JoinByIdx::_internal_right_on(int index) const {
+  return _impl_.right_on_.Get(index);
+}
+inline uint64_t JoinByIdx::right_on(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinByIdx.right_on)
+  return _internal_right_on(index);
+}
+inline void JoinByIdx::set_right_on(int index, uint64_t value) {
+  _impl_.right_on_.Set(index, value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.JoinByIdx.right_on)
+}
+inline void JoinByIdx::_internal_add_right_on(uint64_t value) {
+  _impl_.right_on_.Add(value);
+}
+inline void JoinByIdx::add_right_on(uint64_t value) {
+  _internal_add_right_on(value);
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByIdx.right_on)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+JoinByIdx::_internal_right_on() const {
+  return _impl_.right_on_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
+JoinByIdx::right_on() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.JoinByIdx.right_on)
+  return _internal_right_on();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+JoinByIdx::_internal_mutable_right_on() {
+  return &_impl_.right_on_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
+JoinByIdx::mutable_right_on() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinByIdx.right_on)
+  return _internal_mutable_right_on();
+}
+
+// repeated .PicachvMessages.RowJoinInformation row_join_info = 3;
+inline int JoinByIdx::_internal_row_join_info_size() const {
+  return _impl_.row_join_info_.size();
+}
+inline int JoinByIdx::row_join_info_size() const {
+  return _internal_row_join_info_size();
+}
+inline void JoinByIdx::clear_row_join_info() {
+  _impl_.row_join_info_.Clear();
+}
+inline ::PicachvMessages::RowJoinInformation* JoinByIdx::mutable_row_join_info(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinByIdx.row_join_info)
+  return _impl_.row_join_info_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RowJoinInformation >*
+JoinByIdx::mutable_row_join_info() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinByIdx.row_join_info)
+  return &_impl_.row_join_info_;
+}
+inline const ::PicachvMessages::RowJoinInformation& JoinByIdx::_internal_row_join_info(int index) const {
+  return _impl_.row_join_info_.Get(index);
+}
+inline const ::PicachvMessages::RowJoinInformation& JoinByIdx::row_join_info(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinByIdx.row_join_info)
+  return _internal_row_join_info(index);
+}
+inline ::PicachvMessages::RowJoinInformation* JoinByIdx::_internal_add_row_join_info() {
+  return _impl_.row_join_info_.Add();
+}
+inline ::PicachvMessages::RowJoinInformation* JoinByIdx::add_row_join_info() {
+  ::PicachvMessages::RowJoinInformation* _add = _internal_add_row_join_info();
+  // @@protoc_insertion_point(field_add:PicachvMessages.JoinByIdx.row_join_info)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::RowJoinInformation >&
+JoinByIdx::row_join_info() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.JoinByIdx.row_join_info)
+  return _impl_.row_join_info_;
 }
 
 // -------------------------------------------------------------------
@@ -1984,386 +2914,163 @@ inline void JoinInformation::set_allocated_rhs_df_uuid(std::string* rhs_df_uuid)
   // @@protoc_insertion_point(field_set_allocated:PicachvMessages.JoinInformation.rhs_df_uuid)
 }
 
-// repeated string left_on = 3;
-inline int JoinInformation::_internal_left_on_size() const {
-  return _impl_.left_on_.size();
+// .PicachvMessages.JoinByName join_by_name = 3;
+inline bool JoinInformation::_internal_has_join_by_name() const {
+  return how_case() == kJoinByName;
 }
-inline int JoinInformation::left_on_size() const {
-  return _internal_left_on_size();
+inline bool JoinInformation::has_join_by_name() const {
+  return _internal_has_join_by_name();
 }
-inline void JoinInformation::clear_left_on() {
-  _impl_.left_on_.Clear();
+inline void JoinInformation::set_has_join_by_name() {
+  _impl_._oneof_case_[0] = kJoinByName;
 }
-inline std::string* JoinInformation::add_left_on() {
-  std::string* _s = _internal_add_left_on();
-  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.JoinInformation.left_on)
-  return _s;
+inline void JoinInformation::clear_join_by_name() {
+  if (_internal_has_join_by_name()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.how_.join_by_name_;
+    }
+    clear_has_how();
+  }
 }
-inline const std::string& JoinInformation::_internal_left_on(int index) const {
-  return _impl_.left_on_.Get(index);
+inline ::PicachvMessages::JoinByName* JoinInformation::release_join_by_name() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.JoinInformation.join_by_name)
+  if (_internal_has_join_by_name()) {
+    clear_has_how();
+    ::PicachvMessages::JoinByName* temp = _impl_.how_.join_by_name_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.how_.join_by_name_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
 }
-inline const std::string& JoinInformation::left_on(int index) const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.left_on)
-  return _internal_left_on(index);
+inline const ::PicachvMessages::JoinByName& JoinInformation::_internal_join_by_name() const {
+  return _internal_has_join_by_name()
+      ? *_impl_.how_.join_by_name_
+      : reinterpret_cast< ::PicachvMessages::JoinByName&>(::PicachvMessages::_JoinByName_default_instance_);
 }
-inline std::string* JoinInformation::mutable_left_on(int index) {
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinInformation.left_on)
-  return _impl_.left_on_.Mutable(index);
+inline const ::PicachvMessages::JoinByName& JoinInformation::join_by_name() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.join_by_name)
+  return _internal_join_by_name();
 }
-inline void JoinInformation::set_left_on(int index, const std::string& value) {
-  _impl_.left_on_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.left_on)
+inline ::PicachvMessages::JoinByName* JoinInformation::unsafe_arena_release_join_by_name() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:PicachvMessages.JoinInformation.join_by_name)
+  if (_internal_has_join_by_name()) {
+    clear_has_how();
+    ::PicachvMessages::JoinByName* temp = _impl_.how_.join_by_name_;
+    _impl_.how_.join_by_name_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
 }
-inline void JoinInformation::set_left_on(int index, std::string&& value) {
-  _impl_.left_on_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.left_on)
+inline void JoinInformation::unsafe_arena_set_allocated_join_by_name(::PicachvMessages::JoinByName* join_by_name) {
+  clear_how();
+  if (join_by_name) {
+    set_has_join_by_name();
+    _impl_.how_.join_by_name_ = join_by_name;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.JoinInformation.join_by_name)
 }
-inline void JoinInformation::set_left_on(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.left_on_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:PicachvMessages.JoinInformation.left_on)
+inline ::PicachvMessages::JoinByName* JoinInformation::_internal_mutable_join_by_name() {
+  if (!_internal_has_join_by_name()) {
+    clear_how();
+    set_has_join_by_name();
+    _impl_.how_.join_by_name_ = CreateMaybeMessage< ::PicachvMessages::JoinByName >(GetArenaForAllocation());
+  }
+  return _impl_.how_.join_by_name_;
 }
-inline void JoinInformation::set_left_on(int index, const char* value, size_t size) {
-  _impl_.left_on_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.JoinInformation.left_on)
-}
-inline std::string* JoinInformation::_internal_add_left_on() {
-  return _impl_.left_on_.Add();
-}
-inline void JoinInformation::add_left_on(const std::string& value) {
-  _impl_.left_on_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:PicachvMessages.JoinInformation.left_on)
-}
-inline void JoinInformation::add_left_on(std::string&& value) {
-  _impl_.left_on_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:PicachvMessages.JoinInformation.left_on)
-}
-inline void JoinInformation::add_left_on(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.left_on_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:PicachvMessages.JoinInformation.left_on)
-}
-inline void JoinInformation::add_left_on(const char* value, size_t size) {
-  _impl_.left_on_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.JoinInformation.left_on)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-JoinInformation::left_on() const {
-  // @@protoc_insertion_point(field_list:PicachvMessages.JoinInformation.left_on)
-  return _impl_.left_on_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-JoinInformation::mutable_left_on() {
-  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinInformation.left_on)
-  return &_impl_.left_on_;
-}
-
-// repeated string right_on = 4;
-inline int JoinInformation::_internal_right_on_size() const {
-  return _impl_.right_on_.size();
-}
-inline int JoinInformation::right_on_size() const {
-  return _internal_right_on_size();
-}
-inline void JoinInformation::clear_right_on() {
-  _impl_.right_on_.Clear();
-}
-inline std::string* JoinInformation::add_right_on() {
-  std::string* _s = _internal_add_right_on();
-  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.JoinInformation.right_on)
-  return _s;
-}
-inline const std::string& JoinInformation::_internal_right_on(int index) const {
-  return _impl_.right_on_.Get(index);
-}
-inline const std::string& JoinInformation::right_on(int index) const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.right_on)
-  return _internal_right_on(index);
-}
-inline std::string* JoinInformation::mutable_right_on(int index) {
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinInformation.right_on)
-  return _impl_.right_on_.Mutable(index);
-}
-inline void JoinInformation::set_right_on(int index, const std::string& value) {
-  _impl_.right_on_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.right_on)
-}
-inline void JoinInformation::set_right_on(int index, std::string&& value) {
-  _impl_.right_on_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.right_on)
-}
-inline void JoinInformation::set_right_on(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.right_on_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:PicachvMessages.JoinInformation.right_on)
-}
-inline void JoinInformation::set_right_on(int index, const char* value, size_t size) {
-  _impl_.right_on_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.JoinInformation.right_on)
-}
-inline std::string* JoinInformation::_internal_add_right_on() {
-  return _impl_.right_on_.Add();
-}
-inline void JoinInformation::add_right_on(const std::string& value) {
-  _impl_.right_on_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:PicachvMessages.JoinInformation.right_on)
-}
-inline void JoinInformation::add_right_on(std::string&& value) {
-  _impl_.right_on_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:PicachvMessages.JoinInformation.right_on)
-}
-inline void JoinInformation::add_right_on(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.right_on_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:PicachvMessages.JoinInformation.right_on)
-}
-inline void JoinInformation::add_right_on(const char* value, size_t size) {
-  _impl_.right_on_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.JoinInformation.right_on)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-JoinInformation::right_on() const {
-  // @@protoc_insertion_point(field_list:PicachvMessages.JoinInformation.right_on)
-  return _impl_.right_on_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-JoinInformation::mutable_right_on() {
-  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinInformation.right_on)
-  return &_impl_.right_on_;
+inline ::PicachvMessages::JoinByName* JoinInformation::mutable_join_by_name() {
+  ::PicachvMessages::JoinByName* _msg = _internal_mutable_join_by_name();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinInformation.join_by_name)
+  return _msg;
 }
 
-// repeated .PicachvMessages.JoinInformation.RowJoinInformation row_join_info = 5;
-inline int JoinInformation::_internal_row_join_info_size() const {
-  return _impl_.row_join_info_.size();
+// .PicachvMessages.JoinByIdx join_by_idx = 4;
+inline bool JoinInformation::_internal_has_join_by_idx() const {
+  return how_case() == kJoinByIdx;
 }
-inline int JoinInformation::row_join_info_size() const {
-  return _internal_row_join_info_size();
+inline bool JoinInformation::has_join_by_idx() const {
+  return _internal_has_join_by_idx();
 }
-inline void JoinInformation::clear_row_join_info() {
-  _impl_.row_join_info_.Clear();
+inline void JoinInformation::set_has_join_by_idx() {
+  _impl_._oneof_case_[0] = kJoinByIdx;
 }
-inline ::PicachvMessages::JoinInformation_RowJoinInformation* JoinInformation::mutable_row_join_info(int index) {
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinInformation.row_join_info)
-  return _impl_.row_join_info_.Mutable(index);
+inline void JoinInformation::clear_join_by_idx() {
+  if (_internal_has_join_by_idx()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.how_.join_by_idx_;
+    }
+    clear_has_how();
+  }
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::JoinInformation_RowJoinInformation >*
-JoinInformation::mutable_row_join_info() {
-  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinInformation.row_join_info)
-  return &_impl_.row_join_info_;
+inline ::PicachvMessages::JoinByIdx* JoinInformation::release_join_by_idx() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.JoinInformation.join_by_idx)
+  if (_internal_has_join_by_idx()) {
+    clear_has_how();
+    ::PicachvMessages::JoinByIdx* temp = _impl_.how_.join_by_idx_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.how_.join_by_idx_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
 }
-inline const ::PicachvMessages::JoinInformation_RowJoinInformation& JoinInformation::_internal_row_join_info(int index) const {
-  return _impl_.row_join_info_.Get(index);
+inline const ::PicachvMessages::JoinByIdx& JoinInformation::_internal_join_by_idx() const {
+  return _internal_has_join_by_idx()
+      ? *_impl_.how_.join_by_idx_
+      : reinterpret_cast< ::PicachvMessages::JoinByIdx&>(::PicachvMessages::_JoinByIdx_default_instance_);
 }
-inline const ::PicachvMessages::JoinInformation_RowJoinInformation& JoinInformation::row_join_info(int index) const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.row_join_info)
-  return _internal_row_join_info(index);
+inline const ::PicachvMessages::JoinByIdx& JoinInformation::join_by_idx() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.join_by_idx)
+  return _internal_join_by_idx();
 }
-inline ::PicachvMessages::JoinInformation_RowJoinInformation* JoinInformation::_internal_add_row_join_info() {
-  return _impl_.row_join_info_.Add();
+inline ::PicachvMessages::JoinByIdx* JoinInformation::unsafe_arena_release_join_by_idx() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:PicachvMessages.JoinInformation.join_by_idx)
+  if (_internal_has_join_by_idx()) {
+    clear_has_how();
+    ::PicachvMessages::JoinByIdx* temp = _impl_.how_.join_by_idx_;
+    _impl_.how_.join_by_idx_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
 }
-inline ::PicachvMessages::JoinInformation_RowJoinInformation* JoinInformation::add_row_join_info() {
-  ::PicachvMessages::JoinInformation_RowJoinInformation* _add = _internal_add_row_join_info();
-  // @@protoc_insertion_point(field_add:PicachvMessages.JoinInformation.row_join_info)
-  return _add;
+inline void JoinInformation::unsafe_arena_set_allocated_join_by_idx(::PicachvMessages::JoinByIdx* join_by_idx) {
+  clear_how();
+  if (join_by_idx) {
+    set_has_join_by_idx();
+    _impl_.how_.join_by_idx_ = join_by_idx;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.JoinInformation.join_by_idx)
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::JoinInformation_RowJoinInformation >&
-JoinInformation::row_join_info() const {
-  // @@protoc_insertion_point(field_list:PicachvMessages.JoinInformation.row_join_info)
-  return _impl_.row_join_info_;
+inline ::PicachvMessages::JoinByIdx* JoinInformation::_internal_mutable_join_by_idx() {
+  if (!_internal_has_join_by_idx()) {
+    clear_how();
+    set_has_join_by_idx();
+    _impl_.how_.join_by_idx_ = CreateMaybeMessage< ::PicachvMessages::JoinByIdx >(GetArenaForAllocation());
+  }
+  return _impl_.how_.join_by_idx_;
 }
-
-// repeated string lhs_input_schema = 6;
-inline int JoinInformation::_internal_lhs_input_schema_size() const {
-  return _impl_.lhs_input_schema_.size();
-}
-inline int JoinInformation::lhs_input_schema_size() const {
-  return _internal_lhs_input_schema_size();
-}
-inline void JoinInformation::clear_lhs_input_schema() {
-  _impl_.lhs_input_schema_.Clear();
-}
-inline std::string* JoinInformation::add_lhs_input_schema() {
-  std::string* _s = _internal_add_lhs_input_schema();
-  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.JoinInformation.lhs_input_schema)
-  return _s;
-}
-inline const std::string& JoinInformation::_internal_lhs_input_schema(int index) const {
-  return _impl_.lhs_input_schema_.Get(index);
-}
-inline const std::string& JoinInformation::lhs_input_schema(int index) const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.lhs_input_schema)
-  return _internal_lhs_input_schema(index);
-}
-inline std::string* JoinInformation::mutable_lhs_input_schema(int index) {
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinInformation.lhs_input_schema)
-  return _impl_.lhs_input_schema_.Mutable(index);
-}
-inline void JoinInformation::set_lhs_input_schema(int index, const std::string& value) {
-  _impl_.lhs_input_schema_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.lhs_input_schema)
-}
-inline void JoinInformation::set_lhs_input_schema(int index, std::string&& value) {
-  _impl_.lhs_input_schema_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.lhs_input_schema)
-}
-inline void JoinInformation::set_lhs_input_schema(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.lhs_input_schema_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:PicachvMessages.JoinInformation.lhs_input_schema)
-}
-inline void JoinInformation::set_lhs_input_schema(int index, const char* value, size_t size) {
-  _impl_.lhs_input_schema_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.JoinInformation.lhs_input_schema)
-}
-inline std::string* JoinInformation::_internal_add_lhs_input_schema() {
-  return _impl_.lhs_input_schema_.Add();
-}
-inline void JoinInformation::add_lhs_input_schema(const std::string& value) {
-  _impl_.lhs_input_schema_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:PicachvMessages.JoinInformation.lhs_input_schema)
-}
-inline void JoinInformation::add_lhs_input_schema(std::string&& value) {
-  _impl_.lhs_input_schema_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:PicachvMessages.JoinInformation.lhs_input_schema)
-}
-inline void JoinInformation::add_lhs_input_schema(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.lhs_input_schema_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:PicachvMessages.JoinInformation.lhs_input_schema)
-}
-inline void JoinInformation::add_lhs_input_schema(const char* value, size_t size) {
-  _impl_.lhs_input_schema_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.JoinInformation.lhs_input_schema)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-JoinInformation::lhs_input_schema() const {
-  // @@protoc_insertion_point(field_list:PicachvMessages.JoinInformation.lhs_input_schema)
-  return _impl_.lhs_input_schema_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-JoinInformation::mutable_lhs_input_schema() {
-  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinInformation.lhs_input_schema)
-  return &_impl_.lhs_input_schema_;
+inline ::PicachvMessages::JoinByIdx* JoinInformation::mutable_join_by_idx() {
+  ::PicachvMessages::JoinByIdx* _msg = _internal_mutable_join_by_idx();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinInformation.join_by_idx)
+  return _msg;
 }
 
-// repeated string rhs_input_schema = 7;
-inline int JoinInformation::_internal_rhs_input_schema_size() const {
-  return _impl_.rhs_input_schema_.size();
+inline bool JoinInformation::has_how() const {
+  return how_case() != HOW_NOT_SET;
 }
-inline int JoinInformation::rhs_input_schema_size() const {
-  return _internal_rhs_input_schema_size();
+inline void JoinInformation::clear_has_how() {
+  _impl_._oneof_case_[0] = HOW_NOT_SET;
 }
-inline void JoinInformation::clear_rhs_input_schema() {
-  _impl_.rhs_input_schema_.Clear();
+inline JoinInformation::HowCase JoinInformation::how_case() const {
+  return JoinInformation::HowCase(_impl_._oneof_case_[0]);
 }
-inline std::string* JoinInformation::add_rhs_input_schema() {
-  std::string* _s = _internal_add_rhs_input_schema();
-  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.JoinInformation.rhs_input_schema)
-  return _s;
-}
-inline const std::string& JoinInformation::_internal_rhs_input_schema(int index) const {
-  return _impl_.rhs_input_schema_.Get(index);
-}
-inline const std::string& JoinInformation::rhs_input_schema(int index) const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.rhs_input_schema)
-  return _internal_rhs_input_schema(index);
-}
-inline std::string* JoinInformation::mutable_rhs_input_schema(int index) {
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinInformation.rhs_input_schema)
-  return _impl_.rhs_input_schema_.Mutable(index);
-}
-inline void JoinInformation::set_rhs_input_schema(int index, const std::string& value) {
-  _impl_.rhs_input_schema_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.rhs_input_schema)
-}
-inline void JoinInformation::set_rhs_input_schema(int index, std::string&& value) {
-  _impl_.rhs_input_schema_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:PicachvMessages.JoinInformation.rhs_input_schema)
-}
-inline void JoinInformation::set_rhs_input_schema(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.rhs_input_schema_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:PicachvMessages.JoinInformation.rhs_input_schema)
-}
-inline void JoinInformation::set_rhs_input_schema(int index, const char* value, size_t size) {
-  _impl_.rhs_input_schema_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.JoinInformation.rhs_input_schema)
-}
-inline std::string* JoinInformation::_internal_add_rhs_input_schema() {
-  return _impl_.rhs_input_schema_.Add();
-}
-inline void JoinInformation::add_rhs_input_schema(const std::string& value) {
-  _impl_.rhs_input_schema_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:PicachvMessages.JoinInformation.rhs_input_schema)
-}
-inline void JoinInformation::add_rhs_input_schema(std::string&& value) {
-  _impl_.rhs_input_schema_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:PicachvMessages.JoinInformation.rhs_input_schema)
-}
-inline void JoinInformation::add_rhs_input_schema(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.rhs_input_schema_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:PicachvMessages.JoinInformation.rhs_input_schema)
-}
-inline void JoinInformation::add_rhs_input_schema(const char* value, size_t size) {
-  _impl_.rhs_input_schema_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.JoinInformation.rhs_input_schema)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-JoinInformation::rhs_input_schema() const {
-  // @@protoc_insertion_point(field_list:PicachvMessages.JoinInformation.rhs_input_schema)
-  return _impl_.rhs_input_schema_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-JoinInformation::mutable_rhs_input_schema() {
-  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinInformation.rhs_input_schema)
-  return &_impl_.rhs_input_schema_;
-}
-
-// repeated .PicachvMessages.JoinInformation.RenamingInformation renaming = 8;
-inline int JoinInformation::_internal_renaming_size() const {
-  return _impl_.renaming_.size();
-}
-inline int JoinInformation::renaming_size() const {
-  return _internal_renaming_size();
-}
-inline void JoinInformation::clear_renaming() {
-  _impl_.renaming_.Clear();
-}
-inline ::PicachvMessages::JoinInformation_RenamingInformation* JoinInformation::mutable_renaming(int index) {
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.JoinInformation.renaming)
-  return _impl_.renaming_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::JoinInformation_RenamingInformation >*
-JoinInformation::mutable_renaming() {
-  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.JoinInformation.renaming)
-  return &_impl_.renaming_;
-}
-inline const ::PicachvMessages::JoinInformation_RenamingInformation& JoinInformation::_internal_renaming(int index) const {
-  return _impl_.renaming_.Get(index);
-}
-inline const ::PicachvMessages::JoinInformation_RenamingInformation& JoinInformation::renaming(int index) const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.JoinInformation.renaming)
-  return _internal_renaming(index);
-}
-inline ::PicachvMessages::JoinInformation_RenamingInformation* JoinInformation::_internal_add_renaming() {
-  return _impl_.renaming_.Add();
-}
-inline ::PicachvMessages::JoinInformation_RenamingInformation* JoinInformation::add_renaming() {
-  ::PicachvMessages::JoinInformation_RenamingInformation* _add = _internal_add_renaming();
-  // @@protoc_insertion_point(field_add:PicachvMessages.JoinInformation.renaming)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::PicachvMessages::JoinInformation_RenamingInformation >&
-JoinInformation::renaming() const {
-  // @@protoc_insertion_point(field_list:PicachvMessages.JoinInformation.renaming)
-  return _impl_.renaming_;
-}
-
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
@@ -2940,6 +3647,10 @@ inline TransformInfo::InformationCase TransformInfo::information_case() const {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

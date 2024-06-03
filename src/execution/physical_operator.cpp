@@ -9,8 +9,10 @@
 #include "duckdb/parallel/meta_pipeline.hpp"
 #include "duckdb/parallel/pipeline.hpp"
 #include "duckdb/parallel/thread_context.hpp"
-#include "duckdb/storage/buffer_manager.hpp"
 #include "duckdb/storage/buffer/buffer_pool.hpp"
+#include "duckdb/storage/buffer_manager.hpp"
+
+#include <iostream>
 
 namespace duckdb {
 
@@ -256,6 +258,9 @@ OperatorResultType CachingPhysicalOperator::Execute(ExecutionContext &context, D
 	// Execute child operator
 	auto child_result = ExecuteInternal(context, input, chunk, gstate, state);
 
+	std::cout << "CachingPhysicalOperator::Execute" << std::endl;
+	std::cout << StringUtil::ByteArrayToString(chunk.GetActiveUUID(), PICACHV_UUID_LEN) << std::endl;
+
 #if STANDARD_VECTOR_SIZE >= 128
 	if (!state.initialized) {
 		state.initialized = true;
@@ -295,6 +300,10 @@ OperatorResultType CachingPhysicalOperator::Execute(ExecutionContext &context, D
 OperatorFinalizeResultType CachingPhysicalOperator::FinalExecute(ExecutionContext &context, DataChunk &chunk,
                                                                  GlobalOperatorState &gstate,
                                                                  OperatorState &state_p) const {
+	// Do a backup.
+	duckdb_uuid_t uuid;
+	memcpy(uuid.uuid, chunk.GetActiveUUID(), PICACHV_UUID_LEN);
+
 	auto &state = state_p.Cast<CachingOperatorState>();
 	if (state.cached_chunk) {
 		chunk.Move(*state.cached_chunk);
@@ -302,6 +311,8 @@ OperatorFinalizeResultType CachingPhysicalOperator::FinalExecute(ExecutionContex
 	} else {
 		chunk.SetCardinality(0);
 	}
+
+	chunk.SetActiveUUID(uuid.uuid);
 	return OperatorFinalizeResultType::FINISHED;
 }
 

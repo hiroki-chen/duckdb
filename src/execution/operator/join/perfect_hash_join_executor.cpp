@@ -2,6 +2,9 @@
 
 #include "duckdb/common/types/row/row_layout.hpp"
 #include "duckdb/execution/operator/join/physical_hash_join.hpp"
+#include "plan_args.pb.h"
+
+#include <iostream>
 
 namespace duckdb {
 
@@ -165,8 +168,18 @@ unique_ptr<OperatorState> PerfectHashJoinExecutor::GetOperatorState(ExecutionCon
 	return std::move(state);
 }
 
+// TODO:
+//
+// For this function we need obtain the row information that describes for each joined tuple,
+// the indices of the tuples that were joined.
 OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionContext &context, DataChunk &input,
                                                                   DataChunk &result, OperatorState &state_p) {
+	std::cout << "probe perfect hash table: \n";
+	debug_print_df(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, input.GetActiveUUID(), PICACHV_UUID_LEN);
+	input.Print();
+	// At this point the result's schema is determined but its data is still empty.
+	result.Print();
+
 	auto &state = state_p.Cast<PerfectHashJoinState>();
 	// keeps track of how many probe keys have a match
 	idx_t probe_sel_count = 0;
@@ -174,20 +187,29 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 	// fetch the join keys from the chunk
 	state.join_keys.Reset();
 	state.probe_executor.Execute(input, state.join_keys);
+
+	std::cout << "join keys:\n";
+	state.join_keys.Print();
 	// select the keys that are in the min-max range
 	auto &keys_vec = state.join_keys.data[0];
 	auto keys_count = state.join_keys.size();
 	// todo: add check for fast pass when probe is part of build domain
 	FillSelectionVectorSwitchProbe(keys_vec, state.build_sel_vec, state.probe_sel_vec, keys_count, probe_sel_count);
 
+	// @hiroki-chen: For this type of hash join all columns are preserved so there is no need
+	// to check "which" columns are ouptut.
+
 	// If build is dense and probe is in build's domain, just reference probe
 	if (perfect_join_statistics.is_build_dense && keys_count == probe_sel_count) {
 		result.Reference(input);
 	} else {
 		// otherwise, filter it out the values that do not match
+		// TODO: Need to modify the dataframe in the monitor.
 		result.Slice(input, state.probe_sel_vec, probe_sel_count, 0);
 	}
+
 	// on the build side, we need to fetch the data and build dictionary vectors with the sel_vec
+	// todo: in this loop we can also tell the monitor which tuples are joined.
 	for (idx_t i = 0; i < join.rhs_output_types.size(); i++) {
 		auto &result_vector = result.data[input.ColumnCount() + i];
 		D_ASSERT(result_vector.GetType() == ht.layout.GetTypes()[ht.output_columns[i]]);
@@ -195,6 +217,14 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 		result_vector.Reference(build_vec);
 		result_vector.Slice(state.build_sel_vec, probe_sel_count);
 	}
+
+	// TODO: Construct valid argument here from what we have above.
+	PicachvMessages::PlanArgument arg;
+	PicachvMessages::JoinInformation *join_info = arg.mutable_transform_info()->mutable_join();
+	PicachvMessages::JoinByIdx *join_by_idx = join_info->mutable_join_by_idx();
+	join_info->mutable_lhs_df_uuid()->assign(reinterpret_cast<const char *>(input.GetActiveUUID()), PICACHV_UUID_LEN);
+	join_info->mutable_rhs_df_uuid()->assign(reinterpret_cast<const char *>(result.GetActiveUUID()), PICACHV_UUID_LEN);
+
 	return OperatorResultType::NEED_MORE_INPUT;
 }
 

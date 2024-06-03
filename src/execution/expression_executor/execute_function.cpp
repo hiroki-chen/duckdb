@@ -77,11 +77,13 @@ void ExpressionExecutor::Execute(const BoundFunctionExpression &expr, Expression
 	arguments.SetCardinality(count);
 	arguments.Verify();
 
-	auto arrow_buffer = arguments.ToArrowIpc();
-
-	if (reify_expression(context.get()->ctx_uuid.uuid, PICACHV_UUID_LEN, expr.expr_uuid.uuid, PICACHV_UUID_LEN,
-	                     arrow_buffer->data(), arrow_buffer->size()) != 0) {
-		throw InternalException(GetErrorMessage());
+	if (is_query_executor) {
+		auto arrow_buffer = arguments.ToArrowIpc();
+		if (reify_expression(context.get()->ctx_uuid.uuid, PICACHV_UUID_LEN, expr.expr_uuid.uuid, PICACHV_UUID_LEN,
+		                     arrow_buffer->data(), arrow_buffer->size()) != ErrorCode::Success) {
+			// throw InternalException("Function error: " + expr.function.name + GetErrorMessage());
+			expr.function.function(arguments, *state, result);
+		}
 	}
 
 	D_ASSERT(expr.function.function);
