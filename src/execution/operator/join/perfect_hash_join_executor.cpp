@@ -208,6 +208,10 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 		result.Slice(input, state.probe_sel_vec, probe_sel_count, 0);
 	}
 
+	for (auto c : ht.output_columns) {
+		std::cout << "output column: " << c << std::endl;
+	}
+
 	// on the build side, we need to fetch the data and build dictionary vectors with the sel_vec
 	// todo: in this loop we can also tell the monitor which tuples are joined.
 	for (idx_t i = 0; i < join.rhs_output_types.size(); i++) {
@@ -221,9 +225,24 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 	// TODO: Construct valid argument here from what we have above.
 	PicachvMessages::PlanArgument arg;
 	PicachvMessages::JoinInformation *join_info = arg.mutable_transform_info()->mutable_join();
-	PicachvMessages::JoinByIdx *join_by_idx = join_info->mutable_join_by_idx();
 	join_info->mutable_lhs_df_uuid()->assign(reinterpret_cast<const char *>(input.GetActiveUUID()), PICACHV_UUID_LEN);
 	join_info->mutable_rhs_df_uuid()->assign(reinterpret_cast<const char *>(result.GetActiveUUID()), PICACHV_UUID_LEN);
+
+	for (size_t i = 0; i < input.ColumnCount(); i++) {
+		join_info->mutable_left_columns()->Add(i);
+	}
+	for (size_t i = 0; i < ht.output_columns.size(); i++) {
+		join_info->mutable_right_columns()->Add(ht.output_columns[i]);
+	}
+
+	(void)arg.mutable_transform();
+	duckdb_uuid_t uuid;
+	if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
+	                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, uuid.uuid,
+	                     PICACHV_UUID_LEN) != ErrorCode::Success) {
+		throw InternalException(GetErrorMessage());
+	}
+	result.SetActiveUUID(uuid.uuid);
 
 	return OperatorResultType::NEED_MORE_INPUT;
 }

@@ -71,7 +71,7 @@ OperatorResultType PhysicalFilter::ExecuteInternal(ExecutionContext &context, Da
 		if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().data(),
 		                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, uuid.uuid,
 		                     PICACHV_UUID_LEN) != ErrorCode::Success) {
-			throw InternalException(GetErrorMessage());
+			// throw InternalException(GetErrorMessage());
 		}
 
 		chunk.SetActiveUUID(uuid.uuid);

@@ -22,8 +22,11 @@ int main() {
 	}
 
 	con.Query("CREATE TABLE integers(a INTEGER, b INTEGER)");
+	con.Query("CREATE TABLE integers2(a INTEGER, c INTEGER)");
 	for (size_t i = 0; i < 5; i++) {
 		std::string query = "INSERT INTO integers VALUES (" + std::to_string(i) + ", " + std::to_string(5 - i) + ")";
+		con.Query(query);
+		query = "INSERT INTO integers2 VALUES (" + std::to_string(i) + ", " + std::to_string(5 - i) + ")";
 		con.Query(query);
 	}
 
@@ -32,14 +35,18 @@ int main() {
 		std::cout << "RegisterPolicyDataFrame() returned " << ec << std::endl;
 		return 1;
 	}
+	ec = con.RegisterPolicyDataFrame("integers2", "../../../data/json/simple_policy.json");
+	if (ec != ErrorCode::Success) {
+		std::cout << "RegisterPolicyDataFrame() returned " << ec << std::endl;
+		return 1;
+	}
 
 	// auto result = con.Query("explain(SELECT * FROM (integers t1 JOIN integers t2 ON t1.a = t2.b))");
 	// result->Print();
 	std::cout << "================\n";
-	auto result = con.Query("EXPLAIN (SELECT * from integers t1 JOIN integers t2 ON t1.a = t2.a)");
+	auto result = con.Query("EXPLAIN (SELECT * from integers JOIN integers2 ON integers.a = integers2.a)");
 	result->Print();
-	// TODO: FIX the bug. The projection seems not working.
-	result = con.Query("(SELECT * from integers t1 JOIN integers t2 ON t1.a = t2.a)");
+	result = con.Query("SELECT * from integers JOIN integers2 ON integers.a = integers2.a");
 	// result = con.Query("explain (SELECT * FROM integers)");
 	// auto res = result->Fetch();
 	// std::cout << "res == nullptr? " <<( res == nullptr) << "\n";

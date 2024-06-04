@@ -48,7 +48,7 @@ void BoundReferenceExpression::CreateExprInArena(ClientContext &context) const {
 	PicachvMessages::ExprArgument arg;
 	PicachvMessages::ColumnExpr *expr = arg.mutable_column();
 
-	expr->set_column_id(index);
+	expr->mutable_column()->set_column_index(index);
 
 	if (expr_from_args(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
 	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
