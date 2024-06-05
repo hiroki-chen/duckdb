@@ -43,18 +43,4 @@ void BoundConstantExpression::CreateExprInArena(ClientContext &context) const {
 		throw InternalException(GetErrorMessage());
 	}
 }
-
-// duckdb_uuid_t BoundConstantExpression::CreateExprInArena(ClientContext &context) const {
-// 	duckdb_uuid_t expr_uuid;
-// 	PicachvMessages::ExprArgument arg;
-// 	PicachvMessages::LiteralExpr *expr = arg.mutable_literal();
-
-// 	if (expr_from_args(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (const uint8_t *)arg.SerializeAsString().c_str(),
-// 	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
-// 		throw InternalException(GetErrorMessage());
-// 	}
-
-// 	return expr_uuid;
-// }
-
 } // namespace duckdb

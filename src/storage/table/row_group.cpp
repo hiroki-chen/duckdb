@@ -613,14 +613,16 @@ void RowGroup::Scan(TransactionData transaction, CollectionScanState &state, Dat
 		// TODO: Add the filter:
 		// After evaluating the filter, we should be able to get the boolean array.
 
-		if (execute_epilogue(state.context->ctx_uuid.uuid, PICACHV_UUID_LEN,
-		                     (const uint8_t *)plan_arg.SerializeAsString().c_str(), plan_arg.ByteSizeLong(), uuid.uuid,
-		                     PICACHV_UUID_LEN, output.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
-			throw InternalException(GetErrorMessage());
-		}
+		if (state.context->PolicyCheckingEnabled()) {
+			if (execute_epilogue(state.context->ctx_uuid.uuid, PICACHV_UUID_LEN,
+			                     (const uint8_t *)plan_arg.SerializeAsString().c_str(), plan_arg.ByteSizeLong(),
+			                     uuid.uuid, PICACHV_UUID_LEN, output.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
+				throw InternalException(GetErrorMessage());
+			}
 
-		// Finally, we are done and set the uuid.
-		result.SetActiveUUID(output.uuid);
+			// Finally, we are done and set the uuid.
+			result.SetActiveUUID(output.uuid);
+		}
 	}
 }
 

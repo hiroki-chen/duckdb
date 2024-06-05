@@ -36,22 +36,26 @@ OperatorResultType PhysicalProjection::Execute(ExecutionContext &context, DataCh
 	duckdb_uuid_t out;
 	auto &state = state_p.Cast<ProjectionState>();
 
-	for (auto &child : select_list) {
-		child->CreateExprInArena(context.client);
-		proj->mutable_expression()->Add(string((char *)child->expr_uuid.uuid, PICACHV_UUID_LEN));
+	if (context.client.PolicyCheckingEnabled()) {
+		for (auto &child : select_list) {
+			child->CreateExprInArena(context.client);
+			proj->mutable_expression()->Add(string((char *)child->expr_uuid.uuid, PICACHV_UUID_LEN));
+		}
 	}
 
 	state.executor.is_query_executor = true;
 	state.executor.Execute(input, chunk);
 	state.executor.is_query_executor = false;
 
-	if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
-	                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, out.uuid,
-	                     PICACHV_UUID_LEN) != ErrorCode::Success) {
-		throw InternalException(GetErrorMessage());
-	}
+	if (context.client.PolicyCheckingEnabled()) {
+		if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
+		                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, out.uuid,
+		                     PICACHV_UUID_LEN) != ErrorCode::Success) {
+			throw InternalException(GetErrorMessage());
+		}
 
-	chunk.SetActiveUUID(out.uuid);
+		chunk.SetActiveUUID(out.uuid);
+	}
 
 	return OperatorResultType::NEED_MORE_INPUT;
 }
