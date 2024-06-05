@@ -85,6 +85,14 @@ void Connection::DisableQueryVerification() {
 	ClientConfig::GetConfig(*context).query_verification_enabled = false;
 }
 
+void Connection::EnablePolicyChecking() {
+	ClientConfig::GetConfig(*context).enable_policy_checking = true;
+}
+
+void Connection::DisablePolicyChecking() {
+	ClientConfig::GetConfig(*context).enable_policy_checking = false;
+}
+
 void Connection::ForceParallelism() {
 	ClientConfig::GetConfig(*context).verify_parallelism = true;
 }

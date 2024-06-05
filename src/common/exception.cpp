@@ -21,9 +21,8 @@
 namespace duckdb {
 
 std::string GetErrorMessage() {
-	uint8_t err_msg[2048];
-	size_t len = sizeof(err_msg);
-
+	size_t len = 65535;
+	uint8_t *err_msg = new uint8_t[len];
 	last_error(err_msg, &len);
 	return std::string(reinterpret_cast<char *>(err_msg), len);
 }

@@ -616,7 +616,7 @@ void RowGroup::Scan(TransactionData transaction, CollectionScanState &state, Dat
 		if (execute_epilogue(state.context->ctx_uuid.uuid, PICACHV_UUID_LEN,
 		                     (const uint8_t *)plan_arg.SerializeAsString().c_str(), plan_arg.ByteSizeLong(), uuid.uuid,
 		                     PICACHV_UUID_LEN, output.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
-			// throw InternalException(GetErrorMessage());
+			throw InternalException(GetErrorMessage());
 		}
 
 		// Finally, we are done and set the uuid.

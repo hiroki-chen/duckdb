@@ -25,6 +25,8 @@ struct BatchedChunkScanState {
 class BatchedDataCollection {
 public:
 	vector<std::array<uint8_t, 16>> uuids;
+	ClientContext &context;
+
 public:
 	DUCKDB_API BatchedDataCollection(ClientContext &context, vector<LogicalType> types, bool buffer_managed = false);
 
@@ -53,7 +55,6 @@ private:
 		ColumnDataAppendState append_state;
 	};
 
-	ClientContext &context;
 	vector<LogicalType> types;
 	bool buffer_managed;
 	//! The data of the batched chunk collection - a set of batch_index -> ColumnDataCollection pointers

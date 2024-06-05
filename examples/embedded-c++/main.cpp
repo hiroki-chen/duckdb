@@ -41,12 +41,15 @@ int main() {
 		return 1;
 	}
 
-	// auto result = con.Query("explain(SELECT * FROM (integers t1 JOIN integers t2 ON t1.a = t2.b))");
-	// result->Print();
 	std::cout << "================\n";
 	auto result = con.Query("EXPLAIN (SELECT * from integers JOIN integers2 ON integers.a = integers2.a)");
 	result->Print();
-	result = con.Query("SELECT * from integers JOIN integers2 ON integers.a = integers2.a");
+	con.EnablePolicyChecking();
+	try {
+		result = con.Query("SELECT * from integers JOIN integers2 ON integers.a = integers2.a");
+	} catch (Exception e) {
+		std::cerr << "Exception: " << e.what() << "\n";
+	}
 	// result = con.Query("explain (SELECT * FROM integers)");
 	// auto res = result->Fetch();
 	// std::cout << "res == nullptr? " <<( res == nullptr) << "\n";

@@ -48,7 +48,7 @@ OperatorResultType PhysicalProjection::Execute(ExecutionContext &context, DataCh
 	if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
 	                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, out.uuid,
 	                     PICACHV_UUID_LEN) != ErrorCode::Success) {
-		// throw InternalException(GetErrorMessage());
+		throw InternalException(GetErrorMessage());
 	}
 
 	chunk.SetActiveUUID(out.uuid);

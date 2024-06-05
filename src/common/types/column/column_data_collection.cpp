@@ -1,14 +1,14 @@
 #include "duckdb/common/types/column/column_data_collection.hpp"
 
 #include "duckdb/common/printer.hpp"
+#include "duckdb/common/serializer/deserializer.hpp"
+#include "duckdb/common/serializer/serializer.hpp"
 #include "duckdb/common/string_util.hpp"
 #include "duckdb/common/types/column/column_data_collection_segment.hpp"
 #include "duckdb/common/types/value_map.hpp"
 #include "duckdb/common/uhugeint.hpp"
 #include "duckdb/common/vector_operations/vector_operations.hpp"
 #include "duckdb/storage/buffer_manager.hpp"
-#include "duckdb/common/serializer/serializer.hpp"
-#include "duckdb/common/serializer/deserializer.hpp"
 
 namespace duckdb {
 
@@ -781,9 +781,15 @@ static bool IsComplexType(const LogicalType &type) {
 	};
 }
 
+// TODO: For this function we need to "do" append.
 void ColumnDataCollection::Append(ColumnDataAppendState &state, DataChunk &input) {
 	D_ASSERT(!finished_append);
 	D_ASSERT(types == input.GetTypes());
+
+	std::array<uint8_t, 16> element;
+	const uint8_t* uuid = input.GetActiveUUID();
+	std::copy(uuid, uuid + PICACHV_UUID_LEN, element.begin());	
+	uuids.emplace_back(std::move(element));
 
 	auto &segment = *segments.back();
 	for (idx_t vector_idx = 0; vector_idx < types.size(); vector_idx++) {

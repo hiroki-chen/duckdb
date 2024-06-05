@@ -280,6 +280,10 @@ const string &ClientContext::GetCurrentQuery() {
 	return active_query->query;
 }
 
+bool ClientContext::PolicyCheckingEnabled() {
+	return config.enable_policy_checking;
+}
+
 unique_ptr<QueryResult> ClientContext::FetchResultInternal(ClientContextLock &lock, PendingQueryResult &pending) {
 	D_ASSERT(active_query);
 	D_ASSERT(active_query->IsOpenResult(pending));

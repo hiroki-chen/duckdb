@@ -199,6 +199,11 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 	// @hiroki-chen: For this type of hash join all columns are preserved so there is no need
 	// to check "which" columns are ouptut.
 
+	PicachvMessages::PlanArgument arg;
+	PicachvMessages::JoinInformation *join_info = arg.mutable_transform_info()->mutable_join();
+	google::protobuf::RepeatedPtrField<PicachvMessages::RowJoinInformation> *row_join_info =
+	    join_info->mutable_row_join_info();
+
 	// If build is dense and probe is in build's domain, just reference probe
 	if (perfect_join_statistics.is_build_dense && keys_count == probe_sel_count) {
 		result.Reference(input);
@@ -208,8 +213,14 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 		result.Slice(input, state.probe_sel_vec, probe_sel_count, 0);
 	}
 
-	for (auto c : ht.output_columns) {
-		std::cout << "output column: " << c << std::endl;
+	for (idx_t i = 0; i < probe_sel_count; i++) {
+		idx_t left = state.probe_sel_vec.get_index(i);
+		idx_t right = state.build_sel_vec.get_index(i);
+		PicachvMessages::RowJoinInformation row_info;
+		row_info.set_left_row(left);
+		row_info.set_right_row(right);
+
+		row_join_info->Add(std::move(row_info));
 	}
 
 	// on the build side, we need to fetch the data and build dictionary vectors with the sel_vec
@@ -222,9 +233,6 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 		result_vector.Slice(state.build_sel_vec, probe_sel_count);
 	}
 
-	// TODO: Construct valid argument here from what we have above.
-	PicachvMessages::PlanArgument arg;
-	PicachvMessages::JoinInformation *join_info = arg.mutable_transform_info()->mutable_join();
 	join_info->mutable_lhs_df_uuid()->assign(reinterpret_cast<const char *>(input.GetActiveUUID()), PICACHV_UUID_LEN);
 	join_info->mutable_rhs_df_uuid()->assign(reinterpret_cast<const char *>(result.GetActiveUUID()), PICACHV_UUID_LEN);
 
@@ -235,6 +243,8 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 		join_info->mutable_right_columns()->Add(ht.output_columns[i]);
 	}
 
+	// This step just ensures that we have set the proper protobuf field
+	// to indicate that we are doing a join but no other logic of computation.
 	(void)arg.mutable_transform();
 	duckdb_uuid_t uuid;
 	if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),

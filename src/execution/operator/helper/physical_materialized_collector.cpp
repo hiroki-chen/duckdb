@@ -2,6 +2,7 @@
 
 #include "duckdb/main/client_context.hpp"
 #include "duckdb/main/materialized_query_result.hpp"
+#include "picachv_interfaces.h"
 
 #include <iostream>
 
@@ -32,7 +33,7 @@ SinkResultType PhysicalMaterializedCollector::Sink(ExecutionContext &context, Da
 	auto &lstate = input.local_state.Cast<MaterializedCollectorLocalState>();
 
 	std::cout << "PhysicalMaterializedCollector::Sink\n";
-	std::cout << "uuid = " << StringUtil::ByteArrayToString(chunk.GetActiveUUID(), 16) << std::endl;
+	debug_print_df(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, chunk.GetActiveUUID(), PICACHV_UUID_LEN);
 
 	lstate.collection->Append(lstate.append_state, chunk);
 	return SinkResultType::NEED_MORE_INPUT;
@@ -74,6 +75,16 @@ unique_ptr<QueryResult> PhysicalMaterializedCollector::GetResult(GlobalSinkState
 	if (!gstate.collection) {
 		gstate.collection = make_uniq<ColumnDataCollection>(Allocator::DefaultAllocator(), types);
 	}
+
+	if (gstate.context->PolicyCheckingEnabled()) {
+		for (auto &uuid : gstate.collection->uuids) {
+			if (finalize(gstate.context->ctx_uuid.uuid, PICACHV_UUID_LEN, uuid.data(), PICACHV_UUID_LEN) !=
+			    ErrorCode::Success) {
+				throw InternalException("PhysicalBatchCollector: " + GetErrorMessage());
+			}
+		}
+	}
+
 	auto result = make_uniq<MaterializedQueryResult>(statement_type, properties, names, std::move(gstate.collection),
 	                                                 gstate.context->GetClientProperties());
 	return std::move(result);

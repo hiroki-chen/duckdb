@@ -25,6 +25,8 @@ class ColumnDataRowCollection;
 //! It is efficient to read and scan
 class ColumnDataCollection {
 public:
+	vector<std::array<uint8_t, 16>> uuids;
+public:
 	//! Constructs an in-memory column data collection from an allocator
 	DUCKDB_API ColumnDataCollection(Allocator &allocator, vector<LogicalType> types);
 	//! Constructs an empty (but valid) in-memory column data collection from an allocator

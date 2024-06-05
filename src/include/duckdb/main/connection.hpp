@@ -74,6 +74,9 @@ public:
 	//! Enable aggressive verification/testing of queries, should only be used in testing
 	DUCKDB_API void EnableQueryVerification();
 	DUCKDB_API void DisableQueryVerification();
+	//! Enable policy checking.
+	DUCKDB_API void EnablePolicyChecking();
+	DUCKDB_API void DisablePolicyChecking();
 	//! Force parallel execution, even for smaller tables. Should only be used in testing.
 	DUCKDB_API void ForceParallelism();
 

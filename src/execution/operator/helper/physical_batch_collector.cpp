@@ -75,18 +75,13 @@ unique_ptr<GlobalSinkState> PhysicalBatchCollector::GetGlobalSinkState(ClientCon
 
 unique_ptr<QueryResult> PhysicalBatchCollector::GetResult(GlobalSinkState &state) {
 	auto &gstate = state.Cast<BatchCollectorGlobalState>();
-	D_ASSERT(gstate.result);
-	return std::move(gstate.result);
-}
 
-unique_ptr<QueryResult> PhysicalBatchCollector::GetResult(GlobalSinkState &state, ClientContext &context) {
-	auto &gstate = state.Cast<BatchCollectorGlobalState>();
-	for (size_t i = 0; i < gstate.data.uuids.size(); i++) {
-		std::cout << "PhysicalBatchCollector::GetResult: "
-		          << StringUtil::ByteArrayToString(gstate.data.uuids[i].data(), 16) << std::endl;
-		if (finalize(context.ctx_uuid.uuid, sizeof(duckdb_uuid_t), gstate.data.uuids[i].data(),
-		             sizeof(duckdb_uuid_t)) != ErrorCode::Success) {
-			throw InternalException("PhysicalBatchCollector: " + GetErrorMessage());
+	if (gstate.data.context.PolicyCheckingEnabled()) {
+		for (size_t i = 0; i < gstate.data.uuids.size(); i++) {
+			if (finalize(gstate.data.context.ctx_uuid.uuid, PICACHV_UUID_LEN, gstate.data.uuids[i].data(),
+			             PICACHV_UUID_LEN) != ErrorCode::Success) {
+				throw InternalException("PhysicalBatchCollector: " + GetErrorMessage());
+			}
 		}
 	}
 
