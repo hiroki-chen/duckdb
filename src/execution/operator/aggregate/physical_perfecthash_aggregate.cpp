@@ -210,7 +210,7 @@ SourceResultType PhysicalPerfectHashAggregate::GetData(ExecutionContext &context
 		agg->mutable_aggs_uuid()->Add(string(reinterpret_cast<char *>(aggr_expr->expr_uuid.uuid), PICACHV_UUID_LEN));
 	}
 	for (auto &idx : gstate.ht->group_indices) {
-		slice->mutable_groups()->Add(idx);
+		slice->mutable_groups()->Add(idx - 1);
 	}
 
 	gstate.ht->Scan(state.ht_scan_position, chunk);

@@ -12,8 +12,8 @@ void DoInsert(Connection &con) {
 	con.Query("INSERT INTO integers VALUES (5, 3)");
 
 	con.Query("INSERT INTO integers2 VALUES (1, 5)");
-	con.Query("INSERT INTO integers2 VALUES (2, 5)");
-	con.Query("INSERT INTO integers2 VALUES (3, 4)");
+	con.Query("INSERT INTO integers2 VALUES (2, 4)");
+	con.Query("INSERT INTO integers2 VALUES (3, 5)");
 	con.Query("INSERT INTO integers2 VALUES (4, 4)");
 	con.Query("INSERT INTO integers2 VALUES (5, 3)");
 }
@@ -45,18 +45,18 @@ int main() {
 		std::cout << "RegisterPolicyDataFrame() returned " << ec << std::endl;
 		return 1;
 	}
-	ec = con.RegisterPolicyDataFrame("integers2", "../../../data/json/simple_policy.json");
+	ec = con.RegisterPolicyDataFrame("integers2", "../../../data/json/simple_policy2.json");
 	if (ec != ErrorCode::Success) {
 		std::cout << "RegisterPolicyDataFrame() returned " << ec << std::endl;
 		return 1;
 	}
 
 	std::cout << "================\n";
-	auto result = con.Query("EXPLAIN (SELECT SUM(a), b FROM integers GROUP BY b)");
+	auto result = con.Query("EXPLAIN (SELECT SUM(a), c FROM integers2 GROUP BY c)");
 	result->Print();
 	con.EnablePolicyChecking();
 	try {
-		result = con.Query("SELECT SUM(a), b FROM integers GROUP BY b");
+		result = con.Query("SELECT SUM(a), c FROM integers2 GROUP BY c");
 	} catch (Exception e) {
 		std::cerr << "Exception: " << e.what() << "\n";
 	}
