@@ -37,6 +37,12 @@ struct TemplatedIntegralCompress<uhugeint_t, RESULT_TYPE> {
 
 template <class INPUT_TYPE, class RESULT_TYPE>
 static void IntegralCompressFunction(DataChunk &args, ExpressionState &state, Vector &result) {
+	std::cout << "IntegralCompressFunction\n";
+	std::cout << StringUtil::ByteArrayToString(args.GetActiveUUID(), 16) << "\n";
+	// Print the datachunk.
+	args.Print();
+
+
 	D_ASSERT(args.ColumnCount() == 2);
 	D_ASSERT(args.data[1].GetVectorType() == VectorType::CONSTANT_VECTOR);
 	const auto min_val = ConstantVector::GetData<INPUT_TYPE>(args.data[1])[0];
@@ -119,6 +125,9 @@ struct TemplatedIntegralDecompress<INPUT_TYPE, uhugeint_t> {
 
 template <class INPUT_TYPE, class RESULT_TYPE>
 static void IntegralDecompressFunction(DataChunk &args, ExpressionState &state, Vector &result) {
+	std::cout << "IntegralDecompressFunction\n";
+	std::cout << StringUtil::ByteArrayToString(args.GetActiveUUID(), 16) << "\n";
+
 	D_ASSERT(args.ColumnCount() == 2);
 	D_ASSERT(args.data[1].GetVectorType() == VectorType::CONSTANT_VECTOR);
 	D_ASSERT(args.data[1].GetType() == result.GetType());

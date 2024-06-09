@@ -13,6 +13,8 @@
 #include "duckdb/common/vector_operations/vector_operations.hpp"
 #include "duckdb/function/aggregate_state.hpp"
 
+#include <iostream>
+
 namespace duckdb {
 
 // structs
@@ -52,6 +54,7 @@ private:
 	template <class STATE_TYPE, class INPUT_TYPE, class OP>
 	static inline void UnaryFlatLoop(const INPUT_TYPE *__restrict idata, AggregateInputData &aggr_input_data,
 	                                 STATE_TYPE **__restrict states, ValidityMask &mask, idx_t count) {
+    // count = row num of input being aggregated.
 		if (OP::IgnoreNull() && !mask.AllValid()) {
 			AggregateUnaryInput input(aggr_input_data, mask);
 			auto &base_idx = input.input_idx;

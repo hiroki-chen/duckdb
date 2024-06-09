@@ -44,9 +44,6 @@ SinkCombineResultType PhysicalBatchCollector::Combine(ExecutionContext &context,
 	auto &gstate = input.global_state.Cast<BatchCollectorGlobalState>();
 	auto &state = input.local_state.Cast<BatchCollectorLocalState>();
 
-	for (auto uuid : state.data.uuids)
-		std::cout << "combining " << StringUtil::ByteArrayToString(state.data.uuids[0].data(), 16) << "\n";
-
 	lock_guard<mutex> lock(gstate.glock);
 	gstate.data.Merge(state.data);
 

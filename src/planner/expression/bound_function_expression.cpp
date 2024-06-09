@@ -12,6 +12,14 @@
 
 namespace duckdb {
 
+static bool ShouldPass(const BoundFunctionExpression &func) {
+	auto iter = std::find_if(identity_function.begin(), identity_function.end(), [&](const string &name) {
+		return func.function.name.find(name) == 0;
+	});
+
+	return iter != identity_function.end() && func.children.size() == 1;
+}
+
 BoundFunctionExpression::BoundFunctionExpression(LogicalType return_type, ScalarFunction bound_function,
                                                  vector<unique_ptr<Expression>> arguments,
                                                  unique_ptr<FunctionData> bind_info, bool is_operator)
@@ -114,6 +122,13 @@ unique_ptr<Expression> BoundFunctionExpression::Deserialize(Deserializer &deseri
 }
 
 void BoundFunctionExpression::CreateExprInArena(ClientContext &context) const {
+	if (!ShouldPass(*this)) {
+		children[0]->CreateExprInArena(context);
+		memcpy(expr_uuid.uuid, children[0]->expr_uuid.uuid, PICACHV_UUID_LEN);
+
+		return;
+	}
+
 	PicachvMessages::ExprArgument arg;
 	PicachvMessages::ApplyExpr *expr = arg.mutable_apply();
 

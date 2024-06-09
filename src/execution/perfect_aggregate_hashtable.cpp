@@ -1,7 +1,10 @@
 #include "duckdb/execution/perfect_aggregate_hashtable.hpp"
+
 #include "duckdb/common/numeric_utils.hpp"
 #include "duckdb/common/row_operations/row_operations.hpp"
 #include "duckdb/execution/expression_executor.hpp"
+
+#include <iostream>
 
 namespace duckdb {
 
@@ -125,6 +128,7 @@ void PerfectAggregateHashTable::AddChunk(DataChunk &groups, DataChunk &payload) 
 		current_shift -= required_bits[i];
 		ComputeGroupLocation(groups.data[i], group_minima[i], address_data, current_shift, groups.size());
 	}
+	group_indices.insert(group_indices.end(), address_data, address_data + groups.size());
 	// now we have the HT entry number for every tuple
 	// compute the actual pointer to the data by adding it to the base HT pointer and multiplying by the tuple size
 	for (idx_t i = 0; i < groups.size(); i++) {
@@ -189,6 +193,8 @@ void PerfectAggregateHashTable::Combine(PerfectAggregateHashTable &other) {
 	// FIXME: Destroy()-function of the hash table expects an allocator in some cases (e.g., for sorted aggregates)
 	stored_allocators.push_back(std::move(other.aggregate_allocator));
 	other.aggregate_allocator = make_uniq<ArenaAllocator>(allocator);
+
+	group_indices.insert(group_indices.end(), other.group_indices.begin(), other.group_indices.end());
 }
 
 template <class T>
@@ -249,6 +255,7 @@ void PerfectAggregateHashTable::Scan(idx_t &scan_position, DataChunk &result) {
 	uint32_t group_values[STANDARD_VECTOR_SIZE];
 
 	// iterate over the HT until we either have exhausted the entire HT, or
+	// we have read the maximum amount of entries for a chunk.
 	idx_t entry_count = 0;
 	for (; scan_position < total_groups; scan_position++) {
 		if (group_is_set[scan_position]) {

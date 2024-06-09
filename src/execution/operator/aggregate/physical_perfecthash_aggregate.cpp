@@ -4,6 +4,10 @@
 #include "duckdb/planner/expression/bound_aggregate_expression.hpp"
 #include "duckdb/planner/expression/bound_reference_expression.hpp"
 #include "duckdb/storage/buffer_manager.hpp"
+#include "picachv_interfaces.h"
+#include "plan_args.pb.h"
+
+#include <iostream>
 
 namespace duckdb {
 
@@ -116,6 +120,7 @@ unique_ptr<LocalSinkState> PhysicalPerfectHashAggregate::GetLocalSinkState(Execu
 
 SinkResultType PhysicalPerfectHashAggregate::Sink(ExecutionContext &context, DataChunk &chunk,
                                                   OperatorSinkInput &input) const {
+	std::copy(chunk.GetActiveUUID(), chunk.GetActiveUUID() + PICACHV_UUID_LEN, df_uuid.begin());
 	auto &lstate = input.local_state.Cast<PerfectHashAggregateLocalState>();
 	DataChunk &group_chunk = lstate.group_chunk;
 	DataChunk &aggregate_input_chunk = lstate.aggregate_input_chunk;
@@ -125,6 +130,7 @@ SinkResultType PhysicalPerfectHashAggregate::Sink(ExecutionContext &context, Dat
 		D_ASSERT(group->type == ExpressionType::BOUND_REF);
 		auto &bound_ref_expr = group->Cast<BoundReferenceExpression>();
 		group_chunk.data[group_idx].Reference(chunk.data[bound_ref_expr.index]);
+		bound_ref_expr.CreateExprInArena(context.client);
 	}
 	idx_t aggregate_input_idx = 0;
 	for (auto &aggregate : aggregates) {
@@ -133,7 +139,9 @@ SinkResultType PhysicalPerfectHashAggregate::Sink(ExecutionContext &context, Dat
 			D_ASSERT(child_expr->type == ExpressionType::BOUND_REF);
 			auto &bound_ref_expr = child_expr->Cast<BoundReferenceExpression>();
 			aggregate_input_chunk.data[aggregate_input_idx++].Reference(chunk.data[bound_ref_expr.index]);
+			bound_ref_expr.CreateExprInArena(context.client);
 		}
+		aggr.CreateExprInArena(context.client);
 	}
 	for (auto &aggregate : aggregates) {
 		auto &aggr = aggregate->Cast<BoundAggregateExpression>();
@@ -191,7 +199,30 @@ SourceResultType PhysicalPerfectHashAggregate::GetData(ExecutionContext &context
 	auto &state = input.global_state.Cast<PerfectHashAggregateState>();
 	auto &gstate = sink_state->Cast<PerfectHashAggregateGlobalState>();
 
+	PicachvMessages::PlanArgument arg;
+	PicachvMessages::AggregateArgument *agg = arg.mutable_aggregate();
+	PicachvMessages::GroupBySlice *slice = agg->mutable_group_by_proxy()->mutable_group_by_slice();
+
+	for (auto &gb_expr : groups) {
+		agg->mutable_keys()->Add(string(reinterpret_cast<char *>(gb_expr->expr_uuid.uuid), PICACHV_UUID_LEN));
+	}
+	for (auto &aggr_expr : aggregates) {
+		agg->mutable_aggs_uuid()->Add(string(reinterpret_cast<char *>(aggr_expr->expr_uuid.uuid), PICACHV_UUID_LEN));
+	}
+	for (auto &idx : gstate.ht->group_indices) {
+		slice->mutable_groups()->Add(idx);
+	}
+
 	gstate.ht->Scan(state.ht_scan_position, chunk);
+
+	duckdb_uuid_t uuid;
+	if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
+	                     arg.ByteSizeLong(), df_uuid.data(), PICACHV_UUID_LEN, uuid.uuid,
+	                     PICACHV_UUID_LEN) != ErrorCode::Success) {
+		throw InternalException(GetErrorMessage());
+	}
+
+	chunk.SetActiveUUID(uuid.uuid);
 
 	if (chunk.size() > 0) {
 		return SourceResultType::HAVE_MORE_OUTPUT;

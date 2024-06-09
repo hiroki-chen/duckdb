@@ -38,6 +38,8 @@ OperatorResultType PhysicalProjection::Execute(ExecutionContext &context, DataCh
 
 	if (context.client.PolicyCheckingEnabled()) {
 		for (auto &child : select_list) {
+			std::cout << "child->GetName(): " << (int)child->GetExpressionType() << std::endl;
+
 			child->CreateExprInArena(context.client);
 			proj->mutable_expression()->Add(string((char *)child->expr_uuid.uuid, PICACHV_UUID_LEN));
 		}

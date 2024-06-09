@@ -10,6 +10,8 @@
 #include "duckdb/parser/expression_map.hpp"
 #include "duckdb/function/aggregate/distributive_functions.hpp"
 
+#include <iostream>
+
 namespace duckdb {
 
 struct SortedAggregateBindData : public FunctionData {
@@ -550,6 +552,8 @@ struct SortedAggregateFunction {
 
 	static void Finalize(Vector &states, AggregateInputData &aggr_input_data, Vector &result, idx_t count,
 	                     const idx_t offset) {
+    std::cout << "called sortedagg!\n";
+
 		auto &order_bind = aggr_input_data.bind_data->Cast<SortedAggregateBindData>();
 		auto &buffer_manager = order_bind.buffer_manager;
 		RowLayout payload_layout;

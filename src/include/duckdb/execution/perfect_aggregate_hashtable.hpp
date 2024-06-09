@@ -15,6 +15,10 @@ namespace duckdb {
 
 class PerfectAggregateHashTable : public BaseAggregateHashTable {
 public:
+	//! The vector of group indices.
+	vector<idx_t> group_indices;
+
+public:
 	PerfectAggregateHashTable(ClientContext &context, Allocator &allocator, const vector<LogicalType> &group_types,
 	                          vector<LogicalType> payload_types_p, vector<AggregateObject> aggregate_objects,
 	                          vector<Value> group_minima, vector<idx_t> required_bits);

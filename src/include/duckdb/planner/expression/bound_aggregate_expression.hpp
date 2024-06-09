@@ -52,6 +52,8 @@ public:
 
 	string ToString() const override;
 
+	void CreateExprInArena(ClientContext &context) const override;
+
 	hash_t Hash() const override;
 	bool Equals(const BaseExpression &other) const override;
 	unique_ptr<Expression> Copy() override;

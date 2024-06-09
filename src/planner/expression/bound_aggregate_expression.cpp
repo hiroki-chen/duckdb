@@ -1,12 +1,22 @@
 #include "duckdb/planner/expression/bound_aggregate_expression.hpp"
-#include "duckdb/parser/expression/function_expression.hpp"
 
 #include "duckdb/catalog/catalog_entry/aggregate_function_catalog_entry.hpp"
 #include "duckdb/common/types/hash.hpp"
-#include "duckdb/planner/expression/bound_cast_expression.hpp"
 #include "duckdb/function/function_serialization.hpp"
+#include "duckdb/parser/expression/function_expression.hpp"
+#include "duckdb/planner/expression/bound_cast_expression.hpp"
+#include "expr_args.pb.h"
+#include "picachv_interfaces.h"
 
 namespace duckdb {
+
+static PicachvMessages::GroupByMethod FuncNameToGroupBy(const string &name) {
+	if (name.find("sum") == 0) {
+		return PicachvMessages::GroupByMethod::Sum;
+	} else {
+		throw NotImplementedException("Unknown aggregate function");
+	}
+}
 
 BoundAggregateExpression::BoundAggregateExpression(AggregateFunction function, vector<unique_ptr<Expression>> children,
                                                    unique_ptr<Expression> filter, unique_ptr<FunctionData> bind_info,
@@ -27,6 +37,22 @@ hash_t BoundAggregateExpression::Hash() const {
 	result = CombineHash(result, function.Hash());
 	result = CombineHash(result, duckdb::Hash(IsDistinct()));
 	return result;
+}
+
+void BoundAggregateExpression::CreateExprInArena(ClientContext &context) const {
+	PicachvMessages::ExprArgument arg;
+	PicachvMessages::AggExpr *ae = arg.mutable_agg();
+
+	if (children.size() != 1) {
+		throw NotImplementedException("Only one child is supported for aggregate functions");
+	}
+
+	ae->set_method(FuncNameToGroupBy(function.name));
+	ae->mutable_input_uuid()->assign(reinterpret_cast<const char *>(children[0]->expr_uuid.uuid), PICACHV_UUID_LEN);
+	if (expr_from_args(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializePartialAsString().c_str(),
+	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
+		throw InternalException(GetErrorMessage());
+	}
 }
 
 bool BoundAggregateExpression::Equals(const BaseExpression &other_p) const {

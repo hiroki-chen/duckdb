@@ -101,7 +101,7 @@ bool PipelineExecutor::TryFlushCachingOperators() {
 			// Reset flag and reflush the last chunk we were flushing.
 			finalize_result = OperatorFinalizeResultType::HAVE_MORE_OUTPUT;
 		}
-
+		
 		push_result = ExecutePushInternal(curr_chunk, flushing_idx + 1);
 
 		if (finalize_result == OperatorFinalizeResultType::HAVE_MORE_OUTPUT) {

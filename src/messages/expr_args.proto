@@ -9,9 +9,7 @@ message AggExpr {
   GroupByMethod method = 2;
 }
 
-message ColumnExpr {
-  ColumnSpecifier column = 1;
-}
+message ColumnExpr { ColumnSpecifier column = 1; }
 
 message AliasExpr {
   bytes input_uuid = 1;

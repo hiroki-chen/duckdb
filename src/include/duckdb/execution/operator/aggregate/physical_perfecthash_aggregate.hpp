@@ -30,6 +30,11 @@ public:
 	vector<unique_ptr<Expression>> groups;
 	//! The aggregates that have to be computed
 	vector<unique_ptr<Expression>> aggregates;
+	// BUG: This will perhaps cause some problem because chunks will be added and we should
+	// in fact do some merge on the monitor side. But for the time begin let us just assume
+	// there is only one chunk living inside the hash table.
+	//! The UUID of the DF
+	mutable std::array<uint8_t, PICACHV_UUID_LEN> df_uuid;
 
 public:
 	// Source interface
