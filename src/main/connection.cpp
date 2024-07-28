@@ -39,7 +39,7 @@ ErrorCode Connection::InitializeCtx() {
 	return context->InitializeCtx();
 }
 
-ErrorCode Connection::RegisterPolicyDataFrame(const std::string& df, const std::string& path) {
+ErrorCode Connection::RegisterPolicyDataFrame(const std::string &df, const std::string &path) {
 	return context->RegisterPolicyDataFrame(df, path);
 }
 
@@ -63,6 +63,10 @@ string Connection::GetProfilingInformation(ProfilerPrintFormat format) {
 	} else {
 		return profiler.QueryTreeToString();
 	}
+}
+
+ErrorCode Connection::RegisterPolicyParquet(const std::string &parquet, const std::string &policy) {
+	return context->RegisterPolicyParquet(parquet, policy);
 }
 
 void Connection::Interrupt() {
@@ -91,6 +95,22 @@ void Connection::EnablePolicyChecking() {
 
 void Connection::DisablePolicyChecking() {
 	ClientConfig::GetConfig(*context).enable_policy_checking = false;
+}
+
+void Connection::EnablePicachvProfiling() {
+	enable_profiling(context->ctx_uuid.uuid, PICACHV_UUID_LEN, true);
+}
+
+void Connection::DisablePicachvProfiling() {
+	enable_profiling(context->ctx_uuid.uuid, PICACHV_UUID_LEN, false);
+}
+
+void Connection::EnableTracing() {
+	enable_tracing(context->ctx_uuid.uuid, PICACHV_UUID_LEN, true);
+}
+
+void Connection::DisableTracing() {
+	enable_tracing(context->ctx_uuid.uuid, PICACHV_UUID_LEN, false);
 }
 
 void Connection::ForceParallelism() {

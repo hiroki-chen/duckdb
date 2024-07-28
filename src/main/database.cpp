@@ -409,10 +409,6 @@ idx_t DuckDB::NumberOfThreads() {
 	return instance->NumberOfThreads();
 }
 
-ErrorCode DuckDB::InitializeMonitor() {
-	return init_monitor();
-}
-
 bool DatabaseInstance::ExtensionIsLoaded(const std::string &name) {
 	auto extension_name = ExtensionHelper::GetExtensionName(name);
 	return loaded_extensions.find(extension_name) != loaded_extensions.end();

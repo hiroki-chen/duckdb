@@ -30,9 +30,12 @@
 #include "duckdb/storage/object_cache.hpp"
 #endif
 
+#include "picachv_interfaces.h"
+
 #include <cassert>
 #include <chrono>
 #include <cstring>
+#include <iostream>
 #include <sstream>
 
 namespace duckdb {
@@ -886,8 +889,8 @@ static void ApplyFilter(Vector &v, TableFilter &filter, parquet_filter_t &filter
 	}
 }
 
-void ParquetReader::Scan(ParquetReaderScanState &state, DataChunk &result) {
-	while (ScanInternal(state, result)) {
+void ParquetReader::Scan(ClientContext &client, ParquetReaderScanState &state, DataChunk &result) {
+	while (ScanInternal(client, state, result)) {
 		if (result.size() > 0) {
 			break;
 		}
@@ -895,12 +898,18 @@ void ParquetReader::Scan(ParquetReaderScanState &state, DataChunk &result) {
 	}
 }
 
-bool ParquetReader::ScanInternal(ParquetReaderScanState &state, DataChunk &result) {
+bool ParquetReader::ScanInternal(ClientContext &client, ParquetReaderScanState &state, DataChunk &result) {
 	if (state.finished) {
 		return false;
 	}
 
+	// What we have now:
+	// 1. Row group index.
+	// 2. The offset to the current row in the row group.
+	// 3. By doing this we can call Picachv to read the corresponding policies.
+
 	// see if we have to switch to the next row group in the parquet file
+	// The function `GetGroup` returns the current group number in the parquet.
 	if (state.current_group < 0 || (int64_t)state.group_offset >= GetGroup(state).num_rows) {
 		state.current_group++;
 		state.group_offset = 0;
@@ -977,11 +986,12 @@ bool ParquetReader::ScanInternal(ParquetReaderScanState &state, DataChunk &resul
 	auto this_output_chunk_rows = MinValue<idx_t>(STANDARD_VECTOR_SIZE, GetGroup(state).num_rows - state.group_offset);
 	result.SetCardinality(this_output_chunk_rows);
 
+	auto group = GetGroup(state);
+
 	if (this_output_chunk_rows == 0) {
 		state.finished = true;
 		return false; // end of last group, we are done
 	}
-
 	// we evaluate simple table filters directly in this scan so we can skip decoding column data that's never going to
 	// be relevant
 	parquet_filter_t filter_mask;
@@ -1066,6 +1076,38 @@ bool ParquetReader::ScanInternal(ParquetReaderScanState &state, DataChunk &resul
 	}
 
 	state.group_offset += this_output_chunk_rows;
+
+	if (client.PolicyCheckingEnabled()) {
+		std::vector<std::size_t> column_ids;
+		for (size_t i = 0; i < reader_data.column_ids.size(); i++) {
+			column_ids.push_back(i);
+		}
+		auto iter = client.parquet_policy_map.find(file_handle->path);
+		if (iter == client.parquet_policy_map.end()) {
+			throw InvalidInputException("No policy found for the file: " + file_handle->path);
+		}
+
+		uint8_t uuid[PICACHV_UUID_LEN];
+		RegisterFromRgArgs args;
+		args.df_uuid = uuid;
+		args.df_uuid_len = PICACHV_UUID_LEN;
+		args.path = (uint8_t *)(iter->second.c_str());
+		args.path_len = iter->second.size();
+		args.projection = column_ids.data();
+		args.projection_len = column_ids.size();
+		args.row_group = group.ordinal;
+
+		if (!reader_data.filters) {
+			args.selection = nullptr;
+		}
+
+		if (register_policy_dataframe_from_row_group(client.ctx_uuid.uuid, PICACHV_UUID_LEN, &args) !=
+		    ErrorCode::Success) {
+			throw InvalidInputException("Failed to register the dataframe from the row group: " + GetErrorMessage());
+		}
+
+		result.SetActiveUUID(uuid);
+	}
 	return true;
 }
 

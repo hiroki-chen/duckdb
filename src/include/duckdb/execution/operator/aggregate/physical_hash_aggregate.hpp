@@ -83,6 +83,7 @@ public:
 	// Filters given to Sink and friends
 	unsafe_vector<idx_t> non_distinct_filter;
 	unsafe_vector<idx_t> distinct_filter;
+	mutable std::array<uint8_t, PICACHV_UUID_LEN> df_uuid;
 
 	unordered_map<Expression *, size_t> filter_indexes;
 

@@ -121,7 +121,7 @@ public:
 
 public:
 	void InitializeScan(ParquetReaderScanState &state, vector<idx_t> groups_to_read);
-	void Scan(ParquetReaderScanState &state, DataChunk &output);
+	void Scan(ClientContext &client, ParquetReaderScanState &state, DataChunk &output);
 
 	idx_t NumRows();
 	idx_t NumRowGroups();
@@ -151,7 +151,7 @@ public:
 
 private:
 	void InitializeSchema();
-	bool ScanInternal(ParquetReaderScanState &state, DataChunk &output);
+	bool ScanInternal(ClientContext &client, ParquetReaderScanState &state, DataChunk &output);
 	unique_ptr<ColumnReader> CreateReader();
 
 	unique_ptr<ColumnReader> CreateReaderRecursive(idx_t depth, idx_t max_define, idx_t max_repeat,

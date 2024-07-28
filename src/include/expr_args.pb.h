@@ -62,6 +62,9 @@ extern BinaryExprDefaultTypeInternal _BinaryExpr_default_instance_;
 class ColumnExpr;
 struct ColumnExprDefaultTypeInternal;
 extern ColumnExprDefaultTypeInternal _ColumnExpr_default_instance_;
+class CountExpr;
+struct CountExprDefaultTypeInternal;
+extern CountExprDefaultTypeInternal _CountExpr_default_instance_;
 class ExprArgument;
 struct ExprArgumentDefaultTypeInternal;
 extern ExprArgumentDefaultTypeInternal _ExprArgument_default_instance_;
@@ -71,6 +74,9 @@ extern FilterExprDefaultTypeInternal _FilterExpr_default_instance_;
 class LiteralExpr;
 struct LiteralExprDefaultTypeInternal;
 extern LiteralExprDefaultTypeInternal _LiteralExpr_default_instance_;
+class TernaryExpr;
+struct TernaryExprDefaultTypeInternal;
+extern TernaryExprDefaultTypeInternal _TernaryExpr_default_instance_;
 class UnaryExpr;
 struct UnaryExprDefaultTypeInternal;
 extern UnaryExprDefaultTypeInternal _UnaryExpr_default_instance_;
@@ -84,9 +90,11 @@ template<> ::PicachvMessages::AliasExpr* Arena::CreateMaybeMessage<::PicachvMess
 template<> ::PicachvMessages::ApplyExpr* Arena::CreateMaybeMessage<::PicachvMessages::ApplyExpr>(Arena*);
 template<> ::PicachvMessages::BinaryExpr* Arena::CreateMaybeMessage<::PicachvMessages::BinaryExpr>(Arena*);
 template<> ::PicachvMessages::ColumnExpr* Arena::CreateMaybeMessage<::PicachvMessages::ColumnExpr>(Arena*);
+template<> ::PicachvMessages::CountExpr* Arena::CreateMaybeMessage<::PicachvMessages::CountExpr>(Arena*);
 template<> ::PicachvMessages::ExprArgument* Arena::CreateMaybeMessage<::PicachvMessages::ExprArgument>(Arena*);
 template<> ::PicachvMessages::FilterExpr* Arena::CreateMaybeMessage<::PicachvMessages::FilterExpr>(Arena*);
 template<> ::PicachvMessages::LiteralExpr* Arena::CreateMaybeMessage<::PicachvMessages::LiteralExpr>(Arena*);
+template<> ::PicachvMessages::TernaryExpr* Arena::CreateMaybeMessage<::PicachvMessages::TernaryExpr>(Arena*);
 template<> ::PicachvMessages::UnaryExpr* Arena::CreateMaybeMessage<::PicachvMessages::UnaryExpr>(Arena*);
 template<> ::PicachvMessages::WildcardExpr* Arena::CreateMaybeMessage<::PicachvMessages::WildcardExpr>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -820,6 +828,124 @@ class LiteralExpr final :
 };
 // -------------------------------------------------------------------
 
+class CountExpr final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:PicachvMessages.CountExpr) */ {
+ public:
+  inline CountExpr() : CountExpr(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR CountExpr(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  CountExpr(const CountExpr& from);
+  CountExpr(CountExpr&& from) noexcept
+    : CountExpr() {
+    *this = ::std::move(from);
+  }
+
+  inline CountExpr& operator=(const CountExpr& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline CountExpr& operator=(CountExpr&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const CountExpr& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const CountExpr* internal_default_instance() {
+    return reinterpret_cast<const CountExpr*>(
+               &_CountExpr_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(CountExpr& a, CountExpr& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(CountExpr* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(CountExpr* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  CountExpr* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<CountExpr>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const CountExpr& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const CountExpr& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "PicachvMessages.CountExpr";
+  }
+  protected:
+  explicit CountExpr(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:PicachvMessages.CountExpr)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_expr_5fargs_2eproto;
+};
+// -------------------------------------------------------------------
+
 class FilterExpr final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.FilterExpr) */ {
  public:
@@ -868,7 +994,7 @@ class FilterExpr final :
                &_FilterExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    6;
 
   friend void swap(FilterExpr& a, FilterExpr& b) {
     a.Swap(&b);
@@ -1037,7 +1163,7 @@ class BinaryExpr final :
                &_BinaryExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    7;
 
   friend void swap(BinaryExpr& a, BinaryExpr& b) {
     a.Swap(&b);
@@ -1226,7 +1352,7 @@ class UnaryExpr final :
                &_UnaryExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    8;
 
   friend void swap(UnaryExpr& a, UnaryExpr& b) {
     a.Swap(&b);
@@ -1390,7 +1516,7 @@ class ApplyExpr final :
                &_ApplyExpr_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(ApplyExpr& a, ApplyExpr& b) {
     a.Swap(&b);
@@ -1521,6 +1647,191 @@ class ApplyExpr final :
 };
 // -------------------------------------------------------------------
 
+class TernaryExpr final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.TernaryExpr) */ {
+ public:
+  inline TernaryExpr() : TernaryExpr(nullptr) {}
+  ~TernaryExpr() override;
+  explicit PROTOBUF_CONSTEXPR TernaryExpr(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  TernaryExpr(const TernaryExpr& from);
+  TernaryExpr(TernaryExpr&& from) noexcept
+    : TernaryExpr() {
+    *this = ::std::move(from);
+  }
+
+  inline TernaryExpr& operator=(const TernaryExpr& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline TernaryExpr& operator=(TernaryExpr&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const TernaryExpr& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const TernaryExpr* internal_default_instance() {
+    return reinterpret_cast<const TernaryExpr*>(
+               &_TernaryExpr_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(TernaryExpr& a, TernaryExpr& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(TernaryExpr* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(TernaryExpr* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  TernaryExpr* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<TernaryExpr>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const TernaryExpr& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const TernaryExpr& from) {
+    TernaryExpr::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(TernaryExpr* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "PicachvMessages.TernaryExpr";
+  }
+  protected:
+  explicit TernaryExpr(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kCondUuidFieldNumber = 1,
+    kThenUuidFieldNumber = 2,
+    kElseUuidFieldNumber = 3,
+  };
+  // bytes cond_uuid = 1;
+  void clear_cond_uuid();
+  const std::string& cond_uuid() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_cond_uuid(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_cond_uuid();
+  PROTOBUF_NODISCARD std::string* release_cond_uuid();
+  void set_allocated_cond_uuid(std::string* cond_uuid);
+  private:
+  const std::string& _internal_cond_uuid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_cond_uuid(const std::string& value);
+  std::string* _internal_mutable_cond_uuid();
+  public:
+
+  // bytes then_uuid = 2;
+  void clear_then_uuid();
+  const std::string& then_uuid() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_then_uuid(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_then_uuid();
+  PROTOBUF_NODISCARD std::string* release_then_uuid();
+  void set_allocated_then_uuid(std::string* then_uuid);
+  private:
+  const std::string& _internal_then_uuid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_then_uuid(const std::string& value);
+  std::string* _internal_mutable_then_uuid();
+  public:
+
+  // bytes else_uuid = 3;
+  void clear_else_uuid();
+  const std::string& else_uuid() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_else_uuid(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_else_uuid();
+  PROTOBUF_NODISCARD std::string* release_else_uuid();
+  void set_allocated_else_uuid(std::string* else_uuid);
+  private:
+  const std::string& _internal_else_uuid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_else_uuid(const std::string& value);
+  std::string* _internal_mutable_else_uuid();
+  public:
+
+  // @@protoc_insertion_point(class_scope:PicachvMessages.TernaryExpr)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr cond_uuid_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr then_uuid_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr else_uuid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_expr_5fargs_2eproto;
+};
+// -------------------------------------------------------------------
+
 class ExprArgument final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.ExprArgument) */ {
  public:
@@ -1574,6 +1885,8 @@ class ExprArgument final :
     kUnary = 7,
     kLiteral = 8,
     kApply = 9,
+    kCount = 10,
+    kTernary = 11,
     ARGUMENT_NOT_SET = 0,
   };
 
@@ -1582,7 +1895,7 @@ class ExprArgument final :
                &_ExprArgument_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    11;
 
   friend void swap(ExprArgument& a, ExprArgument& b) {
     a.Swap(&b);
@@ -1664,6 +1977,8 @@ class ExprArgument final :
     kUnaryFieldNumber = 7,
     kLiteralFieldNumber = 8,
     kApplyFieldNumber = 9,
+    kCountFieldNumber = 10,
+    kTernaryFieldNumber = 11,
   };
   // .PicachvMessages.AggExpr agg = 1;
   bool has_agg() const;
@@ -1827,6 +2142,42 @@ class ExprArgument final :
       ::PicachvMessages::ApplyExpr* apply);
   ::PicachvMessages::ApplyExpr* unsafe_arena_release_apply();
 
+  // .PicachvMessages.CountExpr count = 10;
+  bool has_count() const;
+  private:
+  bool _internal_has_count() const;
+  public:
+  void clear_count();
+  const ::PicachvMessages::CountExpr& count() const;
+  PROTOBUF_NODISCARD ::PicachvMessages::CountExpr* release_count();
+  ::PicachvMessages::CountExpr* mutable_count();
+  void set_allocated_count(::PicachvMessages::CountExpr* count);
+  private:
+  const ::PicachvMessages::CountExpr& _internal_count() const;
+  ::PicachvMessages::CountExpr* _internal_mutable_count();
+  public:
+  void unsafe_arena_set_allocated_count(
+      ::PicachvMessages::CountExpr* count);
+  ::PicachvMessages::CountExpr* unsafe_arena_release_count();
+
+  // .PicachvMessages.TernaryExpr ternary = 11;
+  bool has_ternary() const;
+  private:
+  bool _internal_has_ternary() const;
+  public:
+  void clear_ternary();
+  const ::PicachvMessages::TernaryExpr& ternary() const;
+  PROTOBUF_NODISCARD ::PicachvMessages::TernaryExpr* release_ternary();
+  ::PicachvMessages::TernaryExpr* mutable_ternary();
+  void set_allocated_ternary(::PicachvMessages::TernaryExpr* ternary);
+  private:
+  const ::PicachvMessages::TernaryExpr& _internal_ternary() const;
+  ::PicachvMessages::TernaryExpr* _internal_mutable_ternary();
+  public:
+  void unsafe_arena_set_allocated_ternary(
+      ::PicachvMessages::TernaryExpr* ternary);
+  ::PicachvMessages::TernaryExpr* unsafe_arena_release_ternary();
+
   void clear_argument();
   ArgumentCase argument_case() const;
   // @@protoc_insertion_point(class_scope:PicachvMessages.ExprArgument)
@@ -1841,6 +2192,8 @@ class ExprArgument final :
   void set_has_unary();
   void set_has_literal();
   void set_has_apply();
+  void set_has_count();
+  void set_has_ternary();
 
   inline bool has_argument() const;
   inline void clear_has_argument();
@@ -1861,6 +2214,8 @@ class ExprArgument final :
       ::PicachvMessages::UnaryExpr* unary_;
       ::PicachvMessages::LiteralExpr* literal_;
       ::PicachvMessages::ApplyExpr* apply_;
+      ::PicachvMessages::CountExpr* count_;
+      ::PicachvMessages::TernaryExpr* ternary_;
     } argument_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t _oneof_case_[1];
@@ -2150,6 +2505,10 @@ inline void AliasExpr::set_allocated_alias(std::string* alias) {
 // -------------------------------------------------------------------
 
 // LiteralExpr
+
+// -------------------------------------------------------------------
+
+// CountExpr
 
 // -------------------------------------------------------------------
 
@@ -2645,6 +3004,160 @@ inline void ApplyExpr::set_allocated_name(std::string* name) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:PicachvMessages.ApplyExpr.name)
+}
+
+// -------------------------------------------------------------------
+
+// TernaryExpr
+
+// bytes cond_uuid = 1;
+inline void TernaryExpr::clear_cond_uuid() {
+  _impl_.cond_uuid_.ClearToEmpty();
+}
+inline const std::string& TernaryExpr::cond_uuid() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.TernaryExpr.cond_uuid)
+  return _internal_cond_uuid();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void TernaryExpr::set_cond_uuid(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.cond_uuid_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:PicachvMessages.TernaryExpr.cond_uuid)
+}
+inline std::string* TernaryExpr::mutable_cond_uuid() {
+  std::string* _s = _internal_mutable_cond_uuid();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.TernaryExpr.cond_uuid)
+  return _s;
+}
+inline const std::string& TernaryExpr::_internal_cond_uuid() const {
+  return _impl_.cond_uuid_.Get();
+}
+inline void TernaryExpr::_internal_set_cond_uuid(const std::string& value) {
+  
+  _impl_.cond_uuid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* TernaryExpr::_internal_mutable_cond_uuid() {
+  
+  return _impl_.cond_uuid_.Mutable(GetArenaForAllocation());
+}
+inline std::string* TernaryExpr::release_cond_uuid() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.TernaryExpr.cond_uuid)
+  return _impl_.cond_uuid_.Release();
+}
+inline void TernaryExpr::set_allocated_cond_uuid(std::string* cond_uuid) {
+  if (cond_uuid != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.cond_uuid_.SetAllocated(cond_uuid, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.cond_uuid_.IsDefault()) {
+    _impl_.cond_uuid_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.TernaryExpr.cond_uuid)
+}
+
+// bytes then_uuid = 2;
+inline void TernaryExpr::clear_then_uuid() {
+  _impl_.then_uuid_.ClearToEmpty();
+}
+inline const std::string& TernaryExpr::then_uuid() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.TernaryExpr.then_uuid)
+  return _internal_then_uuid();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void TernaryExpr::set_then_uuid(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.then_uuid_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:PicachvMessages.TernaryExpr.then_uuid)
+}
+inline std::string* TernaryExpr::mutable_then_uuid() {
+  std::string* _s = _internal_mutable_then_uuid();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.TernaryExpr.then_uuid)
+  return _s;
+}
+inline const std::string& TernaryExpr::_internal_then_uuid() const {
+  return _impl_.then_uuid_.Get();
+}
+inline void TernaryExpr::_internal_set_then_uuid(const std::string& value) {
+  
+  _impl_.then_uuid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* TernaryExpr::_internal_mutable_then_uuid() {
+  
+  return _impl_.then_uuid_.Mutable(GetArenaForAllocation());
+}
+inline std::string* TernaryExpr::release_then_uuid() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.TernaryExpr.then_uuid)
+  return _impl_.then_uuid_.Release();
+}
+inline void TernaryExpr::set_allocated_then_uuid(std::string* then_uuid) {
+  if (then_uuid != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.then_uuid_.SetAllocated(then_uuid, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.then_uuid_.IsDefault()) {
+    _impl_.then_uuid_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.TernaryExpr.then_uuid)
+}
+
+// bytes else_uuid = 3;
+inline void TernaryExpr::clear_else_uuid() {
+  _impl_.else_uuid_.ClearToEmpty();
+}
+inline const std::string& TernaryExpr::else_uuid() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.TernaryExpr.else_uuid)
+  return _internal_else_uuid();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void TernaryExpr::set_else_uuid(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.else_uuid_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:PicachvMessages.TernaryExpr.else_uuid)
+}
+inline std::string* TernaryExpr::mutable_else_uuid() {
+  std::string* _s = _internal_mutable_else_uuid();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.TernaryExpr.else_uuid)
+  return _s;
+}
+inline const std::string& TernaryExpr::_internal_else_uuid() const {
+  return _impl_.else_uuid_.Get();
+}
+inline void TernaryExpr::_internal_set_else_uuid(const std::string& value) {
+  
+  _impl_.else_uuid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* TernaryExpr::_internal_mutable_else_uuid() {
+  
+  return _impl_.else_uuid_.Mutable(GetArenaForAllocation());
+}
+inline std::string* TernaryExpr::release_else_uuid() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.TernaryExpr.else_uuid)
+  return _impl_.else_uuid_.Release();
+}
+inline void TernaryExpr::set_allocated_else_uuid(std::string* else_uuid) {
+  if (else_uuid != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.else_uuid_.SetAllocated(else_uuid, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.else_uuid_.IsDefault()) {
+    _impl_.else_uuid_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.TernaryExpr.else_uuid)
 }
 
 // -------------------------------------------------------------------
@@ -3317,6 +3830,154 @@ inline ::PicachvMessages::ApplyExpr* ExprArgument::mutable_apply() {
   return _msg;
 }
 
+// .PicachvMessages.CountExpr count = 10;
+inline bool ExprArgument::_internal_has_count() const {
+  return argument_case() == kCount;
+}
+inline bool ExprArgument::has_count() const {
+  return _internal_has_count();
+}
+inline void ExprArgument::set_has_count() {
+  _impl_._oneof_case_[0] = kCount;
+}
+inline void ExprArgument::clear_count() {
+  if (_internal_has_count()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.argument_.count_;
+    }
+    clear_has_argument();
+  }
+}
+inline ::PicachvMessages::CountExpr* ExprArgument::release_count() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.ExprArgument.count)
+  if (_internal_has_count()) {
+    clear_has_argument();
+    ::PicachvMessages::CountExpr* temp = _impl_.argument_.count_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.argument_.count_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::PicachvMessages::CountExpr& ExprArgument::_internal_count() const {
+  return _internal_has_count()
+      ? *_impl_.argument_.count_
+      : reinterpret_cast< ::PicachvMessages::CountExpr&>(::PicachvMessages::_CountExpr_default_instance_);
+}
+inline const ::PicachvMessages::CountExpr& ExprArgument::count() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.ExprArgument.count)
+  return _internal_count();
+}
+inline ::PicachvMessages::CountExpr* ExprArgument::unsafe_arena_release_count() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:PicachvMessages.ExprArgument.count)
+  if (_internal_has_count()) {
+    clear_has_argument();
+    ::PicachvMessages::CountExpr* temp = _impl_.argument_.count_;
+    _impl_.argument_.count_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void ExprArgument::unsafe_arena_set_allocated_count(::PicachvMessages::CountExpr* count) {
+  clear_argument();
+  if (count) {
+    set_has_count();
+    _impl_.argument_.count_ = count;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.ExprArgument.count)
+}
+inline ::PicachvMessages::CountExpr* ExprArgument::_internal_mutable_count() {
+  if (!_internal_has_count()) {
+    clear_argument();
+    set_has_count();
+    _impl_.argument_.count_ = CreateMaybeMessage< ::PicachvMessages::CountExpr >(GetArenaForAllocation());
+  }
+  return _impl_.argument_.count_;
+}
+inline ::PicachvMessages::CountExpr* ExprArgument::mutable_count() {
+  ::PicachvMessages::CountExpr* _msg = _internal_mutable_count();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.ExprArgument.count)
+  return _msg;
+}
+
+// .PicachvMessages.TernaryExpr ternary = 11;
+inline bool ExprArgument::_internal_has_ternary() const {
+  return argument_case() == kTernary;
+}
+inline bool ExprArgument::has_ternary() const {
+  return _internal_has_ternary();
+}
+inline void ExprArgument::set_has_ternary() {
+  _impl_._oneof_case_[0] = kTernary;
+}
+inline void ExprArgument::clear_ternary() {
+  if (_internal_has_ternary()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.argument_.ternary_;
+    }
+    clear_has_argument();
+  }
+}
+inline ::PicachvMessages::TernaryExpr* ExprArgument::release_ternary() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.ExprArgument.ternary)
+  if (_internal_has_ternary()) {
+    clear_has_argument();
+    ::PicachvMessages::TernaryExpr* temp = _impl_.argument_.ternary_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.argument_.ternary_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::PicachvMessages::TernaryExpr& ExprArgument::_internal_ternary() const {
+  return _internal_has_ternary()
+      ? *_impl_.argument_.ternary_
+      : reinterpret_cast< ::PicachvMessages::TernaryExpr&>(::PicachvMessages::_TernaryExpr_default_instance_);
+}
+inline const ::PicachvMessages::TernaryExpr& ExprArgument::ternary() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.ExprArgument.ternary)
+  return _internal_ternary();
+}
+inline ::PicachvMessages::TernaryExpr* ExprArgument::unsafe_arena_release_ternary() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:PicachvMessages.ExprArgument.ternary)
+  if (_internal_has_ternary()) {
+    clear_has_argument();
+    ::PicachvMessages::TernaryExpr* temp = _impl_.argument_.ternary_;
+    _impl_.argument_.ternary_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void ExprArgument::unsafe_arena_set_allocated_ternary(::PicachvMessages::TernaryExpr* ternary) {
+  clear_argument();
+  if (ternary) {
+    set_has_ternary();
+    _impl_.argument_.ternary_ = ternary;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.ExprArgument.ternary)
+}
+inline ::PicachvMessages::TernaryExpr* ExprArgument::_internal_mutable_ternary() {
+  if (!_internal_has_ternary()) {
+    clear_argument();
+    set_has_ternary();
+    _impl_.argument_.ternary_ = CreateMaybeMessage< ::PicachvMessages::TernaryExpr >(GetArenaForAllocation());
+  }
+  return _impl_.argument_.ternary_;
+}
+inline ::PicachvMessages::TernaryExpr* ExprArgument::mutable_ternary() {
+  ::PicachvMessages::TernaryExpr* _msg = _internal_mutable_ternary();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.ExprArgument.ternary)
+  return _msg;
+}
+
 inline bool ExprArgument::has_argument() const {
   return argument_case() != ARGUMENT_NOT_SET;
 }
@@ -3329,6 +3990,10 @@ inline ExprArgument::ArgumentCase ExprArgument::argument_case() const {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

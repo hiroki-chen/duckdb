@@ -113,7 +113,7 @@ void DataChunk::Reference(DataChunk &chunk) {
 	for (idx_t i = 0; i < chunk.ColumnCount(); i++) {
 		data[i].Reference(chunk.data[i]);
 	}
-	memcpy(active_uuid.uuid, chunk.active_uuid.uuid, sizeof(duckdb_uuid_t));
+	memcpy(active_uuid.data(), chunk.active_uuid.data(), sizeof(duckdb_uuid_t));
 }
 
 void DataChunk::Move(DataChunk &chunk) {
@@ -121,7 +121,7 @@ void DataChunk::Move(DataChunk &chunk) {
 	SetCapacity(chunk);
 	data = std::move(chunk.data);
 	vector_caches = std::move(chunk.vector_caches);
-	memcpy(active_uuid.uuid, chunk.active_uuid.uuid, sizeof(duckdb_uuid_t));
+	memcpy(active_uuid.data(), chunk.active_uuid.data(), sizeof(duckdb_uuid_t));
 
 	chunk.Destroy();
 }

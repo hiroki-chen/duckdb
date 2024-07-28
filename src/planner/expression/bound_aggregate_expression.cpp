@@ -13,8 +13,14 @@ namespace duckdb {
 static PicachvMessages::GroupByMethod FuncNameToGroupBy(const string &name) {
 	if (name.find("sum") == 0) {
 		return PicachvMessages::GroupByMethod::Sum;
+	} else if (name.find("avg") == 0) {
+		return PicachvMessages::GroupByMethod::Mean;
+	} else if (name.find("min") == 0) {
+		return PicachvMessages::GroupByMethod::Min;
+	} else if (name.find("max") == 0) {
+		return PicachvMessages::GroupByMethod::Max;
 	} else {
-		throw NotImplementedException("Unknown aggregate function");
+		throw NotImplementedException("Unknown aggregate function: " + name);
 	}
 }
 
@@ -41,14 +47,21 @@ hash_t BoundAggregateExpression::Hash() const {
 
 void BoundAggregateExpression::CreateExprInArena(ClientContext &context) const {
 	PicachvMessages::ExprArgument arg;
-	PicachvMessages::AggExpr *ae = arg.mutable_agg();
 
-	if (children.size() != 1) {
+	if (children.size() > 1) {
 		throw NotImplementedException("Only one child is supported for aggregate functions");
 	}
 
-	ae->set_method(FuncNameToGroupBy(function.name));
-	ae->mutable_input_uuid()->assign(reinterpret_cast<const char *>(children[0]->expr_uuid.uuid), PICACHV_UUID_LEN);
+	// Special case: count(*)
+	if (children.empty()) {
+		PicachvMessages::CountExpr *ce = arg.mutable_count();
+		D_ASSERT(function.name.find("count") == 0);
+	} else {
+		PicachvMessages::AggExpr *ae = arg.mutable_agg();
+		ae->mutable_input_uuid()->assign(reinterpret_cast<const char *>(children[0]->expr_uuid.uuid), PICACHV_UUID_LEN);
+		ae->set_method(FuncNameToGroupBy(function.name));
+	}
+
 	if (expr_from_args(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializePartialAsString().c_str(),
 	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
 		throw InternalException(GetErrorMessage());

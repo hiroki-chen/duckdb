@@ -6,13 +6,13 @@ FetchContent_Declare(
     GIT_TAG v0.5 # Optionally specify a commit hash, version tag or branch here
 )
 FetchContent_MakeAvailable(Corrosion)
-set(Rust_TOOLCHAIN "nightly-2024-04-15" CACHE STRING "My lib requires nightly")
 corrosion_import_crate(
   MANIFEST_PATH
   ../../picachv/Cargo.toml
   CRATES picachv-api
   IMPORTED_CRATES imported_crate_list
   NO_LINKER_OVERRIDE
+  FEATURES fast_bin
 )
 add_definitions(-DDUCKDB)
 
@@ -60,13 +60,13 @@ endif()
 if(AMALGAMATION_BUILD)
 
   add_library(duckdb SHARED "${PROJECT_SOURCE_DIR}/src/amalgamation/duckdb.cpp")
-  target_link_libraries(duckdb ${DUCKDB_SYSTEM_LIBS} picachv-api arrow)
+  target_link_libraries(duckdb ${DUCKDB_SYSTEM_LIBS} picachv_api arrow)
   link_threads(duckdb)
   link_extension_libraries(duckdb)
 
   add_library(duckdb_static STATIC
               "${PROJECT_SOURCE_DIR}/src/amalgamation/duckdb.cpp")
-  target_link_libraries(duckdb_static ${DUCKDB_SYSTEM_LIBS} picachv-api arrow)
+  target_link_libraries(duckdb_static ${DUCKDB_SYSTEM_LIBS} picachv_api arrow)
   link_threads(duckdb_static)
   link_extension_libraries(duckdb_static)
 

@@ -20,7 +20,6 @@
 #include "duckdb/main/stream_query_result.hpp"
 #include "duckdb/main/table_description.hpp"
 #include "duckdb/parser/sql_statement.hpp"
-
 #include "picachv_interfaces.h"
 
 namespace duckdb {
@@ -61,7 +60,10 @@ public:
 	DUCKDB_API ErrorCode InitializeCtx();
 
 	//! Register a policy to this table.
-	DUCKDB_API ErrorCode RegisterPolicyDataFrame(const std::string& df, const std::string& name);
+	DUCKDB_API ErrorCode RegisterPolicyDataFrame(const std::string &df, const std::string &name);
+
+	//! Associate a parquet with its policy.
+	DUCKDB_API ErrorCode RegisterPolicyParquet(const std::string &parquet, const std::string &policy);
 
 	//! Interrupt execution of the current query
 	DUCKDB_API void Interrupt();
@@ -77,6 +79,12 @@ public:
 	//! Enable policy checking.
 	DUCKDB_API void EnablePolicyChecking();
 	DUCKDB_API void DisablePolicyChecking();
+	//! Enable profiling.
+	DUCKDB_API void EnablePicachvProfiling();
+	DUCKDB_API void DisablePicachvProfiling();
+	//! Enable tracing.
+	DUCKDB_API void EnableTracing();
+	DUCKDB_API void DisableTracing();
 	//! Force parallel execution, even for smaller tables. Should only be used in testing.
 	DUCKDB_API void ForceParallelism();
 
@@ -96,6 +104,10 @@ public:
 	unique_ptr<QueryResult> Query(const string &query, ARGS... args) {
 		vector<Value> values;
 		return QueryParamsRecursive(query, values, args...);
+	}
+
+	DUCKDB_API bool PolicyCheckingEnabled() {
+		return context->PolicyCheckingEnabled();
 	}
 
 	//! Issues a query to the database and returns a Pending Query Result. Note that "query" may only contain

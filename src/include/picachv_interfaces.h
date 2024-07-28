@@ -26,6 +26,18 @@ enum ErrorCode {
 	FileNotFound = 6,
 };
 
+struct RegisterFromRgArgs {
+	uint8_t *path;
+	std::size_t path_len;
+	std::size_t row_group;
+	uint8_t *df_uuid;
+	std::size_t df_uuid_len;
+	std::size_t *projection;
+	std::size_t projection_len;
+	bool *selection;
+	std::size_t selection_len;
+};
+
 extern "C" {
 /**
  * @brief Get the last error message. Please be aware that the error message does NOT include
@@ -35,13 +47,6 @@ extern "C" {
  * @param [in, out] err_msg_len The length of the error message buffer.
  */
 void last_error(uint8_t *err_msg, std::size_t *err_msg_len);
-
-/**
- * @brief Initialize the global instance of the monitor.
- *
- * @return ErrorCode
- */
-ErrorCode init_monitor();
 
 /**
  * @brief Opens a new context.
@@ -66,6 +71,9 @@ ErrorCode open_new(uint8_t *uuid, std::size_t uuid_len);
  */
 ErrorCode register_policy_dataframe(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, const uint8_t *dataframe,
                                     std::size_t dataframe_len, uint8_t *uuid, std::size_t uuid_len);
+
+ErrorCode register_policy_dataframe_from_row_group(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len,
+                                                   const RegisterFromRgArgs *args);
 
 /**
  * @brief Constructs the expression out of the argument which is a serialized
@@ -163,15 +171,34 @@ ErrorCode execute_epilogue(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, co
 
 /**
  * @brief Print the policy-guarded dataframe.
- * 
- * @param ctx_uuid 
- * @param ctx_uuid_len 
- * @param df_uuid 
- * @param df_uuid_len 
- * @return ErrorCode 
+ *
+ * @param ctx_uuid
+ * @param ctx_uuid_len
+ * @param df_uuid
+ * @param df_uuid_len
+ * @return ErrorCode
  */
 ErrorCode debug_print_df(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, const uint8_t *df_uuid,
-												 std::size_t df_uuid_len);
-}
+                         std::size_t df_uuid_len);
 
+/**
+ * @brief Enable the profiling.
+ *
+ * @param ctx_uuid
+ * @param ctx_uuid_len
+ * @param enable
+ * @return ErrorCode
+ */
+ErrorCode enable_profiling(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, bool enable);
+
+/**
+ * @brief Enable the tracing.
+ *
+ * @param ctx_uuid
+ * @param ctx_uuid_len
+ * @param enable
+ * @return ErrorCode
+ */
+ErrorCode enable_tracing(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, bool enable);
+}
 #endif

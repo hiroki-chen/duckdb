@@ -120,7 +120,9 @@ unique_ptr<LocalSinkState> PhysicalPerfectHashAggregate::GetLocalSinkState(Execu
 
 SinkResultType PhysicalPerfectHashAggregate::Sink(ExecutionContext &context, DataChunk &chunk,
                                                   OperatorSinkInput &input) const {
-	std::copy(chunk.GetActiveUUID(), chunk.GetActiveUUID() + PICACHV_UUID_LEN, df_uuid.begin());
+  if (context.client.PolicyCheckingEnabled()) {
+		std::copy(chunk.GetActiveUUID(), chunk.GetActiveUUID() + PICACHV_UUID_LEN, df_uuid.begin());
+	}
 	auto &lstate = input.local_state.Cast<PerfectHashAggregateLocalState>();
 	DataChunk &group_chunk = lstate.group_chunk;
 	DataChunk &aggregate_input_chunk = lstate.aggregate_input_chunk;

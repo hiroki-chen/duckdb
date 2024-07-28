@@ -1021,6 +1021,22 @@ unique_ptr<QueryResult> ClientContext::ExecutePendingQueryInternal(ClientContext
 	return query.ExecuteInternal(lock);
 }
 
+ErrorCode ClientContext::RegisterPolicyParquet(const std::string& parquet, const std::string& policy) {
+	if (table_policy_map.find(parquet) != table_policy_map.end()) {
+		return ErrorCode::Already;
+	}
+
+	// Check if this path exists and is a file.
+	std::filesystem::path p(policy);
+	if (!std::filesystem::exists(p) || !std::filesystem::is_regular_file(p)) {
+		return ErrorCode::FileNotFound;
+	}
+
+	parquet_policy_map[parquet] = policy;
+
+	return ErrorCode::Success;
+}
+
 void ClientContext::Interrupt() {
 	interrupted = true;
 }

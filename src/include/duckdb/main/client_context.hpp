@@ -78,6 +78,8 @@ public:
 	unordered_map<string, vector<shared_ptr<ExternalDependency>>> external_dependencies;
 	//! Set of optional states (e.g. Caches) that can be held by the ClientContext
 	unordered_map<string, shared_ptr<ClientContextState>> registered_state;
+	//! The parquet files to their policy files.
+	unordered_map<string, string> parquet_policy_map;
 	//! The client configuration
 	ClientConfig config;
 	//! The set of client-specific data
@@ -101,6 +103,9 @@ public:
 	DUCKDB_API void EnableProfiling();
 	//! Disable query profiling
 	DUCKDB_API void DisableProfiling();
+
+	//! Associate a parquet with its policy.
+	DUCKDB_API ErrorCode RegisterPolicyParquet(const std::string& parquet, const std::string& policy);
 
 	//! Initialize the context.
 	DUCKDB_API ErrorCode InitializeCtx();

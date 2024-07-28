@@ -21,6 +21,12 @@ class BufferHandle;
 
 struct FlushMoveState;
 
+struct group_by_idx_t {
+public:
+	idx_t first;
+	vector<idx_t> group;
+};
+
 //! GroupedAggregateHashTable is a linear probing HT that is used for computing
 //! aggregates
 /*!
@@ -91,6 +97,23 @@ public:
 	//! The hash table load factor, when a resize is triggered
 	constexpr static double LOAD_FACTOR = 1.5;
 
+	//! Append state
+	struct AggregateHTAppendState {
+		AggregateHTAppendState();
+
+		PartitionedTupleDataAppendState append_state;
+
+		Vector ht_offsets;
+		Vector hash_salts;
+		SelectionVector group_compare_vector;
+		SelectionVector no_match_vector;
+		SelectionVector empty_vector;
+		SelectionVector new_groups;
+		Vector addresses;
+		unsafe_unique_array<UnifiedVectorFormat> group_data;
+		DataChunk group_chunk;
+	} state;
+
 	//! Get the layout of this HT
 	const TupleDataLayout &GetLayout() const;
 	//! Number of groups in the HT
@@ -146,23 +169,6 @@ public:
 private:
 	//! Efficiently matches groups
 	RowMatcher row_matcher;
-
-	//! Append state
-	struct AggregateHTAppendState {
-		AggregateHTAppendState();
-
-		PartitionedTupleDataAppendState append_state;
-
-		Vector ht_offsets;
-		Vector hash_salts;
-		SelectionVector group_compare_vector;
-		SelectionVector no_match_vector;
-		SelectionVector empty_vector;
-		SelectionVector new_groups;
-		Vector addresses;
-		unsafe_unique_array<UnifiedVectorFormat> group_data;
-		DataChunk group_chunk;
-	} state;
 
 	//! The number of radix bits to partition by
 	idx_t radix_bits;

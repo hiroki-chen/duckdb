@@ -74,9 +74,6 @@ SourceResultType PhysicalTableScan::GetData(ExecutionContext &context, DataChunk
 	TableFunctionInput data(bind_data.get(), state.local_state.get(), gstate.global_state.get());
 	function.function(context.client, data, chunk);
 
-	std::cout << "PhysicalTableScan::GetData: " << StringUtil::ByteArrayToString(chunk.GetActiveUUID(), 16)
-	          << std::endl;
-
 	return chunk.size() == 0 ? SourceResultType::FINISHED : SourceResultType::HAVE_MORE_OUTPUT;
 }
 
@@ -89,10 +86,12 @@ double PhysicalTableScan::GetProgress(ClientContext &context, GlobalSourceState 
 	return -1;
 }
 
+// Not used.
 idx_t PhysicalTableScan::GetBatchIndex(ExecutionContext &context, DataChunk &chunk, GlobalSourceState &gstate_p,
                                        LocalSourceState &lstate) const {
 	D_ASSERT(SupportsBatchIndex());
 	D_ASSERT(function.get_batch_index);
+
 	auto &gstate = gstate_p.Cast<TableScanGlobalSourceState>();
 	auto &state = lstate.Cast<TableScanLocalSourceState>();
 	return function.get_batch_index(context.client, bind_data.get(), state.local_state.get(),

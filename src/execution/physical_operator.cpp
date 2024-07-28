@@ -258,9 +258,6 @@ OperatorResultType CachingPhysicalOperator::Execute(ExecutionContext &context, D
 	// Execute child operator
 	auto child_result = ExecuteInternal(context, input, chunk, gstate, state);
 
-	std::cout << "CachingPhysicalOperator::Execute" << std::endl;
-	std::cout << StringUtil::ByteArrayToString(chunk.GetActiveUUID(), PICACHV_UUID_LEN) << std::endl;
-
 #if STANDARD_VECTOR_SIZE >= 128
 	if (!state.initialized) {
 		state.initialized = true;

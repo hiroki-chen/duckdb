@@ -11,6 +11,8 @@
 #include "duckdb/parallel/event.hpp"
 #include "duckdb/planner/expression/bound_reference_expression.hpp"
 #include "duckdb/storage/temporary_memory_manager.hpp"
+#include "picachv_interfaces.h"
+#include "plan_args.pb.h"
 
 namespace duckdb {
 
@@ -93,6 +95,24 @@ struct AggregatePartition {
 };
 
 class RadixHTGlobalSinkState;
+
+struct RadixHashState {
+public:
+	//! The hash vector.
+	Vector hash;
+	//! The group size.
+	idx_t group_size;
+
+	array<uint8_t, PICACHV_UUID_LEN> uuid;
+
+	explicit RadixHashState(Vector hash, idx_t group_size_p, const uint8_t *uuid_p);
+
+	//! Transform the inner opaque hash vector into a vector of hashes.
+	vector<hash_t> Transform();
+
+	//! Emit the desired group by information.
+	vector<PicachvMessages::GroupByIdxMultiple_Groups> Emit();
+};
 
 struct RadixHTConfig {
 public:
@@ -188,6 +208,8 @@ public:
 	idx_t count_before_combining;
 	//! Maximum partition size if all unique
 	idx_t max_partition_size;
+	//! Vector of history hashes of each chunk.
+	vector<RadixHashState> chunk_hashes;
 };
 
 RadixHTGlobalSinkState::RadixHTGlobalSinkState(ClientContext &context_p, const RadixPartitionedHashTable &radix_ht_p)
@@ -311,6 +333,54 @@ idx_t RadixHTConfig::SinkCapacity(ClientContext &context) {
 	return MaxValue<idx_t>(capacity, GroupedAggregateHashTable::InitialCapacity());
 }
 
+RadixHashState::RadixHashState(Vector hash_p, idx_t group_size_p, const uint8_t *uuid_p)
+    : hash(std::move(hash_p)), group_size(group_size_p) {
+	memcpy(uuid.data(), uuid_p, PICACHV_UUID_LEN);
+}
+
+vector<hash_t> RadixHashState::Transform() {
+	// Uncompress the hash
+	hash.Flatten(group_size);
+	hash_t *hashes = FlatVector::GetData<hash_t>(hash);
+
+	return std::move(vector<hash_t>(hashes, hashes + group_size));
+}
+
+vector<PicachvMessages::GroupByIdxMultiple_Groups> RadixHashState::Emit() {
+	vector<PicachvMessages::GroupByIdxMultiple_Groups> message;
+
+	// Create a hashmap for doing the group by.
+	unordered_map<hash_t, group_by_idx_t> map;
+
+	vector<hash_t> hashes = Transform();
+	for (size_t i = 0; i < hashes.size(); i++) {
+		auto it = map.find(hashes[i]);
+
+		if (it == map.end()) {
+			group_by_idx_t idx;
+			idx.first = i;
+			idx.group = {i};
+
+			map[hashes[i]] = idx;
+		} else {
+			it->second.group.emplace_back(i);
+		}
+	}
+
+	for (auto &entry : map) {
+		PicachvMessages::GroupByIdxMultiple_Groups message_entry;
+		message_entry.set_first(entry.second.first);
+		message_entry.set_hash(entry.first);
+		for (auto &idx : entry.second.group) {
+			message_entry.mutable_group()->Add(idx);
+		}
+
+		message.emplace_back(message_entry);
+	}
+
+	return message;
+}
+
 class RadixHTLocalSinkState : public LocalSinkState {
 public:
 	RadixHTLocalSinkState(ClientContext &context, const RadixPartitionedHashTable &radix_ht);
@@ -354,6 +424,7 @@ void RadixPartitionedHashTable::PopulateGroupChunk(DataChunk &group_chunk, DataC
 	}
 	group_chunk.SetCardinality(input_chunk.size());
 	group_chunk.Verify();
+	group_chunk.SetActiveUUID(input_chunk.GetActiveUUID());
 }
 
 bool MaybeRepartition(ClientContext &context, RadixHTGlobalSinkState &gstate, RadixHTLocalSinkState &lstate,
@@ -439,10 +510,11 @@ void RadixPartitionedHashTable::Sink(ExecutionContext &context, DataChunk &chunk
 	}
 
 	auto &group_chunk = lstate.group_chunk;
+	// here uuid exists.
 	PopulateGroupChunk(group_chunk, chunk);
 
 	auto &ht = *lstate.ht;
-	ht.AddChunk(group_chunk, payload_input, filter);
+	auto new_group_count = ht.AddChunk(group_chunk, payload_input, filter);
 
 	if (ht.Count() + STANDARD_VECTOR_SIZE < ht.ResizeThreshold()) {
 		return; // We can fit another chunk
@@ -459,7 +531,6 @@ void RadixPartitionedHashTable::Sink(ExecutionContext &context, DataChunk &chunk
 
 	// Check if we need to repartition
 	auto repartitioned = MaybeRepartition(context.client, gstate, lstate, active_threads);
-
 	if (repartitioned && ht.Count() != 0) {
 		// We repartitioned, but we didn't clear the pointer table / reset the count because we're on 1 or 2 threads
 		ht.ClearPointerTable();
@@ -495,20 +566,35 @@ void RadixPartitionedHashTable::Combine(ExecutionContext &context, GlobalSinkSta
 	}
 
 	lock_guard<mutex> guard(gstate.lock);
+
+	// This `gstate.uncombined_data` is important.
 	if (gstate.uncombined_data) {
 		gstate.uncombined_data->Combine(*lstate.abandoned_data);
 	} else {
 		gstate.uncombined_data = std::move(lstate.abandoned_data);
 	}
 	gstate.stored_allocators.emplace_back(ht.GetAggregateAllocator());
+
+	if (context.client.PolicyCheckingEnabled()) {
+		Vector hashes(LogicalType::HASH);
+		lstate.group_chunk.Hash(hashes);
+		// FIXME: UUIDs = 0?
+		gstate.chunk_hashes.emplace_back(std::move(hashes), lstate.group_chunk.size(),
+		                                 lstate.group_chunk.GetActiveUUID());
+	}
 }
 
+// Called once.
 void RadixPartitionedHashTable::Finalize(ClientContext &context, GlobalSinkState &gstate_p) const {
 	auto &gstate = gstate_p.Cast<RadixHTGlobalSinkState>();
 
+	for (auto &gv : gstate.radix_ht.grouping_set) {
+		std::cout << "gv: " << gv << std::endl;
+	}
+
 	if (gstate.uncombined_data) {
 		auto &uncombined_data = *gstate.uncombined_data;
-		gstate.count_before_combining = uncombined_data.Count();
+		gstate.count_before_combining = uncombined_data.Count(); // = #num_chunks * group_num = 30 * 4 = 120
 
 		// If true there is no need to combine, it was all done by a single thread in a single HT
 		const auto single_ht = !gstate.external && gstate.active_threads == 1;
@@ -541,6 +627,39 @@ void RadixPartitionedHashTable::Finalize(ClientContext &context, GlobalSinkState
 	    MinValue<idx_t>(TaskScheduler::GetScheduler(context).NumberOfThreads(), gstate.partitions.size());
 	gstate.temporary_memory_state->SetRemainingSize(context, max_threads * gstate.max_partition_size);
 	gstate.finalized = true;
+
+	if (context.PolicyCheckingEnabled()) {
+		PicachvMessages::PlanArgument arg;
+		auto agg = arg.mutable_aggregate();
+		auto gbm = agg->mutable_group_by_proxy()->mutable_group_by_idx_multiple();
+
+		// Set group by and aggregate.
+		for (auto &agg_expr : op.aggregates) {
+			D_ASSERT(agg_expr->type == ExpressionType::BOUND_AGGREGATE);
+
+			// expr_uuid is empty? create expr in arena is not invoked?
+			agg->mutable_aggs_uuid()->Add(
+			    std::string(reinterpret_cast<char *>(agg_expr->expr_uuid.uuid), PICACHV_UUID_LEN));
+		}
+
+		for (auto &gb : op.groups) {
+			D_ASSERT(gb->type == ExpressionType::BOUND_REF);
+			agg->mutable_keys()->Add(std::string(reinterpret_cast<char *>(gb->expr_uuid.uuid), PICACHV_UUID_LEN));
+		}
+
+		for (auto &hash : gstate.chunk_hashes) {
+			vector<PicachvMessages::GroupByIdxMultiple_Groups> message = hash.Emit();
+			PicachvMessages::GroupByIdxMultiple_Chunk *chunk = gbm->add_chunks();
+			chunk->set_uuid(std::string(reinterpret_cast<char *>(hash.uuid.data()), PICACHV_UUID_LEN));
+			chunk->mutable_groups()->Assign(message.begin(), message.end());
+		}
+
+		duckdb_uuid_t uuid;
+		if (execute_epilogue(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
+		                     arg.ByteSizeLong(), nullptr, 0, uuid.uuid, PICACHV_UUID_LEN) != 0) {
+			throw InternalException("Failed to execute epilogue: " + GetErrorMessage());
+		}
+	}
 }
 
 //===--------------------------------------------------------------------===//
@@ -726,7 +845,8 @@ void RadixHTLocalSourceState::Finalize(RadixHTGlobalSinkState &sink, RadixHTGlob
 
 		ht = sink.radix_ht.CreateHT(gstate.context, MinValue<idx_t>(capacity, capacity_limit), 0);
 	} else {
-		// We may want to resize here to the size of this partition, but for now we just assume uniform partition sizes
+		// We may want to resize here to the size of this partition, but for now we just assume uniform partition
+		// sizes
 		ht->InitializePartitionedData();
 		ht->ClearPointerTable();
 		ht->ResetCount();
@@ -774,6 +894,7 @@ void RadixHTLocalSourceState::Scan(RadixHTGlobalSinkState &sink, RadixHTGlobalSo
 	auto &data_collection = *partition.data;
 
 	if (scan_status == RadixHTScanStatus::INIT) {
+		// column ids => group by keys.
 		data_collection.InitializeScan(scan_state, gstate.column_ids, sink.scan_pin_properties);
 		scan_status = RadixHTScanStatus::IN_PROGRESS;
 	}

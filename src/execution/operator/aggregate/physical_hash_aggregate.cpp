@@ -8,14 +8,16 @@
 #include "duckdb/execution/operator/aggregate/distinct_aggregate_data.hpp"
 #include "duckdb/main/client_context.hpp"
 #include "duckdb/parallel/base_pipeline_event.hpp"
+#include "duckdb/parallel/executor_task.hpp"
 #include "duckdb/parallel/interrupt.hpp"
 #include "duckdb/parallel/pipeline.hpp"
 #include "duckdb/parallel/task_scheduler.hpp"
 #include "duckdb/parallel/thread_context.hpp"
-#include "duckdb/parallel/executor_task.hpp"
 #include "duckdb/planner/expression/bound_aggregate_expression.hpp"
 #include "duckdb/planner/expression/bound_constant_expression.hpp"
 #include "duckdb/planner/expression/bound_reference_expression.hpp"
+#include "picachv_interfaces.h"
+#include "plan_args.pb.h"
 
 namespace duckdb {
 
@@ -345,6 +347,10 @@ void PhysicalHashAggregate::SinkDistinct(ExecutionContext &context, DataChunk &c
 
 SinkResultType PhysicalHashAggregate::Sink(ExecutionContext &context, DataChunk &chunk,
                                            OperatorSinkInput &input) const {
+	if (context.client.PolicyCheckingEnabled()) {
+		std::copy(chunk.GetActiveUUID(), chunk.GetActiveUUID() + PICACHV_UUID_LEN, df_uuid.begin());
+	}
+
 	auto &local_state = input.local_state.Cast<HashAggregateLocalSinkState>();
 	auto &global_state = input.global_state.Cast<HashAggregateGlobalSinkState>();
 
@@ -358,7 +364,15 @@ SinkResultType PhysicalHashAggregate::Sink(ExecutionContext &context, DataChunk 
 
 	DataChunk &aggregate_input_chunk = local_state.aggregate_input_chunk;
 	auto &aggregates = grouped_aggregate_data.aggregates;
+	auto &groups = grouped_aggregate_data.groups;
 	idx_t aggregate_input_idx = 0;
+
+	for (idx_t group_idx = 0; group_idx < groups.size(); group_idx++) {
+		auto &group = groups[group_idx];
+		D_ASSERT(group->type == ExpressionType::BOUND_REF);
+		auto &bound_ref_expr = group->Cast<BoundReferenceExpression>();
+		bound_ref_expr.CreateExprInArena(context.client);
+	}
 
 	// Populate the aggregate child vectors
 	for (auto &aggregate : aggregates) {
@@ -367,8 +381,10 @@ SinkResultType PhysicalHashAggregate::Sink(ExecutionContext &context, DataChunk 
 			D_ASSERT(child_expr->type == ExpressionType::BOUND_REF);
 			auto &bound_ref_expr = child_expr->Cast<BoundReferenceExpression>();
 			D_ASSERT(bound_ref_expr.index < chunk.data.size());
+			bound_ref_expr.CreateExprInArena(context.client);
 			aggregate_input_chunk.data[aggregate_input_idx++].Reference(chunk.data[bound_ref_expr.index]);
 		}
+		aggr.CreateExprInArena(context.client);
 	}
 	// Populate the filter vectors
 	for (auto &aggregate : aggregates) {
@@ -385,6 +401,7 @@ SinkResultType PhysicalHashAggregate::Sink(ExecutionContext &context, DataChunk 
 	aggregate_input_chunk.Verify();
 
 	// For every grouping set there is one radix_table
+	// Only one observed.
 	for (idx_t i = 0; i < groupings.size(); i++) {
 		auto &grouping_global_state = global_state.grouping_states[i];
 		auto &grouping_local_state = local_state.grouping_states[i];
@@ -435,13 +452,14 @@ void PhysicalHashAggregate::CombineDistinct(ExecutionContext &context, OperatorS
 SinkCombineResultType PhysicalHashAggregate::Combine(ExecutionContext &context, OperatorSinkCombineInput &input) const {
 	auto &gstate = input.global_state.Cast<HashAggregateGlobalSinkState>();
 	auto &llstate = input.local_state.Cast<HashAggregateLocalSinkState>();
-
 	OperatorSinkCombineInput combine_distinct_input {gstate, llstate, input.interrupt_state};
 	CombineDistinct(context, combine_distinct_input);
 
 	if (CanSkipRegularSink()) {
 		return SinkCombineResultType::FINISHED;
 	}
+
+	// only 1 grouping found.
 	for (idx_t i = 0; i < groupings.size(); i++) {
 		auto &grouping_gstate = gstate.grouping_states[i];
 		auto &grouping_lstate = llstate.grouping_states[i];
@@ -842,6 +860,7 @@ unique_ptr<LocalSourceState> PhysicalHashAggregate::GetLocalSourceState(Executio
 	return make_uniq<HashAggregateLocalSourceState>(context, *this);
 }
 
+// FIXME: Implement this functionality.
 SourceResultType PhysicalHashAggregate::GetData(ExecutionContext &context, DataChunk &chunk,
                                                 OperatorSourceInput &input) const {
 	auto &sink_gstate = sink_state->Cast<HashAggregateGlobalSinkState>();

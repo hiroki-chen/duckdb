@@ -58,8 +58,6 @@ bool PipelineExecutor::TryFlushCachingOperators() {
 		flushing_idx = IsFinished() ? idx_t(finished_processing_idx) : 0;
 	}
 
-	// std::cout << "flushing index now is " << flushing_idx << "\n";
-	std::cout << "in_process_operators size is " << pipeline.operators.size() << "\n";
 	// Go over each operator and keep flushing them using `FinalExecute` until empty
 	while (flushing_idx < pipeline.operators.size()) {
 		if (!pipeline.operators[flushing_idx].get().RequiresFinalExecute()) {
@@ -75,13 +73,9 @@ bool PipelineExecutor::TryFlushCachingOperators() {
 			continue;
 		}
 
-		std::cout << "intermediate chunks: \n";
 		for (auto &chunk : intermediate_chunks) {
 			std::cout << StringUtil::ByteArrayToString(chunk->GetActiveUUID(), 16) << "\n";
 		}
-		std::cout << "getting idx " << flushing_idx << "\n";
-		std::cout << "in_process_operators size is " << pipeline.operators.size() << "\n";
-
 		// We also need to set the uuid to the last one.
 		auto &curr_chunk =
 		    flushing_idx + 1 >= intermediate_chunks.size() ? final_chunk : *intermediate_chunks[flushing_idx + 1];
@@ -285,9 +279,6 @@ OperatorResultType PipelineExecutor::ExecutePushInternal(DataChunk &input, idx_t
 	if (input.size() == 0) { // LCOV_EXCL_START
 		return OperatorResultType::NEED_MORE_INPUT;
 	} // LCOV_EXCL_STOP
-
-	std::cout << "PipelineExecutor::ExecutePushInternal input = "
-	          << StringUtil::ByteArrayToString(input.GetActiveUUID(), 16) << "\n";
 
 	// this loop will continuously push the input chunk through the pipeline as long as:
 	// - the OperatorResultType for the Execute is HAVE_MORE_OUTPUT
@@ -502,10 +493,6 @@ SinkResultType PipelineExecutor::Sink(DataChunk &chunk, OperatorSinkInput &input
 		return SinkResultType::BLOCKED;
 	}
 #endif
-	std::cout << "PipelineExecutor::Sink\n";
-	std::cout << "PipelineExecutor::Sink uuid = " << StringUtil::ByteArrayToString(chunk.GetActiveUUID(), 16)
-	          << std::endl;
-	std::cout << "now sinking to " << pipeline.sink->GetName() << "\n";
 	return pipeline.sink->Sink(context, chunk, input);
 }
 

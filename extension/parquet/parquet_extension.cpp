@@ -211,6 +211,7 @@ static void InitializeParquetReader(ParquetReader &reader, const ParquetReadBind
 	auto &parquet_options = bind_data.parquet_options;
 	auto &reader_data = reader.reader_data;
 	if (bind_data.parquet_options.schema.empty()) {
+		// default way. at least for single parquet.
 		MultiFileReader::InitializeReader(reader, parquet_options.file_options, bind_data.reader_bind, bind_data.types,
 		                                  bind_data.names, global_column_ids, table_filters, bind_data.files[0],
 		                                  context);
@@ -503,6 +504,7 @@ public:
 		return (percentage + 100.0 * gstate.file_index) / bind_data.files.size();
 	}
 
+	// A local state will be created whenever there is a new thread spawned.
 	static unique_ptr<LocalTableFunctionState>
 	ParquetScanInitLocal(ExecutionContext &context, TableFunctionInitInput &input, GlobalTableFunctionState *gstate_p) {
 		auto &bind_data = input.bind_data->Cast<ParquetReadBindData>();
@@ -519,12 +521,13 @@ public:
 		}
 		return std::move(result);
 	}
-
+	// Initialization of the parquet scan extension.
 	static unique_ptr<GlobalTableFunctionState> ParquetScanInitGlobal(ClientContext &context,
 	                                                                  TableFunctionInitInput &input) {
 		auto &bind_data = input.bind_data->CastNoConst<ParquetReadBindData>();
 		auto result = make_uniq<ParquetReadGlobalState>();
 
+		// This is the parquet file path.
 		result->file_states = vector<ParquetFileState>(bind_data.files.size(), ParquetFileState::UNOPENED);
 		result->file_mutexes = unique_ptr<mutex[]>(new mutex[bind_data.files.size()]);
 		if (bind_data.files.empty()) {
@@ -600,6 +603,8 @@ public:
 		return ParquetScanBindInternal(context, files, types, names, parquet_options);
 	}
 
+	// The main implementation of the scan functionality.
+	// function.function redirects to this function.
 	static void ParquetScanImplementation(ClientContext &context, TableFunctionInput &data_p, DataChunk &output) {
 		if (!data_p.local_state) {
 			return;
@@ -611,11 +616,11 @@ public:
 		do {
 			if (gstate.CanRemoveFilterColumns()) {
 				data.all_columns.Reset();
-				data.reader->Scan(data.scan_state, data.all_columns);
+				data.reader->Scan(context, data.scan_state, data.all_columns);
 				MultiFileReader::FinalizeChunk(bind_data.reader_bind, data.reader->reader_data, data.all_columns);
 				output.ReferenceColumns(data.all_columns, gstate.projection_ids);
 			} else {
-				data.reader->Scan(data.scan_state, output);
+				data.reader->Scan(context, data.scan_state, output);
 				MultiFileReader::FinalizeChunk(bind_data.reader_bind, data.reader->reader_data, output);
 			}
 

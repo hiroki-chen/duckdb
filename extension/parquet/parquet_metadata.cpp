@@ -179,6 +179,9 @@ Value ConvertParquetStats(const LogicalType &type, const duckdb_parquet::format:
 
 void ParquetMetaDataOperatorData::LoadRowGroupMetadata(ClientContext &context, const vector<LogicalType> &return_types,
                                                        const string &file_path) {
+  std::cout << "LoadRowGroupMetadata" << std::endl;
+	std::cout << "path: " << file_path << std::endl;
+
 	collection.Reset();
 	ParquetOptions parquet_options(context);
 	auto reader = make_uniq<ParquetReader>(context, file_path, parquet_options);

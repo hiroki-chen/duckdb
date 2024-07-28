@@ -15,6 +15,7 @@
 #include "duckdb/common/common.hpp"
 #include "duckdb/common/types/vector.hpp"
 #include "duckdb/common/winapi.hpp"
+#include "picachv_interfaces.h"
 
 namespace duckdb {
 class Allocator;
@@ -59,7 +60,7 @@ public:
 		return data.size();
 	}
 	inline const uint8_t *GetActiveUUID() const {
-		return active_uuid.uuid;
+		return active_uuid.data();
 	}
 	inline void SetCardinality(idx_t count_p) {
 		D_ASSERT(count_p <= capacity);
@@ -75,7 +76,7 @@ public:
 		SetCapacity(other.capacity);
 	}
 	inline void SetActiveUUID(const uint8_t *uuid) {
-		memcpy(active_uuid.uuid, uuid, sizeof(duckdb_uuid_t));
+		memcpy(active_uuid.data(), uuid, PICACHV_UUID_LEN);
 	}
 
 	DUCKDB_API Value GetValue(idx_t col_idx, idx_t index) const;
@@ -178,7 +179,7 @@ private:
 	idx_t capacity;
 	//! Vector caches, used to store data when ::Initialize is called
 	vector<VectorCache> vector_caches;
-	//! The active uuid for this data chunk.
-	duckdb_uuid_t active_uuid;
+	//! The active uuid for this data chunk. TODO: Ownership problem. Need to allocate this on the heap.
+	std::array<uint8_t, PICACHV_UUID_LEN> active_uuid;
 };
 } // namespace duckdb

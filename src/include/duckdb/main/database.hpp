@@ -121,7 +121,6 @@ public:
 
 	DUCKDB_API FileSystem &GetFileSystem();
 
-	DUCKDB_API ErrorCode InitializeMonitor();
 	DUCKDB_API idx_t NumberOfThreads();
 	DUCKDB_API static const char *SourceID();
 	DUCKDB_API static const char *LibraryVersion();

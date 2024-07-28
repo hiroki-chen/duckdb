@@ -147,8 +147,6 @@ static idx_t FilterNullValues(UnifiedVectorFormat &vdata, const SelectionVector 
 }
 
 void JoinHashTable::Build(PartitionedTupleDataAppendState &append_state, DataChunk &keys, DataChunk &payload) {
-	std::cout << "building join hash table..." << StringUtil::ByteArrayToString(payload.GetActiveUUID(), 16) << "\n";
-
 	D_ASSERT(!finalized);
 	D_ASSERT(keys.size() == payload.size());
 	if (keys.size() == 0) {
@@ -382,14 +380,11 @@ void ScanStructure::Next(ClientContext &context, DataChunk &keys, DataChunk &lef
 	if (finished) {
 		return;
 	}
-
-	std::cout << "join type is " << (uint8_t)ht.join_type << "\n";
 	switch (ht.join_type) {
 	case JoinType::INNER:
 	case JoinType::RIGHT:
 	case JoinType::RIGHT_ANTI:
 	case JoinType::RIGHT_SEMI:
-		std::cout << "next inner join: \n";
 		debug_print_df(context.ctx_uuid.uuid, PICACHV_UUID_LEN, left.GetActiveUUID(), PICACHV_UUID_LEN);
 
 		NextInnerJoin(keys, left, result);

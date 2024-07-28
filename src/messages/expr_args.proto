@@ -18,6 +18,7 @@ message AliasExpr {
 
 message WildcardExpr {}
 message LiteralExpr {}
+message CountExpr {}
 
 message FilterExpr {
   bytes input_uuid = 1;
@@ -41,6 +42,12 @@ message ApplyExpr {
   string name = 2;
 }
 
+message TernaryExpr {
+  bytes cond_uuid = 1;
+  bytes then_uuid = 2;
+  bytes else_uuid = 3;
+}
+
 message ExprArgument {
   oneof argument {
     AggExpr agg = 1;
@@ -52,5 +59,7 @@ message ExprArgument {
     UnaryExpr unary = 7;
     LiteralExpr literal = 8;
     ApplyExpr apply = 9;
+    CountExpr count = 10;
+    TernaryExpr ternary = 11;
   }
 }
