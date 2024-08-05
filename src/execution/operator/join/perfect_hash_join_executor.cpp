@@ -42,7 +42,7 @@ bool PerfectHashJoinExecutor::FullScanHashTable(LogicalType &key_type) {
 	// TODO: In a parallel finalize: One should exclusively lock and each thread should do one part of the code below.
 	Vector tuples_addresses(LogicalType::POINTER, ht.Count()); // allocate space for all the tuples
 
-	idx_t key_count = 0;
+	key_count = 0;
 	if (data_collection.ChunkCount() > 0) {
 		JoinHTScanState join_ht_state(data_collection, 0, data_collection.ChunkCount(),
 		                              TupleDataPinProperties::KEEP_EVERYTHING_PINNED);
@@ -51,14 +51,16 @@ bool PerfectHashJoinExecutor::FullScanHashTable(LogicalType &key_type) {
 		key_count = ht.FillWithHTOffsets(join_ht_state, tuples_addresses);
 	}
 
+	std::cout << "key_count is " << key_count << std::endl;
+
 	// Scan the build keys in the hash table
 	Vector build_vector(key_type, key_count);
 	RowOperations::FullScanColumn(ht.layout, tuples_addresses, build_vector, key_count, 0);
 
 	// Now fill the selection vector using the build keys and create a sequential vector
 	// TODO: add check for fast pass when probe is part of build domain
-	SelectionVector sel_build(key_count + 1);
-	SelectionVector sel_tuples(key_count + 1);
+	sel_build = SelectionVector(key_count + 1);
+	sel_tuples = SelectionVector(key_count + 1);
 	bool success = FillSelectionVectorSwitchBuild(build_vector, sel_build, sel_tuples, key_count);
 
 	// early out
@@ -69,8 +71,11 @@ bool PerfectHashJoinExecutor::FullScanHashTable(LogicalType &key_type) {
 		perfect_join_statistics.is_build_dense = true;
 	}
 	key_count = unique_keys; // do not consider keys out of the range
+	std::cout << "unique_keys is " << unique_keys << std::endl;
 
 	// Full scan the remaining build columns and fill the perfect hash table
+	//
+	// Filling is done by moving the data from the position sel_tuples[i] to the sel_build[i] for each column.
 	const auto build_size = perfect_join_statistics.build_range + 1;
 	for (idx_t i = 0; i < join.rhs_output_types.size(); i++) {
 		auto &vector = perfect_hash_table[i];
@@ -168,18 +173,15 @@ unique_ptr<OperatorState> PerfectHashJoinExecutor::GetOperatorState(ExecutionCon
 	return std::move(state);
 }
 
-// TODO:
+// BUG: The size of build vec is not properly synced.
 //
 // For this function we need obtain the row information that describes for each joined tuple,
-// the indices of the tuples that were joined.
+// the indices of the tuples that were joined. Called by CachingPhysicalOperator::Execute
+//
+// Here, input is the "rhs table" where the "lhs table" is actually the payload held by the hash table.
 OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionContext &context, DataChunk &input,
-                                                                  DataChunk &result, OperatorState &state_p) {
-	std::cout << "probe perfect hash table: \n";
-	debug_print_df(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, input.GetActiveUUID(), PICACHV_UUID_LEN);
-	input.Print();
-	// At this point the result's schema is determined but its data is still empty.
-	result.Print();
-
+                                                                  DataChunk &result, OperatorState &state_p,
+                                                                  const uint8_t *build_uuid) {
 	auto &state = state_p.Cast<PerfectHashJoinState>();
 	// keeps track of how many probe keys have a match
 	idx_t probe_sel_count = 0;
@@ -188,8 +190,6 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 	state.join_keys.Reset();
 	state.probe_executor.Execute(input, state.join_keys);
 
-	std::cout << "join keys:\n";
-	state.join_keys.Print();
 	// select the keys that are in the min-max range
 	auto &keys_vec = state.join_keys.data[0];
 	auto keys_count = state.join_keys.size();
@@ -203,13 +203,13 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 	if (perfect_join_statistics.is_build_dense && keys_count == probe_sel_count) {
 		result.Reference(input);
 	} else {
-		// otherwise, filter it out the values that do not match
-		// TODO: Need to modify the dataframe in the monitor.
-		result.Slice(input, state.probe_sel_vec, probe_sel_count, 0);
+		// Otherwise, filter it out the values that do not match
+		// Note that this function filters out `input` according to `probe_sel_vec`
+		// and then store this into `result`.
+		result.Slice(context.client, input, state.probe_sel_vec, probe_sel_count, 0);
 	}
 
 	// on the build side, we need to fetch the data and build dictionary vectors with the sel_vec
-	// todo: in this loop we can also tell the monitor which tuples are joined.
 	for (idx_t i = 0; i < join.rhs_output_types.size(); i++) {
 		auto &result_vector = result.data[input.ColumnCount() + i];
 		D_ASSERT(result_vector.GetType() == ht.layout.GetTypes()[ht.output_columns[i]]);
@@ -219,6 +219,11 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 	}
 
 	if (context.client.PolicyCheckingEnabled()) {
+		unordered_map<idx_t, idx_t> recover;
+		for (idx_t i = 0; i < probe_sel_count; i++) {
+			recover[sel_build[i]] = sel_tuples[i];
+		}
+
 		PicachvMessages::PlanArgument arg;
 		PicachvMessages::JoinInformation *join_info = arg.mutable_transform_info()->mutable_join();
 		google::protobuf::RepeatedPtrField<PicachvMessages::RowJoinInformation> *row_join_info =
@@ -227,6 +232,8 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 		for (idx_t i = 0; i < probe_sel_count; i++) {
 			idx_t left = state.probe_sel_vec.get_index(i);
 			idx_t right = state.build_sel_vec.get_index(i);
+			right = recover[right];
+
 			PicachvMessages::RowJoinInformation row_info;
 			row_info.set_left_row(left);
 			row_info.set_right_row(right);
@@ -236,8 +243,7 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 
 		join_info->mutable_lhs_df_uuid()->assign(reinterpret_cast<const char *>(input.GetActiveUUID()),
 		                                         PICACHV_UUID_LEN);
-		join_info->mutable_rhs_df_uuid()->assign(reinterpret_cast<const char *>(result.GetActiveUUID()),
-		                                         PICACHV_UUID_LEN);
+		join_info->mutable_rhs_df_uuid()->assign(reinterpret_cast<const char *>(build_uuid), PICACHV_UUID_LEN);
 
 		for (size_t i = 0; i < input.ColumnCount(); i++) {
 			join_info->mutable_left_columns()->Add(i);
@@ -256,6 +262,8 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 			throw InternalException(GetErrorMessage());
 		}
 		result.SetActiveUUID(uuid.uuid);
+
+		std::cout << "result have " << result.GetTypes().size() << " columns\n";
 	}
 
 	return OperatorResultType::NEED_MORE_INPUT;

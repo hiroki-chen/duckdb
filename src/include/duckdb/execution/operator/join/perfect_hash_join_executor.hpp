@@ -43,7 +43,7 @@ public:
 
 	unique_ptr<OperatorState> GetOperatorState(ExecutionContext &context);
 	OperatorResultType ProbePerfectHashTable(ExecutionContext &context, DataChunk &input, DataChunk &chunk,
-	                                         OperatorState &state);
+	                                         OperatorState &state, const uint8_t *build_uuid);
 	bool BuildPerfectHashTable(LogicalType &type);
 
 private:
@@ -69,8 +69,14 @@ private:
 	PerfectHashJoinStats perfect_join_statistics;
 	//! Stores the occurences of each value in the build side
 	unsafe_unique_array<bool> bitmap_build_idx;
+	//!Stores the number of keys in the build side
+	idx_t key_count = 0;
 	//! Stores the number of unique keys in the build side
 	idx_t unique_keys = 0;
+	//! For us to locate how the data is moved from the original spaec to
+	//! the perfect hash table.
+	SelectionVector sel_tuples;
+	SelectionVector sel_build;
 };
 
 } // namespace duckdb

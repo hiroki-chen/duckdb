@@ -786,10 +786,15 @@ void ColumnDataCollection::Append(ColumnDataAppendState &state, DataChunk &input
 	D_ASSERT(!finished_append);
 	D_ASSERT(types == input.GetTypes());
 
-	std::array<uint8_t, 16> element;
-	const uint8_t* uuid = input.GetActiveUUID();
-	std::copy(uuid, uuid + PICACHV_UUID_LEN, element.begin());	
-	uuids.emplace_back(std::move(element));
+	if (input.size() != 0) {
+		std::array<uint8_t, 16> element;
+		const uint8_t *uuid = input.GetActiveUUID();
+		std::copy(uuid, uuid + PICACHV_UUID_LEN, element.begin());
+		uuids.emplace_back(std::move(element));
+
+		std::cout << "appending " << StringUtil::ByteArrayToString(input.GetActiveUUID(), 16) << " with size " << input.size() << std::endl;
+		input.Print();
+	}
 
 	auto &segment = *segments.back();
 	for (idx_t vector_idx = 0; vector_idx < types.size(); vector_idx++) {
@@ -974,6 +979,7 @@ void ColumnDataCollection::Combine(ColumnDataCollection &other) {
 	}
 	other.Reset();
 	Verify();
+	uuids.insert(uuids.end(), other.uuids.begin(), other.uuids.end());
 }
 
 //===--------------------------------------------------------------------===//

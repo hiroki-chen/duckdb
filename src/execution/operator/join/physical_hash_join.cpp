@@ -16,6 +16,8 @@
 #include "duckdb/storage/buffer_manager.hpp"
 #include "duckdb/storage/storage_manager.hpp"
 #include "duckdb/storage/temporary_memory_manager.hpp"
+#include "picachv_interfaces.h"
+#include "plan_args.pb.h"
 
 #include <iostream>
 
@@ -132,6 +134,12 @@ public:
 	mutex lock;
 	vector<unique_ptr<JoinHashTable>> local_hash_tables;
 
+	//! payload_chunks.
+	vector<std::array<uint8_t, PICACHV_UUID_LEN>> payload_chunks;
+
+	//! The UUID of the build size.
+	std::array<uint8_t, PICACHV_UUID_LEN> build_uuid;
+
 	//! Excess probe data gathered during Sink
 	vector<LogicalType> probe_types;
 	unique_ptr<JoinHashTable::ProbeSpill> probe_spill;
@@ -165,6 +173,10 @@ public:
 	ExpressionExecutor join_key_executor;
 	DataChunk join_keys;
 
+	//! Payload chunk is a chunk with keys removed
+	//! For example, if the input chunk is (a, b, c, d) and the join keys are (a, b),
+	//! then the payload chunk is (c, d).
+	vector<std::array<uint8_t, PICACHV_UUID_LEN>> payload_chunks;
 	DataChunk payload_chunk;
 
 	//! Thread-local HT
@@ -239,12 +251,18 @@ unique_ptr<LocalSinkState> PhysicalHashJoin::GetLocalSinkState(ExecutionContext 
 //
 // This function will try to create the join keys from the left side and then leaves the remainder
 // as the payload. The hash table will then be built with the join keys and the payload.
+//
+// In the sink function, hash table is built with the join keys of the smaller relation, which means
+// currently there is only one table involved; in the probe phase, the hash table is probed with the
+// join keys of the *larger* relation.
 SinkResultType PhysicalHashJoin::Sink(ExecutionContext &context, DataChunk &chunk, OperatorSinkInput &input) const {
-	auto &lstate = input.local_state.Cast<HashJoinLocalSinkState>();
+	std::cout << "join: sinking the chunk with size " << chunk.size() << "\n";
 
+	auto &lstate = input.local_state.Cast<HashJoinLocalSinkState>();
 	// resolve the join keys for the right chunk
 	lstate.join_keys.Reset();
 	lstate.join_key_executor.Execute(chunk, lstate.join_keys);
+	lstate.payload_chunks.emplace_back(chunk.GetActiveUUIDArray());
 
 	// build the HT
 	auto &ht = *lstate.hash_table;
@@ -261,8 +279,6 @@ SinkResultType PhysicalHashJoin::Sink(ExecutionContext &context, DataChunk &chun
 		ht.Build(lstate.append_state, lstate.join_keys, lstate.payload_chunk);
 	}
 
-	lstate.payload_chunk.Print();
-
 	if (++lstate.chunk_count % HashJoinLocalSinkState::CHUNK_COUNT_UPDATE_INTERVAL == 0) {
 		auto &gstate = input.global_state.Cast<HashJoinGlobalSinkState>();
 		if (++gstate.temporary_memory_update_count % gstate.num_threads == 0) {
@@ -276,7 +292,7 @@ SinkResultType PhysicalHashJoin::Sink(ExecutionContext &context, DataChunk &chun
 }
 
 SinkCombineResultType PhysicalHashJoin::Combine(ExecutionContext &context, OperatorSinkCombineInput &input) const {
-  std::cout << "join: combine called.\n";
+	std::cout << "join: combine called.\n";
 
 	auto &gstate = input.global_state.Cast<HashJoinGlobalSinkState>();
 	auto &lstate = input.local_state.Cast<HashJoinLocalSinkState>();
@@ -289,6 +305,8 @@ SinkCombineResultType PhysicalHashJoin::Combine(ExecutionContext &context, Opera
 	context.thread.profiler.Flush(*this, lstate.join_key_executor, "join_key_executor", 1);
 	client_profiler.Flush(context.thread.profiler);
 
+	gstate.payload_chunks.insert(gstate.payload_chunks.end(), lstate.payload_chunks.begin(),
+	                             lstate.payload_chunks.end());
 	return SinkCombineResultType::FINISHED;
 }
 
@@ -467,10 +485,30 @@ public:
 
 SinkFinalizeType PhysicalHashJoin::Finalize(Pipeline &pipeline, Event &event, ClientContext &context,
                                             OperatorSinkFinalizeInput &input) const {
-  std::cout << "join: finalize called.\n";
+	std::cout << "join: finalize called.\n";
 
 	auto &sink = input.global_state.Cast<HashJoinGlobalSinkState>();
 	auto &ht = *sink.hash_table;
+
+	if (!sink.payload_chunks.empty()) {
+		memcpy(sink.build_uuid.data(), sink.payload_chunks[0].data(), PICACHV_UUID_LEN);
+	}
+
+	if (sink.payload_chunks.size() >= 2 && context.PolicyCheckingEnabled()) {
+		PicachvMessages::PlanArgument arg;
+		(void)arg.mutable_transform();
+
+		PicachvMessages::TransformInfo *ti = arg.mutable_transform_info();
+
+		for (auto &chunk : sink.payload_chunks) {
+			ti->mutable_union_()->add_df_uuids(chunk.data(), chunk.size());
+		}
+
+		if (execute_epilogue(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
+		                     arg.ByteSizeLong(), nullptr, 0, sink.build_uuid.data(), PICACHV_UUID_LEN) != 0) {
+			throw InternalException("PhysicalHashJoin::Finalize: " + GetErrorMessage());
+		}
+	}
 
 	idx_t max_partition_size;
 	idx_t max_partition_count;
@@ -575,31 +613,17 @@ unique_ptr<OperatorState> PhysicalHashJoin::GetOperatorState(ExecutionContext &c
 	return std::move(state);
 }
 
-// TODO:
+// This function seems returning a chunk with all vectors as "dictionary" type that selects over
+// another existing vector.
 //
 // In this function we will need to tell the execute_epilogue api the details of the join.
 OperatorResultType PhysicalHashJoin::ExecuteInternal(ExecutionContext &context, DataChunk &input, DataChunk &chunk,
                                                      GlobalOperatorState &gstate, OperatorState &state_p) const {
-  std::cout << "join: execute internal called.\n";
-	// So at this point this input is valid?
-	std::cout << "input: \n";
-	input.Print();
-	chunk.Print();
-
 	auto &state = state_p.Cast<HashJoinOperatorState>();
 	auto &sink = sink_state->Cast<HashJoinGlobalSinkState>();
 	D_ASSERT(sink.finalized);
 	D_ASSERT(!sink.scanned_data);
 
-	for (auto id : payload_column_idxs) {
-		std::cout << "payload column idx: " << id << "\n";
-	}
-
-	for (auto id : rhs_output_columns) {
-		std::cout << "rhs output column: " << id << "\n";
-	}
-
-	// some initialization for external hash join
 	if (sink.external && !state.initialized) {
 		if (!sink.probe_spill) {
 			sink.InitializeProbeSpill();
@@ -614,12 +638,13 @@ OperatorResultType PhysicalHashJoin::ExecuteInternal(ExecutionContext &context, 
 
 	if (sink.perfect_join_executor) {
 		D_ASSERT(!sink.external);
-		return sink.perfect_join_executor->ProbePerfectHashTable(context, input, chunk, *state.perfect_hash_join_state);
+		return sink.perfect_join_executor->ProbePerfectHashTable(context, input, chunk, *state.perfect_hash_join_state,
+		                                                         sink.build_uuid.data());
 	}
 
 	if (state.scan_structure) {
 		// still have elements remaining (i.e. we got >STANDARD_VECTOR_SIZE elements in the previous probe)
-		state.scan_structure->Next(context.client, state.join_keys, input, chunk);
+		state.scan_structure->Next(context.client, state.join_keys, input, chunk, sink.build_uuid.data());
 		if (!state.scan_structure->PointersExhausted() || chunk.size() > 0) {
 			return OperatorResultType::HAVE_MORE_OUTPUT;
 		}
@@ -644,7 +669,9 @@ OperatorResultType PhysicalHashJoin::ExecuteInternal(ExecutionContext &context, 
 	} else {
 		state.scan_structure = sink.hash_table->Probe(state.join_keys, state.join_key_state);
 	}
-	state.scan_structure->Next(context.client, state.join_keys, input, chunk);
+
+	state.scan_structure->Next(context.client, state.join_keys, input, chunk, sink.build_uuid.data());
+
 	return OperatorResultType::HAVE_MORE_OUTPUT;
 }
 
@@ -1043,8 +1070,6 @@ void HashJoinLocalSourceState::ExternalScanHT(HashJoinGlobalSinkState &sink, Has
 
 SourceResultType PhysicalHashJoin::GetData(ExecutionContext &context, DataChunk &chunk,
                                            OperatorSourceInput &input) const {
-  std::cout << "join: get_data called.\n";
-
 	auto &sink = sink_state->Cast<HashJoinGlobalSinkState>();
 	auto &gstate = input.global_state.Cast<HashJoinGlobalSourceState>();
 	auto &lstate = input.local_state.Cast<HashJoinLocalSourceState>();
@@ -1081,7 +1106,6 @@ SourceResultType PhysicalHashJoin::GetData(ExecutionContext &context, DataChunk 
 			}
 		}
 	}
-
 	return chunk.size() == 0 ? SourceResultType::FINISHED : SourceResultType::HAVE_MORE_OUTPUT;
 }
 

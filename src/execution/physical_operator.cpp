@@ -11,6 +11,9 @@
 #include "duckdb/parallel/thread_context.hpp"
 #include "duckdb/storage/buffer/buffer_pool.hpp"
 #include "duckdb/storage/buffer_manager.hpp"
+#include "picachv_interfaces.h"
+#include "plan_args.pb.h"
+#include "transform.pb.h"
 
 #include <iostream>
 
@@ -258,6 +261,11 @@ OperatorResultType CachingPhysicalOperator::Execute(ExecutionContext &context, D
 	// Execute child operator
 	auto child_result = ExecuteInternal(context, input, chunk, gstate, state);
 
+	std::cout << "after execute internal, we have " << std::endl;
+	chunk.Print();
+	std::cout << std::endl;
+
+
 #if STANDARD_VECTOR_SIZE >= 128
 	if (!state.initialized) {
 		state.initialized = true;
@@ -278,6 +286,12 @@ OperatorResultType CachingPhysicalOperator::Execute(ExecutionContext &context, D
 
 		state.cached_chunk->Append(chunk);
 
+		if (chunk.size() != 0) {
+			std::array<uint8_t, PICACHV_UUID_LEN> uuid;
+			std::copy(chunk.GetActiveUUID(), chunk.GetActiveUUID() + PICACHV_UUID_LEN, uuid.begin());
+			state.uuids.emplace_back(uuid);
+		}
+
 		if (state.cached_chunk->size() >= (STANDARD_VECTOR_SIZE - CACHE_THRESHOLD) ||
 		    child_result == OperatorResultType::FINISHED) {
 			// chunk cache full: return it
@@ -297,19 +311,37 @@ OperatorResultType CachingPhysicalOperator::Execute(ExecutionContext &context, D
 OperatorFinalizeResultType CachingPhysicalOperator::FinalExecute(ExecutionContext &context, DataChunk &chunk,
                                                                  GlobalOperatorState &gstate,
                                                                  OperatorState &state_p) const {
-	// Do a backup.
-	duckdb_uuid_t uuid;
-	memcpy(uuid.uuid, chunk.GetActiveUUID(), PICACHV_UUID_LEN);
 
 	auto &state = state_p.Cast<CachingOperatorState>();
 	if (state.cached_chunk) {
 		chunk.Move(*state.cached_chunk);
+
+		// Merge.
+		if (context.client.PolicyCheckingEnabled() && !state.uuids.empty()) {
+			PicachvMessages::PlanArgument arg;
+			(void)arg.mutable_transform();
+			PicachvMessages::UnionInformation *ui = arg.mutable_transform_info()->mutable_union_();
+
+			for (auto &uuid : state.uuids) {
+				ui->add_df_uuids(string((const char *)uuid.data(), PICACHV_UUID_LEN));
+			}
+
+			duckdb_uuid_t uuid;
+			if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN,
+			                     (uint8_t *)arg.SerializeAsString().c_str(), arg.ByteSizeLong(), nullptr, 0, uuid.uuid,
+			                     PICACHV_UUID_LEN) != ErrorCode::Success) {
+				throw InternalException("FinalExecute: " + GetErrorMessage());
+			}
+
+			chunk.SetActiveUUID(uuid.uuid);
+		}
+
 		state.cached_chunk.reset();
+		state.uuids.clear();
 	} else {
 		chunk.SetCardinality(0);
 	}
 
-	chunk.SetActiveUUID(uuid.uuid);
 	return OperatorFinalizeResultType::FINISHED;
 }
 

@@ -78,6 +78,9 @@ public:
 	inline void SetActiveUUID(const uint8_t *uuid) {
 		memcpy(active_uuid.data(), uuid, PICACHV_UUID_LEN);
 	}
+	inline std::array<uint8_t, PICACHV_UUID_LEN> GetActiveUUIDArray() const {
+		return active_uuid;
+	}
 
 	DUCKDB_API Value GetValue(idx_t col_idx, idx_t index) const;
 	DUCKDB_API void SetValue(idx_t col_idx, idx_t index, const Value &val);
@@ -141,6 +144,10 @@ public:
 	//! Slice all Vectors from other.data[i] to data[i + 'col_offset']
 	//! Turning all Vectors into Dictionary Vectors, using 'sel'
 	DUCKDB_API void Slice(const DataChunk &other, const SelectionVector &sel, idx_t count, idx_t col_offset = 0);
+
+	//! Slice all Vectors from other.data[i] to data[i + 'col_offset']
+	DUCKDB_API void Slice(ClientContext &context, const DataChunk &other, const SelectionVector &sel, idx_t count,
+	                      idx_t col_offset = 0);
 
 	//! Slice a DataChunk from "offset" to "offset + count"
 	DUCKDB_API void Slice(idx_t offset, idx_t count);

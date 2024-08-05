@@ -79,6 +79,7 @@ void DataChunk::Reset() {
 	}
 	capacity = STANDARD_VECTOR_SIZE;
 	SetCardinality(0);
+	active_uuid = {0};
 }
 
 void DataChunk::Destroy() {
@@ -186,6 +187,7 @@ void DataChunk::ReferenceColumns(DataChunk &other, const vector<column_t> &colum
 		this_col.Reference(other_col);
 	}
 	SetCardinality(other.size());
+	SetActiveUUID(other.active_uuid.data());
 }
 
 void DataChunk::Append(const DataChunk &other, bool resize, SelectionVector *sel, idx_t sel_count) {
@@ -293,6 +295,20 @@ void DataChunk::Slice(const SelectionVector &sel_vector, idx_t count_p) {
 	SelCache merge_cache;
 	for (idx_t c = 0; c < ColumnCount(); c++) {
 		data[c].Slice(sel_vector, count_p, merge_cache);
+	}
+}
+
+void DataChunk::Slice(ClientContext &context, const DataChunk &other, const SelectionVector &sel, idx_t count_p,
+                      idx_t col_offset) {
+	Slice(other, sel, count_p, col_offset);
+
+	if (context.PolicyCheckingEnabled()) {
+		D_ASSERT(col_offset == 0);
+
+		if (create_slice(context.ctx_uuid.uuid, PICACHV_UUID_LEN, other.GetActiveUUID(), PICACHV_UUID_LEN, sel.data(),
+		                 count_p, active_uuid.data(), PICACHV_UUID_LEN) != ErrorCode::Success) {
+			throw InternalException("Failed to create slice UUID: " + GetErrorMessage());
+		}
 	}
 }
 

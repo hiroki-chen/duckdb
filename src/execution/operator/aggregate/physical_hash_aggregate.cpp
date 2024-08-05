@@ -861,6 +861,27 @@ unique_ptr<LocalSourceState> PhysicalHashAggregate::GetLocalSourceState(Executio
 }
 
 // FIXME: Implement this functionality.
+//
+// This data only fetches a subset of all groups.
+// Consider the following example:
+//
+// +---------+
+// | chunk 1 | ---------+
+// +---------+          |
+//								+---------+
+// +---------+    | Group 1 | -> GetData()
+// | chunk 2 | -> +---------+
+// +---------+
+//
+// +---------+    +---------+
+// | chunk 3 | -> | Group 2 | -> GetData()
+// +---------+    +---------+
+//
+//    ....
+// Thus for Picachv, we can do a trick:
+// 1. We first store all the groups
+// 2. The `GetData()` then reference the subsets it owns (how do we obain this information?)
+// we may call populate_Group_chunk and then perform the hash to get this info.
 SourceResultType PhysicalHashAggregate::GetData(ExecutionContext &context, DataChunk &chunk,
                                                 OperatorSourceInput &input) const {
 	auto &sink_gstate = sink_state->Cast<HashAggregateGlobalSinkState>();
@@ -899,7 +920,7 @@ SourceResultType PhysicalHashAggregate::GetData(ExecutionContext &context, DataC
 		}
 		lstate.radix_idx = gstate.state_index.load();
 	}
-
+	
 	return chunk.size() == 0 ? SourceResultType::FINISHED : SourceResultType::HAVE_MORE_OUTPUT;
 }
 

@@ -1066,7 +1066,7 @@ static void TupleDataTemplatedGather(const TupleDataLayout &layout, Vector &row_
                                      const SelectionVector &target_sel, optional_ptr<Vector> dummy_vector,
                                      const vector<TupleDataGatherFunction> &child_functions) {
 	// Source
-	auto source_locations = FlatVector::GetData<data_ptr_t>(row_locations);
+	auto source_locations = FlatVector::GetData<data_ptr_t>(row_locations); //row_locations = pointer
 
 	// Target
 	auto target_data = FlatVector::GetData<T>(target);

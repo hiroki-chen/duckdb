@@ -73,13 +73,13 @@ bool PipelineExecutor::TryFlushCachingOperators() {
 			continue;
 		}
 
-		for (auto &chunk : intermediate_chunks) {
-			std::cout << StringUtil::ByteArrayToString(chunk->GetActiveUUID(), 16) << "\n";
-		}
 		// We also need to set the uuid to the last one.
 		auto &curr_chunk =
 		    flushing_idx + 1 >= intermediate_chunks.size() ? final_chunk : *intermediate_chunks[flushing_idx + 1];
 		auto &current_operator = pipeline.operators[flushing_idx].get();
+
+		std::cout << "flushing_idx = " << flushing_idx << ", inermediate_chunks.size() = " << intermediate_chunks.size() << std::endl;
+		std::cout << "in_process_operators.empty() = true ? " << (in_process_operators.empty()) << std::endl;
 
 		OperatorFinalizeResultType finalize_result;
 		OperatorResultType push_result;
@@ -95,7 +95,7 @@ bool PipelineExecutor::TryFlushCachingOperators() {
 			// Reset flag and reflush the last chunk we were flushing.
 			finalize_result = OperatorFinalizeResultType::HAVE_MORE_OUTPUT;
 		}
-		
+
 		push_result = ExecutePushInternal(curr_chunk, flushing_idx + 1);
 
 		if (finalize_result == OperatorFinalizeResultType::HAVE_MORE_OUTPUT) {
@@ -230,6 +230,7 @@ PipelineExecuteResult PipelineExecutor::Execute(idx_t max_chunks) {
 				continue;
 			}
 
+      std::cout << "source chunk size is " << source_chunk.size() << "\n";
 			result = ExecutePushInternal(source_chunk);
 		} else {
 			throw InternalException("Unexpected state reached in pipeline executor");
@@ -397,6 +398,7 @@ OperatorResultType PipelineExecutor::Execute(DataChunk &input, DataChunk &result
 		// if current_idx is the last possible index (>= operators.size()) we write to the result
 		// otherwise we write to an intermediate chunk
 		auto current_intermediate = current_idx;
+		// ???? who modifies intermediate chunks?
 		auto &current_chunk =
 		    current_intermediate >= intermediate_chunks.size() ? result : *intermediate_chunks[current_intermediate];
 		current_chunk.Reset();
@@ -406,13 +408,14 @@ OperatorResultType PipelineExecutor::Execute(DataChunk &input, DataChunk &result
 		} else {
 			auto &prev_chunk =
 			    current_intermediate == initial_idx + 1 ? input : *intermediate_chunks[current_intermediate - 1];
+
 			auto operator_idx = current_idx - 1;
 			auto &current_operator = pipeline.operators[operator_idx].get();
 
 			// if current_idx > source_idx, we pass the previous operators' output through the Execute of the current
 			// operator
 			StartOperator(current_operator);
-			// std::cout << "Execute operator " << current_operator.GetName() << std::endl;
+			std::cout << "Execute operator " << current_operator.GetName() << std::endl;
 			auto result = current_operator.Execute(context, prev_chunk, current_chunk, *current_operator.op_state,
 			                                       *intermediate_states[current_intermediate - 1]);
 			EndOperator(current_operator, &current_chunk);
@@ -473,7 +476,7 @@ SourceResultType PipelineExecutor::GetData(DataChunk &chunk, OperatorSourceInput
 	}
 #endif
 
-	// std::cout << "GetData called " << pipeline.source->GetName() << std::endl;
+	std::cout << "GetData called " << pipeline.source->GetName() << std::endl;
 	return pipeline.source->GetData(context, chunk, input);
 }
 
@@ -502,7 +505,7 @@ SourceResultType PipelineExecutor::FetchFromSource(DataChunk &result) {
 
 	OperatorSourceInput source_input = {*pipeline.source_state, *local_source_state, interrupt_state};
 	auto res = GetData(result, source_input);
-
+	std::cout << "get data returned " << StringUtil::ByteArrayToString(result.GetActiveUUID(), 16) << ", " << result.size() << std::endl;
 	// Ensures Sinks only return empty results when Blocking or Finished
 	D_ASSERT(res != SourceResultType::BLOCKED || result.size() == 0);
 

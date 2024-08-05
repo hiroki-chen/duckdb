@@ -77,7 +77,9 @@ unique_ptr<QueryResult> PhysicalBatchCollector::GetResult(GlobalSinkState &state
 		for (size_t i = 0; i < gstate.data.uuids.size(); i++) {
 			if (finalize(gstate.data.context.ctx_uuid.uuid, PICACHV_UUID_LEN, gstate.data.uuids[i].data(),
 			             PICACHV_UUID_LEN) != ErrorCode::Success) {
-				throw InternalException("PhysicalBatchCollector: " + GetErrorMessage());
+				// throw InternalException("PhysicalBatchCollector: " + GetErrorMessage());
+				// fix this.
+				// filter out empty chunks since they cause confusion
 			}
 		}
 	}

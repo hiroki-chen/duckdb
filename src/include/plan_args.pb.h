@@ -60,12 +60,12 @@ extern GetDataFromFileArgumentDefaultTypeInternal _GetDataFromFileArgument_defau
 class GetDataInMemory;
 struct GetDataInMemoryDefaultTypeInternal;
 extern GetDataInMemoryDefaultTypeInternal _GetDataInMemory_default_instance_;
-class GetDataInMemory_ById;
-struct GetDataInMemory_ByIdDefaultTypeInternal;
-extern GetDataInMemory_ByIdDefaultTypeInternal _GetDataInMemory_ById_default_instance_;
-class GetDataInMemory_ByName;
-struct GetDataInMemory_ByNameDefaultTypeInternal;
-extern GetDataInMemory_ByNameDefaultTypeInternal _GetDataInMemory_ByName_default_instance_;
+class GetDataInMemory_ProjectList;
+struct GetDataInMemory_ProjectListDefaultTypeInternal;
+extern GetDataInMemory_ProjectListDefaultTypeInternal _GetDataInMemory_ProjectList_default_instance_;
+class HstackArgument;
+struct HstackArgumentDefaultTypeInternal;
+extern HstackArgumentDefaultTypeInternal _HstackArgument_default_instance_;
 class PlanArgument;
 struct PlanArgumentDefaultTypeInternal;
 extern PlanArgumentDefaultTypeInternal _PlanArgument_default_instance_;
@@ -84,8 +84,8 @@ template<> ::PicachvMessages::AggregateArgument* Arena::CreateMaybeMessage<::Pic
 template<> ::PicachvMessages::GetDataArgument* Arena::CreateMaybeMessage<::PicachvMessages::GetDataArgument>(Arena*);
 template<> ::PicachvMessages::GetDataFromFileArgument* Arena::CreateMaybeMessage<::PicachvMessages::GetDataFromFileArgument>(Arena*);
 template<> ::PicachvMessages::GetDataInMemory* Arena::CreateMaybeMessage<::PicachvMessages::GetDataInMemory>(Arena*);
-template<> ::PicachvMessages::GetDataInMemory_ById* Arena::CreateMaybeMessage<::PicachvMessages::GetDataInMemory_ById>(Arena*);
-template<> ::PicachvMessages::GetDataInMemory_ByName* Arena::CreateMaybeMessage<::PicachvMessages::GetDataInMemory_ByName>(Arena*);
+template<> ::PicachvMessages::GetDataInMemory_ProjectList* Arena::CreateMaybeMessage<::PicachvMessages::GetDataInMemory_ProjectList>(Arena*);
+template<> ::PicachvMessages::HstackArgument* Arena::CreateMaybeMessage<::PicachvMessages::HstackArgument>(Arena*);
 template<> ::PicachvMessages::PlanArgument* Arena::CreateMaybeMessage<::PicachvMessages::PlanArgument>(Arena*);
 template<> ::PicachvMessages::ProjectionArgument* Arena::CreateMaybeMessage<::PicachvMessages::ProjectionArgument>(Arena*);
 template<> ::PicachvMessages::SelectArgument* Arena::CreateMaybeMessage<::PicachvMessages::SelectArgument>(Arena*);
@@ -275,24 +275,24 @@ class GetDataFromFileArgument final :
 };
 // -------------------------------------------------------------------
 
-class GetDataInMemory_ByName final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.GetDataInMemory.ByName) */ {
+class GetDataInMemory_ProjectList final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.GetDataInMemory.ProjectList) */ {
  public:
-  inline GetDataInMemory_ByName() : GetDataInMemory_ByName(nullptr) {}
-  ~GetDataInMemory_ByName() override;
-  explicit PROTOBUF_CONSTEXPR GetDataInMemory_ByName(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline GetDataInMemory_ProjectList() : GetDataInMemory_ProjectList(nullptr) {}
+  ~GetDataInMemory_ProjectList() override;
+  explicit PROTOBUF_CONSTEXPR GetDataInMemory_ProjectList(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  GetDataInMemory_ByName(const GetDataInMemory_ByName& from);
-  GetDataInMemory_ByName(GetDataInMemory_ByName&& from) noexcept
-    : GetDataInMemory_ByName() {
+  GetDataInMemory_ProjectList(const GetDataInMemory_ProjectList& from);
+  GetDataInMemory_ProjectList(GetDataInMemory_ProjectList&& from) noexcept
+    : GetDataInMemory_ProjectList() {
     *this = ::std::move(from);
   }
 
-  inline GetDataInMemory_ByName& operator=(const GetDataInMemory_ByName& from) {
+  inline GetDataInMemory_ProjectList& operator=(const GetDataInMemory_ProjectList& from) {
     CopyFrom(from);
     return *this;
   }
-  inline GetDataInMemory_ByName& operator=(GetDataInMemory_ByName&& from) noexcept {
+  inline GetDataInMemory_ProjectList& operator=(GetDataInMemory_ProjectList&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -315,20 +315,20 @@ class GetDataInMemory_ByName final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const GetDataInMemory_ByName& default_instance() {
+  static const GetDataInMemory_ProjectList& default_instance() {
     return *internal_default_instance();
   }
-  static inline const GetDataInMemory_ByName* internal_default_instance() {
-    return reinterpret_cast<const GetDataInMemory_ByName*>(
-               &_GetDataInMemory_ByName_default_instance_);
+  static inline const GetDataInMemory_ProjectList* internal_default_instance() {
+    return reinterpret_cast<const GetDataInMemory_ProjectList*>(
+               &_GetDataInMemory_ProjectList_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  friend void swap(GetDataInMemory_ByName& a, GetDataInMemory_ByName& b) {
+  friend void swap(GetDataInMemory_ProjectList& a, GetDataInMemory_ProjectList& b) {
     a.Swap(&b);
   }
-  inline void Swap(GetDataInMemory_ByName* other) {
+  inline void Swap(GetDataInMemory_ProjectList* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -341,7 +341,7 @@ class GetDataInMemory_ByName final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(GetDataInMemory_ByName* other) {
+  void UnsafeArenaSwap(GetDataInMemory_ProjectList* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -349,14 +349,14 @@ class GetDataInMemory_ByName final :
 
   // implements Message ----------------------------------------------
 
-  GetDataInMemory_ByName* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<GetDataInMemory_ByName>(arena);
+  GetDataInMemory_ProjectList* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<GetDataInMemory_ProjectList>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const GetDataInMemory_ByName& from);
+  void CopyFrom(const GetDataInMemory_ProjectList& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const GetDataInMemory_ByName& from) {
-    GetDataInMemory_ByName::MergeImpl(*this, from);
+  void MergeFrom( const GetDataInMemory_ProjectList& from) {
+    GetDataInMemory_ProjectList::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -374,178 +374,15 @@ class GetDataInMemory_ByName final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(GetDataInMemory_ByName* other);
+  void InternalSwap(GetDataInMemory_ProjectList* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "PicachvMessages.GetDataInMemory.ByName";
+    return "PicachvMessages.GetDataInMemory.ProjectList";
   }
   protected:
-  explicit GetDataInMemory_ByName(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kProjectListFieldNumber = 1,
-  };
-  // repeated string project_list = 1;
-  int project_list_size() const;
-  private:
-  int _internal_project_list_size() const;
-  public:
-  void clear_project_list();
-  const std::string& project_list(int index) const;
-  std::string* mutable_project_list(int index);
-  void set_project_list(int index, const std::string& value);
-  void set_project_list(int index, std::string&& value);
-  void set_project_list(int index, const char* value);
-  void set_project_list(int index, const char* value, size_t size);
-  std::string* add_project_list();
-  void add_project_list(const std::string& value);
-  void add_project_list(std::string&& value);
-  void add_project_list(const char* value);
-  void add_project_list(const char* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& project_list() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_project_list();
-  private:
-  const std::string& _internal_project_list(int index) const;
-  std::string* _internal_add_project_list();
-  public:
-
-  // @@protoc_insertion_point(class_scope:PicachvMessages.GetDataInMemory.ByName)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> project_list_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_plan_5fargs_2eproto;
-};
-// -------------------------------------------------------------------
-
-class GetDataInMemory_ById final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.GetDataInMemory.ById) */ {
- public:
-  inline GetDataInMemory_ById() : GetDataInMemory_ById(nullptr) {}
-  ~GetDataInMemory_ById() override;
-  explicit PROTOBUF_CONSTEXPR GetDataInMemory_ById(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  GetDataInMemory_ById(const GetDataInMemory_ById& from);
-  GetDataInMemory_ById(GetDataInMemory_ById&& from) noexcept
-    : GetDataInMemory_ById() {
-    *this = ::std::move(from);
-  }
-
-  inline GetDataInMemory_ById& operator=(const GetDataInMemory_ById& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline GetDataInMemory_ById& operator=(GetDataInMemory_ById&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const GetDataInMemory_ById& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const GetDataInMemory_ById* internal_default_instance() {
-    return reinterpret_cast<const GetDataInMemory_ById*>(
-               &_GetDataInMemory_ById_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    2;
-
-  friend void swap(GetDataInMemory_ById& a, GetDataInMemory_ById& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(GetDataInMemory_ById* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(GetDataInMemory_ById* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  GetDataInMemory_ById* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<GetDataInMemory_ById>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const GetDataInMemory_ById& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const GetDataInMemory_ById& from) {
-    GetDataInMemory_ById::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(GetDataInMemory_ById* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "PicachvMessages.GetDataInMemory.ById";
-  }
-  protected:
-  explicit GetDataInMemory_ById(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit GetDataInMemory_ProjectList(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -583,7 +420,7 @@ class GetDataInMemory_ById final :
   ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
       mutable_project_list();
 
-  // @@protoc_insertion_point(class_scope:PicachvMessages.GetDataInMemory.ById)
+  // @@protoc_insertion_point(class_scope:PicachvMessages.GetDataInMemory.ProjectList)
  private:
   class _Internal;
 
@@ -643,18 +480,12 @@ class GetDataInMemory final :
   static const GetDataInMemory& default_instance() {
     return *internal_default_instance();
   }
-  enum ProjectionListCase {
-    kByName = 3,
-    kById = 4,
-    PROJECTION_LIST_NOT_SET = 0,
-  };
-
   static inline const GetDataInMemory* internal_default_instance() {
     return reinterpret_cast<const GetDataInMemory*>(
                &_GetDataInMemory_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    2;
 
   friend void swap(GetDataInMemory& a, GetDataInMemory& b) {
     a.Swap(&b);
@@ -724,16 +555,14 @@ class GetDataInMemory final :
 
   // nested types ----------------------------------------------------
 
-  typedef GetDataInMemory_ByName ByName;
-  typedef GetDataInMemory_ById ById;
+  typedef GetDataInMemory_ProjectList ProjectList;
 
   // accessors -------------------------------------------------------
 
   enum : int {
     kDfUuidFieldNumber = 1,
     kPredFieldNumber = 2,
-    kByNameFieldNumber = 3,
-    kByIdFieldNumber = 4,
+    kProjectListFieldNumber = 3,
   };
   // bytes df_uuid = 1;
   void clear_df_uuid();
@@ -767,52 +596,27 @@ class GetDataInMemory final :
   std::string* _internal_mutable_pred();
   public:
 
-  // .PicachvMessages.GetDataInMemory.ByName by_name = 3;
-  bool has_by_name() const;
+  // optional .PicachvMessages.GetDataInMemory.ProjectList project_list = 3;
+  bool has_project_list() const;
   private:
-  bool _internal_has_by_name() const;
+  bool _internal_has_project_list() const;
   public:
-  void clear_by_name();
-  const ::PicachvMessages::GetDataInMemory_ByName& by_name() const;
-  PROTOBUF_NODISCARD ::PicachvMessages::GetDataInMemory_ByName* release_by_name();
-  ::PicachvMessages::GetDataInMemory_ByName* mutable_by_name();
-  void set_allocated_by_name(::PicachvMessages::GetDataInMemory_ByName* by_name);
+  void clear_project_list();
+  const ::PicachvMessages::GetDataInMemory_ProjectList& project_list() const;
+  PROTOBUF_NODISCARD ::PicachvMessages::GetDataInMemory_ProjectList* release_project_list();
+  ::PicachvMessages::GetDataInMemory_ProjectList* mutable_project_list();
+  void set_allocated_project_list(::PicachvMessages::GetDataInMemory_ProjectList* project_list);
   private:
-  const ::PicachvMessages::GetDataInMemory_ByName& _internal_by_name() const;
-  ::PicachvMessages::GetDataInMemory_ByName* _internal_mutable_by_name();
+  const ::PicachvMessages::GetDataInMemory_ProjectList& _internal_project_list() const;
+  ::PicachvMessages::GetDataInMemory_ProjectList* _internal_mutable_project_list();
   public:
-  void unsafe_arena_set_allocated_by_name(
-      ::PicachvMessages::GetDataInMemory_ByName* by_name);
-  ::PicachvMessages::GetDataInMemory_ByName* unsafe_arena_release_by_name();
+  void unsafe_arena_set_allocated_project_list(
+      ::PicachvMessages::GetDataInMemory_ProjectList* project_list);
+  ::PicachvMessages::GetDataInMemory_ProjectList* unsafe_arena_release_project_list();
 
-  // .PicachvMessages.GetDataInMemory.ById by_id = 4;
-  bool has_by_id() const;
-  private:
-  bool _internal_has_by_id() const;
-  public:
-  void clear_by_id();
-  const ::PicachvMessages::GetDataInMemory_ById& by_id() const;
-  PROTOBUF_NODISCARD ::PicachvMessages::GetDataInMemory_ById* release_by_id();
-  ::PicachvMessages::GetDataInMemory_ById* mutable_by_id();
-  void set_allocated_by_id(::PicachvMessages::GetDataInMemory_ById* by_id);
-  private:
-  const ::PicachvMessages::GetDataInMemory_ById& _internal_by_id() const;
-  ::PicachvMessages::GetDataInMemory_ById* _internal_mutable_by_id();
-  public:
-  void unsafe_arena_set_allocated_by_id(
-      ::PicachvMessages::GetDataInMemory_ById* by_id);
-  ::PicachvMessages::GetDataInMemory_ById* unsafe_arena_release_by_id();
-
-  void clear_projection_list();
-  ProjectionListCase projection_list_case() const;
   // @@protoc_insertion_point(class_scope:PicachvMessages.GetDataInMemory)
  private:
   class _Internal;
-  void set_has_by_name();
-  void set_has_by_id();
-
-  inline bool has_projection_list() const;
-  inline void clear_has_projection_list();
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
@@ -822,14 +626,7 @@ class GetDataInMemory final :
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr df_uuid_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr pred_;
-    union ProjectionListUnion {
-      constexpr ProjectionListUnion() : _constinit_{} {}
-        ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
-      ::PicachvMessages::GetDataInMemory_ByName* by_name_;
-      ::PicachvMessages::GetDataInMemory_ById* by_id_;
-    } projection_list_;
-    uint32_t _oneof_case_[1];
-
+    ::PicachvMessages::GetDataInMemory_ProjectList* project_list_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_plan_5fargs_2eproto;
@@ -890,7 +687,7 @@ class GetDataArgument final :
                &_GetDataArgument_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    3;
 
   friend void swap(GetDataArgument& a, GetDataArgument& b) {
     a.Swap(&b);
@@ -1080,7 +877,7 @@ class SelectArgument final :
                &_SelectArgument_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    4;
 
   friend void swap(SelectArgument& a, SelectArgument& b) {
     a.Swap(&b);
@@ -1233,7 +1030,7 @@ class ProjectionArgument final :
                &_ProjectionArgument_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    5;
 
   friend void swap(ProjectionArgument& a, ProjectionArgument& b) {
     a.Swap(&b);
@@ -1306,30 +1103,30 @@ class ProjectionArgument final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kExpressionFieldNumber = 1,
+    kExpressionsFieldNumber = 1,
   };
-  // repeated bytes expression = 1;
-  int expression_size() const;
+  // repeated bytes expressions = 1;
+  int expressions_size() const;
   private:
-  int _internal_expression_size() const;
+  int _internal_expressions_size() const;
   public:
-  void clear_expression();
-  const std::string& expression(int index) const;
-  std::string* mutable_expression(int index);
-  void set_expression(int index, const std::string& value);
-  void set_expression(int index, std::string&& value);
-  void set_expression(int index, const char* value);
-  void set_expression(int index, const void* value, size_t size);
-  std::string* add_expression();
-  void add_expression(const std::string& value);
-  void add_expression(std::string&& value);
-  void add_expression(const char* value);
-  void add_expression(const void* value, size_t size);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& expression() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_expression();
+  void clear_expressions();
+  const std::string& expressions(int index) const;
+  std::string* mutable_expressions(int index);
+  void set_expressions(int index, const std::string& value);
+  void set_expressions(int index, std::string&& value);
+  void set_expressions(int index, const char* value);
+  void set_expressions(int index, const void* value, size_t size);
+  std::string* add_expressions();
+  void add_expressions(const std::string& value);
+  void add_expressions(std::string&& value);
+  void add_expressions(const char* value);
+  void add_expressions(const void* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& expressions() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_expressions();
   private:
-  const std::string& _internal_expression(int index) const;
-  std::string* _internal_add_expression();
+  const std::string& _internal_expressions(int index) const;
+  std::string* _internal_add_expressions();
   public:
 
   // @@protoc_insertion_point(class_scope:PicachvMessages.ProjectionArgument)
@@ -1340,7 +1137,7 @@ class ProjectionArgument final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> expression_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> expressions_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1395,7 +1192,7 @@ class TransformArgument final :
                &_TransformArgument_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    6;
 
   friend void swap(TransformArgument& a, TransformArgument& b) {
     a.Swap(&b);
@@ -1462,6 +1259,195 @@ class TransformArgument final :
   typedef void DestructorSkippable_;
   struct Impl_ {
   };
+  friend struct ::TableStruct_plan_5fargs_2eproto;
+};
+// -------------------------------------------------------------------
+
+class HstackArgument final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.HstackArgument) */ {
+ public:
+  inline HstackArgument() : HstackArgument(nullptr) {}
+  ~HstackArgument() override;
+  explicit PROTOBUF_CONSTEXPR HstackArgument(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  HstackArgument(const HstackArgument& from);
+  HstackArgument(HstackArgument&& from) noexcept
+    : HstackArgument() {
+    *this = ::std::move(from);
+  }
+
+  inline HstackArgument& operator=(const HstackArgument& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline HstackArgument& operator=(HstackArgument&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const HstackArgument& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const HstackArgument* internal_default_instance() {
+    return reinterpret_cast<const HstackArgument*>(
+               &_HstackArgument_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  friend void swap(HstackArgument& a, HstackArgument& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(HstackArgument* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(HstackArgument* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  HstackArgument* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<HstackArgument>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const HstackArgument& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const HstackArgument& from) {
+    HstackArgument::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(HstackArgument* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "PicachvMessages.HstackArgument";
+  }
+  protected:
+  explicit HstackArgument(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kCseFieldNumber = 1,
+    kExpressionsFieldNumber = 2,
+  };
+  // repeated bytes cse = 1;
+  int cse_size() const;
+  private:
+  int _internal_cse_size() const;
+  public:
+  void clear_cse();
+  const std::string& cse(int index) const;
+  std::string* mutable_cse(int index);
+  void set_cse(int index, const std::string& value);
+  void set_cse(int index, std::string&& value);
+  void set_cse(int index, const char* value);
+  void set_cse(int index, const void* value, size_t size);
+  std::string* add_cse();
+  void add_cse(const std::string& value);
+  void add_cse(std::string&& value);
+  void add_cse(const char* value);
+  void add_cse(const void* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& cse() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_cse();
+  private:
+  const std::string& _internal_cse(int index) const;
+  std::string* _internal_add_cse();
+  public:
+
+  // repeated bytes expressions = 2;
+  int expressions_size() const;
+  private:
+  int _internal_expressions_size() const;
+  public:
+  void clear_expressions();
+  const std::string& expressions(int index) const;
+  std::string* mutable_expressions(int index);
+  void set_expressions(int index, const std::string& value);
+  void set_expressions(int index, std::string&& value);
+  void set_expressions(int index, const char* value);
+  void set_expressions(int index, const void* value, size_t size);
+  std::string* add_expressions();
+  void add_expressions(const std::string& value);
+  void add_expressions(std::string&& value);
+  void add_expressions(const char* value);
+  void add_expressions(const void* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& expressions() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_expressions();
+  private:
+  const std::string& _internal_expressions(int index) const;
+  std::string* _internal_add_expressions();
+  public:
+
+  // @@protoc_insertion_point(class_scope:PicachvMessages.HstackArgument)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> cse_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> expressions_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
   friend struct ::TableStruct_plan_5fargs_2eproto;
 };
 // -------------------------------------------------------------------
@@ -1761,6 +1747,7 @@ class PlanArgument final :
     kAggregate = 3,
     kGetData = 4,
     kTransform = 5,
+    kHstack = 6,
     ARGUMENT_NOT_SET = 0,
   };
 
@@ -1842,14 +1829,15 @@ class PlanArgument final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kTransformInfoFieldNumber = 6,
+    kTransformInfoFieldNumber = 7,
     kSelectFieldNumber = 1,
     kProjectionFieldNumber = 2,
     kAggregateFieldNumber = 3,
     kGetDataFieldNumber = 4,
     kTransformFieldNumber = 5,
+    kHstackFieldNumber = 6,
   };
-  // .PicachvMessages.TransformInfo transform_info = 6;
+  // .PicachvMessages.TransformInfo transform_info = 7;
   bool has_transform_info() const;
   private:
   bool _internal_has_transform_info() const;
@@ -1957,6 +1945,24 @@ class PlanArgument final :
       ::PicachvMessages::TransformArgument* transform);
   ::PicachvMessages::TransformArgument* unsafe_arena_release_transform();
 
+  // .PicachvMessages.HstackArgument hstack = 6;
+  bool has_hstack() const;
+  private:
+  bool _internal_has_hstack() const;
+  public:
+  void clear_hstack();
+  const ::PicachvMessages::HstackArgument& hstack() const;
+  PROTOBUF_NODISCARD ::PicachvMessages::HstackArgument* release_hstack();
+  ::PicachvMessages::HstackArgument* mutable_hstack();
+  void set_allocated_hstack(::PicachvMessages::HstackArgument* hstack);
+  private:
+  const ::PicachvMessages::HstackArgument& _internal_hstack() const;
+  ::PicachvMessages::HstackArgument* _internal_mutable_hstack();
+  public:
+  void unsafe_arena_set_allocated_hstack(
+      ::PicachvMessages::HstackArgument* hstack);
+  ::PicachvMessages::HstackArgument* unsafe_arena_release_hstack();
+
   void clear_argument();
   ArgumentCase argument_case() const;
   // @@protoc_insertion_point(class_scope:PicachvMessages.PlanArgument)
@@ -1967,6 +1973,7 @@ class PlanArgument final :
   void set_has_aggregate();
   void set_has_get_data();
   void set_has_transform();
+  void set_has_hstack();
 
   inline bool has_argument() const;
   inline void clear_has_argument();
@@ -1984,6 +1991,7 @@ class PlanArgument final :
       ::PicachvMessages::AggregateArgument* aggregate_;
       ::PicachvMessages::GetDataArgument* get_data_;
       ::PicachvMessages::TransformArgument* transform_;
+      ::PicachvMessages::HstackArgument* hstack_;
     } argument_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t _oneof_case_[1];
@@ -2125,131 +2133,52 @@ inline void GetDataFromFileArgument::set_allocated_df_uuid(std::string* df_uuid)
 
 // -------------------------------------------------------------------
 
-// GetDataInMemory_ByName
-
-// repeated string project_list = 1;
-inline int GetDataInMemory_ByName::_internal_project_list_size() const {
-  return _impl_.project_list_.size();
-}
-inline int GetDataInMemory_ByName::project_list_size() const {
-  return _internal_project_list_size();
-}
-inline void GetDataInMemory_ByName::clear_project_list() {
-  _impl_.project_list_.Clear();
-}
-inline std::string* GetDataInMemory_ByName::add_project_list() {
-  std::string* _s = _internal_add_project_list();
-  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.GetDataInMemory.ByName.project_list)
-  return _s;
-}
-inline const std::string& GetDataInMemory_ByName::_internal_project_list(int index) const {
-  return _impl_.project_list_.Get(index);
-}
-inline const std::string& GetDataInMemory_ByName::project_list(int index) const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.GetDataInMemory.ByName.project_list)
-  return _internal_project_list(index);
-}
-inline std::string* GetDataInMemory_ByName::mutable_project_list(int index) {
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.GetDataInMemory.ByName.project_list)
-  return _impl_.project_list_.Mutable(index);
-}
-inline void GetDataInMemory_ByName::set_project_list(int index, const std::string& value) {
-  _impl_.project_list_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:PicachvMessages.GetDataInMemory.ByName.project_list)
-}
-inline void GetDataInMemory_ByName::set_project_list(int index, std::string&& value) {
-  _impl_.project_list_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:PicachvMessages.GetDataInMemory.ByName.project_list)
-}
-inline void GetDataInMemory_ByName::set_project_list(int index, const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.project_list_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:PicachvMessages.GetDataInMemory.ByName.project_list)
-}
-inline void GetDataInMemory_ByName::set_project_list(int index, const char* value, size_t size) {
-  _impl_.project_list_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.GetDataInMemory.ByName.project_list)
-}
-inline std::string* GetDataInMemory_ByName::_internal_add_project_list() {
-  return _impl_.project_list_.Add();
-}
-inline void GetDataInMemory_ByName::add_project_list(const std::string& value) {
-  _impl_.project_list_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:PicachvMessages.GetDataInMemory.ByName.project_list)
-}
-inline void GetDataInMemory_ByName::add_project_list(std::string&& value) {
-  _impl_.project_list_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:PicachvMessages.GetDataInMemory.ByName.project_list)
-}
-inline void GetDataInMemory_ByName::add_project_list(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _impl_.project_list_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:PicachvMessages.GetDataInMemory.ByName.project_list)
-}
-inline void GetDataInMemory_ByName::add_project_list(const char* value, size_t size) {
-  _impl_.project_list_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.GetDataInMemory.ByName.project_list)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-GetDataInMemory_ByName::project_list() const {
-  // @@protoc_insertion_point(field_list:PicachvMessages.GetDataInMemory.ByName.project_list)
-  return _impl_.project_list_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-GetDataInMemory_ByName::mutable_project_list() {
-  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.GetDataInMemory.ByName.project_list)
-  return &_impl_.project_list_;
-}
-
-// -------------------------------------------------------------------
-
-// GetDataInMemory_ById
+// GetDataInMemory_ProjectList
 
 // repeated uint64 project_list = 1;
-inline int GetDataInMemory_ById::_internal_project_list_size() const {
+inline int GetDataInMemory_ProjectList::_internal_project_list_size() const {
   return _impl_.project_list_.size();
 }
-inline int GetDataInMemory_ById::project_list_size() const {
+inline int GetDataInMemory_ProjectList::project_list_size() const {
   return _internal_project_list_size();
 }
-inline void GetDataInMemory_ById::clear_project_list() {
+inline void GetDataInMemory_ProjectList::clear_project_list() {
   _impl_.project_list_.Clear();
 }
-inline uint64_t GetDataInMemory_ById::_internal_project_list(int index) const {
+inline uint64_t GetDataInMemory_ProjectList::_internal_project_list(int index) const {
   return _impl_.project_list_.Get(index);
 }
-inline uint64_t GetDataInMemory_ById::project_list(int index) const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.GetDataInMemory.ById.project_list)
+inline uint64_t GetDataInMemory_ProjectList::project_list(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.GetDataInMemory.ProjectList.project_list)
   return _internal_project_list(index);
 }
-inline void GetDataInMemory_ById::set_project_list(int index, uint64_t value) {
+inline void GetDataInMemory_ProjectList::set_project_list(int index, uint64_t value) {
   _impl_.project_list_.Set(index, value);
-  // @@protoc_insertion_point(field_set:PicachvMessages.GetDataInMemory.ById.project_list)
+  // @@protoc_insertion_point(field_set:PicachvMessages.GetDataInMemory.ProjectList.project_list)
 }
-inline void GetDataInMemory_ById::_internal_add_project_list(uint64_t value) {
+inline void GetDataInMemory_ProjectList::_internal_add_project_list(uint64_t value) {
   _impl_.project_list_.Add(value);
 }
-inline void GetDataInMemory_ById::add_project_list(uint64_t value) {
+inline void GetDataInMemory_ProjectList::add_project_list(uint64_t value) {
   _internal_add_project_list(value);
-  // @@protoc_insertion_point(field_add:PicachvMessages.GetDataInMemory.ById.project_list)
+  // @@protoc_insertion_point(field_add:PicachvMessages.GetDataInMemory.ProjectList.project_list)
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-GetDataInMemory_ById::_internal_project_list() const {
+GetDataInMemory_ProjectList::_internal_project_list() const {
   return _impl_.project_list_;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-GetDataInMemory_ById::project_list() const {
-  // @@protoc_insertion_point(field_list:PicachvMessages.GetDataInMemory.ById.project_list)
+GetDataInMemory_ProjectList::project_list() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.GetDataInMemory.ProjectList.project_list)
   return _internal_project_list();
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-GetDataInMemory_ById::_internal_mutable_project_list() {
+GetDataInMemory_ProjectList::_internal_mutable_project_list() {
   return &_impl_.project_list_;
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-GetDataInMemory_ById::mutable_project_list() {
-  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.GetDataInMemory.ById.project_list)
+GetDataInMemory_ProjectList::mutable_project_list() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.GetDataInMemory.ProjectList.project_list)
   return _internal_mutable_project_list();
 }
 
@@ -2375,163 +2304,96 @@ inline void GetDataInMemory::set_allocated_pred(std::string* pred) {
   // @@protoc_insertion_point(field_set_allocated:PicachvMessages.GetDataInMemory.pred)
 }
 
-// .PicachvMessages.GetDataInMemory.ByName by_name = 3;
-inline bool GetDataInMemory::_internal_has_by_name() const {
-  return projection_list_case() == kByName;
+// optional .PicachvMessages.GetDataInMemory.ProjectList project_list = 3;
+inline bool GetDataInMemory::_internal_has_project_list() const {
+  bool value = (_impl_._has_bits_[0] & 0x00000002u) != 0;
+  PROTOBUF_ASSUME(!value || _impl_.project_list_ != nullptr);
+  return value;
 }
-inline bool GetDataInMemory::has_by_name() const {
-  return _internal_has_by_name();
+inline bool GetDataInMemory::has_project_list() const {
+  return _internal_has_project_list();
 }
-inline void GetDataInMemory::set_has_by_name() {
-  _impl_._oneof_case_[0] = kByName;
+inline void GetDataInMemory::clear_project_list() {
+  if (_impl_.project_list_ != nullptr) _impl_.project_list_->Clear();
+  _impl_._has_bits_[0] &= ~0x00000002u;
 }
-inline void GetDataInMemory::clear_by_name() {
-  if (_internal_has_by_name()) {
-    if (GetArenaForAllocation() == nullptr) {
-      delete _impl_.projection_list_.by_name_;
-    }
-    clear_has_projection_list();
+inline const ::PicachvMessages::GetDataInMemory_ProjectList& GetDataInMemory::_internal_project_list() const {
+  const ::PicachvMessages::GetDataInMemory_ProjectList* p = _impl_.project_list_;
+  return p != nullptr ? *p : reinterpret_cast<const ::PicachvMessages::GetDataInMemory_ProjectList&>(
+      ::PicachvMessages::_GetDataInMemory_ProjectList_default_instance_);
+}
+inline const ::PicachvMessages::GetDataInMemory_ProjectList& GetDataInMemory::project_list() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.GetDataInMemory.project_list)
+  return _internal_project_list();
+}
+inline void GetDataInMemory::unsafe_arena_set_allocated_project_list(
+    ::PicachvMessages::GetDataInMemory_ProjectList* project_list) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.project_list_);
   }
-}
-inline ::PicachvMessages::GetDataInMemory_ByName* GetDataInMemory::release_by_name() {
-  // @@protoc_insertion_point(field_release:PicachvMessages.GetDataInMemory.by_name)
-  if (_internal_has_by_name()) {
-    clear_has_projection_list();
-    ::PicachvMessages::GetDataInMemory_ByName* temp = _impl_.projection_list_.by_name_;
-    if (GetArenaForAllocation() != nullptr) {
-      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-    }
-    _impl_.projection_list_.by_name_ = nullptr;
-    return temp;
+  _impl_.project_list_ = project_list;
+  if (project_list) {
+    _impl_._has_bits_[0] |= 0x00000002u;
   } else {
-    return nullptr;
+    _impl_._has_bits_[0] &= ~0x00000002u;
   }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.GetDataInMemory.project_list)
 }
-inline const ::PicachvMessages::GetDataInMemory_ByName& GetDataInMemory::_internal_by_name() const {
-  return _internal_has_by_name()
-      ? *_impl_.projection_list_.by_name_
-      : reinterpret_cast< ::PicachvMessages::GetDataInMemory_ByName&>(::PicachvMessages::_GetDataInMemory_ByName_default_instance_);
-}
-inline const ::PicachvMessages::GetDataInMemory_ByName& GetDataInMemory::by_name() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.GetDataInMemory.by_name)
-  return _internal_by_name();
-}
-inline ::PicachvMessages::GetDataInMemory_ByName* GetDataInMemory::unsafe_arena_release_by_name() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:PicachvMessages.GetDataInMemory.by_name)
-  if (_internal_has_by_name()) {
-    clear_has_projection_list();
-    ::PicachvMessages::GetDataInMemory_ByName* temp = _impl_.projection_list_.by_name_;
-    _impl_.projection_list_.by_name_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
+inline ::PicachvMessages::GetDataInMemory_ProjectList* GetDataInMemory::release_project_list() {
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::PicachvMessages::GetDataInMemory_ProjectList* temp = _impl_.project_list_;
+  _impl_.project_list_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
 }
-inline void GetDataInMemory::unsafe_arena_set_allocated_by_name(::PicachvMessages::GetDataInMemory_ByName* by_name) {
-  clear_projection_list();
-  if (by_name) {
-    set_has_by_name();
-    _impl_.projection_list_.by_name_ = by_name;
+inline ::PicachvMessages::GetDataInMemory_ProjectList* GetDataInMemory::unsafe_arena_release_project_list() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.GetDataInMemory.project_list)
+  _impl_._has_bits_[0] &= ~0x00000002u;
+  ::PicachvMessages::GetDataInMemory_ProjectList* temp = _impl_.project_list_;
+  _impl_.project_list_ = nullptr;
+  return temp;
+}
+inline ::PicachvMessages::GetDataInMemory_ProjectList* GetDataInMemory::_internal_mutable_project_list() {
+  _impl_._has_bits_[0] |= 0x00000002u;
+  if (_impl_.project_list_ == nullptr) {
+    auto* p = CreateMaybeMessage<::PicachvMessages::GetDataInMemory_ProjectList>(GetArenaForAllocation());
+    _impl_.project_list_ = p;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.GetDataInMemory.by_name)
+  return _impl_.project_list_;
 }
-inline ::PicachvMessages::GetDataInMemory_ByName* GetDataInMemory::_internal_mutable_by_name() {
-  if (!_internal_has_by_name()) {
-    clear_projection_list();
-    set_has_by_name();
-    _impl_.projection_list_.by_name_ = CreateMaybeMessage< ::PicachvMessages::GetDataInMemory_ByName >(GetArenaForAllocation());
-  }
-  return _impl_.projection_list_.by_name_;
-}
-inline ::PicachvMessages::GetDataInMemory_ByName* GetDataInMemory::mutable_by_name() {
-  ::PicachvMessages::GetDataInMemory_ByName* _msg = _internal_mutable_by_name();
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.GetDataInMemory.by_name)
+inline ::PicachvMessages::GetDataInMemory_ProjectList* GetDataInMemory::mutable_project_list() {
+  ::PicachvMessages::GetDataInMemory_ProjectList* _msg = _internal_mutable_project_list();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.GetDataInMemory.project_list)
   return _msg;
 }
-
-// .PicachvMessages.GetDataInMemory.ById by_id = 4;
-inline bool GetDataInMemory::_internal_has_by_id() const {
-  return projection_list_case() == kById;
-}
-inline bool GetDataInMemory::has_by_id() const {
-  return _internal_has_by_id();
-}
-inline void GetDataInMemory::set_has_by_id() {
-  _impl_._oneof_case_[0] = kById;
-}
-inline void GetDataInMemory::clear_by_id() {
-  if (_internal_has_by_id()) {
-    if (GetArenaForAllocation() == nullptr) {
-      delete _impl_.projection_list_.by_id_;
+inline void GetDataInMemory::set_allocated_project_list(::PicachvMessages::GetDataInMemory_ProjectList* project_list) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.project_list_;
+  }
+  if (project_list) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(project_list);
+    if (message_arena != submessage_arena) {
+      project_list = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, project_list, submessage_arena);
     }
-    clear_has_projection_list();
-  }
-}
-inline ::PicachvMessages::GetDataInMemory_ById* GetDataInMemory::release_by_id() {
-  // @@protoc_insertion_point(field_release:PicachvMessages.GetDataInMemory.by_id)
-  if (_internal_has_by_id()) {
-    clear_has_projection_list();
-    ::PicachvMessages::GetDataInMemory_ById* temp = _impl_.projection_list_.by_id_;
-    if (GetArenaForAllocation() != nullptr) {
-      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-    }
-    _impl_.projection_list_.by_id_ = nullptr;
-    return temp;
+    _impl_._has_bits_[0] |= 0x00000002u;
   } else {
-    return nullptr;
+    _impl_._has_bits_[0] &= ~0x00000002u;
   }
-}
-inline const ::PicachvMessages::GetDataInMemory_ById& GetDataInMemory::_internal_by_id() const {
-  return _internal_has_by_id()
-      ? *_impl_.projection_list_.by_id_
-      : reinterpret_cast< ::PicachvMessages::GetDataInMemory_ById&>(::PicachvMessages::_GetDataInMemory_ById_default_instance_);
-}
-inline const ::PicachvMessages::GetDataInMemory_ById& GetDataInMemory::by_id() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.GetDataInMemory.by_id)
-  return _internal_by_id();
-}
-inline ::PicachvMessages::GetDataInMemory_ById* GetDataInMemory::unsafe_arena_release_by_id() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:PicachvMessages.GetDataInMemory.by_id)
-  if (_internal_has_by_id()) {
-    clear_has_projection_list();
-    ::PicachvMessages::GetDataInMemory_ById* temp = _impl_.projection_list_.by_id_;
-    _impl_.projection_list_.by_id_ = nullptr;
-    return temp;
-  } else {
-    return nullptr;
-  }
-}
-inline void GetDataInMemory::unsafe_arena_set_allocated_by_id(::PicachvMessages::GetDataInMemory_ById* by_id) {
-  clear_projection_list();
-  if (by_id) {
-    set_has_by_id();
-    _impl_.projection_list_.by_id_ = by_id;
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.GetDataInMemory.by_id)
-}
-inline ::PicachvMessages::GetDataInMemory_ById* GetDataInMemory::_internal_mutable_by_id() {
-  if (!_internal_has_by_id()) {
-    clear_projection_list();
-    set_has_by_id();
-    _impl_.projection_list_.by_id_ = CreateMaybeMessage< ::PicachvMessages::GetDataInMemory_ById >(GetArenaForAllocation());
-  }
-  return _impl_.projection_list_.by_id_;
-}
-inline ::PicachvMessages::GetDataInMemory_ById* GetDataInMemory::mutable_by_id() {
-  ::PicachvMessages::GetDataInMemory_ById* _msg = _internal_mutable_by_id();
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.GetDataInMemory.by_id)
-  return _msg;
+  _impl_.project_list_ = project_list;
+  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.GetDataInMemory.project_list)
 }
 
-inline bool GetDataInMemory::has_projection_list() const {
-  return projection_list_case() != PROJECTION_LIST_NOT_SET;
-}
-inline void GetDataInMemory::clear_has_projection_list() {
-  _impl_._oneof_case_[0] = PROJECTION_LIST_NOT_SET;
-}
-inline GetDataInMemory::ProjectionListCase GetDataInMemory::projection_list_case() const {
-  return GetDataInMemory::ProjectionListCase(_impl_._oneof_case_[0]);
-}
 // -------------------------------------------------------------------
 
 // GetDataArgument
@@ -2751,84 +2613,238 @@ inline void SelectArgument::set_allocated_pred_uuid(std::string* pred_uuid) {
 
 // ProjectionArgument
 
-// repeated bytes expression = 1;
-inline int ProjectionArgument::_internal_expression_size() const {
-  return _impl_.expression_.size();
+// repeated bytes expressions = 1;
+inline int ProjectionArgument::_internal_expressions_size() const {
+  return _impl_.expressions_.size();
 }
-inline int ProjectionArgument::expression_size() const {
-  return _internal_expression_size();
+inline int ProjectionArgument::expressions_size() const {
+  return _internal_expressions_size();
 }
-inline void ProjectionArgument::clear_expression() {
-  _impl_.expression_.Clear();
+inline void ProjectionArgument::clear_expressions() {
+  _impl_.expressions_.Clear();
 }
-inline std::string* ProjectionArgument::add_expression() {
-  std::string* _s = _internal_add_expression();
-  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.ProjectionArgument.expression)
+inline std::string* ProjectionArgument::add_expressions() {
+  std::string* _s = _internal_add_expressions();
+  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.ProjectionArgument.expressions)
   return _s;
 }
-inline const std::string& ProjectionArgument::_internal_expression(int index) const {
-  return _impl_.expression_.Get(index);
+inline const std::string& ProjectionArgument::_internal_expressions(int index) const {
+  return _impl_.expressions_.Get(index);
 }
-inline const std::string& ProjectionArgument::expression(int index) const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.ProjectionArgument.expression)
-  return _internal_expression(index);
+inline const std::string& ProjectionArgument::expressions(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.ProjectionArgument.expressions)
+  return _internal_expressions(index);
 }
-inline std::string* ProjectionArgument::mutable_expression(int index) {
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.ProjectionArgument.expression)
-  return _impl_.expression_.Mutable(index);
+inline std::string* ProjectionArgument::mutable_expressions(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.ProjectionArgument.expressions)
+  return _impl_.expressions_.Mutable(index);
 }
-inline void ProjectionArgument::set_expression(int index, const std::string& value) {
-  _impl_.expression_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set:PicachvMessages.ProjectionArgument.expression)
+inline void ProjectionArgument::set_expressions(int index, const std::string& value) {
+  _impl_.expressions_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.ProjectionArgument.expressions)
 }
-inline void ProjectionArgument::set_expression(int index, std::string&& value) {
-  _impl_.expression_.Mutable(index)->assign(std::move(value));
-  // @@protoc_insertion_point(field_set:PicachvMessages.ProjectionArgument.expression)
+inline void ProjectionArgument::set_expressions(int index, std::string&& value) {
+  _impl_.expressions_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:PicachvMessages.ProjectionArgument.expressions)
 }
-inline void ProjectionArgument::set_expression(int index, const char* value) {
+inline void ProjectionArgument::set_expressions(int index, const char* value) {
   GOOGLE_DCHECK(value != nullptr);
-  _impl_.expression_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:PicachvMessages.ProjectionArgument.expression)
+  _impl_.expressions_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:PicachvMessages.ProjectionArgument.expressions)
 }
-inline void ProjectionArgument::set_expression(int index, const void* value, size_t size) {
-  _impl_.expression_.Mutable(index)->assign(
+inline void ProjectionArgument::set_expressions(int index, const void* value, size_t size) {
+  _impl_.expressions_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.ProjectionArgument.expression)
+  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.ProjectionArgument.expressions)
 }
-inline std::string* ProjectionArgument::_internal_add_expression() {
-  return _impl_.expression_.Add();
+inline std::string* ProjectionArgument::_internal_add_expressions() {
+  return _impl_.expressions_.Add();
 }
-inline void ProjectionArgument::add_expression(const std::string& value) {
-  _impl_.expression_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:PicachvMessages.ProjectionArgument.expression)
+inline void ProjectionArgument::add_expressions(const std::string& value) {
+  _impl_.expressions_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:PicachvMessages.ProjectionArgument.expressions)
 }
-inline void ProjectionArgument::add_expression(std::string&& value) {
-  _impl_.expression_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:PicachvMessages.ProjectionArgument.expression)
+inline void ProjectionArgument::add_expressions(std::string&& value) {
+  _impl_.expressions_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:PicachvMessages.ProjectionArgument.expressions)
 }
-inline void ProjectionArgument::add_expression(const char* value) {
+inline void ProjectionArgument::add_expressions(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
-  _impl_.expression_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:PicachvMessages.ProjectionArgument.expression)
+  _impl_.expressions_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:PicachvMessages.ProjectionArgument.expressions)
 }
-inline void ProjectionArgument::add_expression(const void* value, size_t size) {
-  _impl_.expression_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.ProjectionArgument.expression)
+inline void ProjectionArgument::add_expressions(const void* value, size_t size) {
+  _impl_.expressions_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.ProjectionArgument.expressions)
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
-ProjectionArgument::expression() const {
-  // @@protoc_insertion_point(field_list:PicachvMessages.ProjectionArgument.expression)
-  return _impl_.expression_;
+ProjectionArgument::expressions() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.ProjectionArgument.expressions)
+  return _impl_.expressions_;
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
-ProjectionArgument::mutable_expression() {
-  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.ProjectionArgument.expression)
-  return &_impl_.expression_;
+ProjectionArgument::mutable_expressions() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.ProjectionArgument.expressions)
+  return &_impl_.expressions_;
 }
 
 // -------------------------------------------------------------------
 
 // TransformArgument
+
+// -------------------------------------------------------------------
+
+// HstackArgument
+
+// repeated bytes cse = 1;
+inline int HstackArgument::_internal_cse_size() const {
+  return _impl_.cse_.size();
+}
+inline int HstackArgument::cse_size() const {
+  return _internal_cse_size();
+}
+inline void HstackArgument::clear_cse() {
+  _impl_.cse_.Clear();
+}
+inline std::string* HstackArgument::add_cse() {
+  std::string* _s = _internal_add_cse();
+  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.HstackArgument.cse)
+  return _s;
+}
+inline const std::string& HstackArgument::_internal_cse(int index) const {
+  return _impl_.cse_.Get(index);
+}
+inline const std::string& HstackArgument::cse(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.HstackArgument.cse)
+  return _internal_cse(index);
+}
+inline std::string* HstackArgument::mutable_cse(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.HstackArgument.cse)
+  return _impl_.cse_.Mutable(index);
+}
+inline void HstackArgument::set_cse(int index, const std::string& value) {
+  _impl_.cse_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.HstackArgument.cse)
+}
+inline void HstackArgument::set_cse(int index, std::string&& value) {
+  _impl_.cse_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:PicachvMessages.HstackArgument.cse)
+}
+inline void HstackArgument::set_cse(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.cse_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:PicachvMessages.HstackArgument.cse)
+}
+inline void HstackArgument::set_cse(int index, const void* value, size_t size) {
+  _impl_.cse_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.HstackArgument.cse)
+}
+inline std::string* HstackArgument::_internal_add_cse() {
+  return _impl_.cse_.Add();
+}
+inline void HstackArgument::add_cse(const std::string& value) {
+  _impl_.cse_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:PicachvMessages.HstackArgument.cse)
+}
+inline void HstackArgument::add_cse(std::string&& value) {
+  _impl_.cse_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:PicachvMessages.HstackArgument.cse)
+}
+inline void HstackArgument::add_cse(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.cse_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:PicachvMessages.HstackArgument.cse)
+}
+inline void HstackArgument::add_cse(const void* value, size_t size) {
+  _impl_.cse_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.HstackArgument.cse)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+HstackArgument::cse() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.HstackArgument.cse)
+  return _impl_.cse_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+HstackArgument::mutable_cse() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.HstackArgument.cse)
+  return &_impl_.cse_;
+}
+
+// repeated bytes expressions = 2;
+inline int HstackArgument::_internal_expressions_size() const {
+  return _impl_.expressions_.size();
+}
+inline int HstackArgument::expressions_size() const {
+  return _internal_expressions_size();
+}
+inline void HstackArgument::clear_expressions() {
+  _impl_.expressions_.Clear();
+}
+inline std::string* HstackArgument::add_expressions() {
+  std::string* _s = _internal_add_expressions();
+  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.HstackArgument.expressions)
+  return _s;
+}
+inline const std::string& HstackArgument::_internal_expressions(int index) const {
+  return _impl_.expressions_.Get(index);
+}
+inline const std::string& HstackArgument::expressions(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.HstackArgument.expressions)
+  return _internal_expressions(index);
+}
+inline std::string* HstackArgument::mutable_expressions(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.HstackArgument.expressions)
+  return _impl_.expressions_.Mutable(index);
+}
+inline void HstackArgument::set_expressions(int index, const std::string& value) {
+  _impl_.expressions_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.HstackArgument.expressions)
+}
+inline void HstackArgument::set_expressions(int index, std::string&& value) {
+  _impl_.expressions_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:PicachvMessages.HstackArgument.expressions)
+}
+inline void HstackArgument::set_expressions(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.expressions_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:PicachvMessages.HstackArgument.expressions)
+}
+inline void HstackArgument::set_expressions(int index, const void* value, size_t size) {
+  _impl_.expressions_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.HstackArgument.expressions)
+}
+inline std::string* HstackArgument::_internal_add_expressions() {
+  return _impl_.expressions_.Add();
+}
+inline void HstackArgument::add_expressions(const std::string& value) {
+  _impl_.expressions_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:PicachvMessages.HstackArgument.expressions)
+}
+inline void HstackArgument::add_expressions(std::string&& value) {
+  _impl_.expressions_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:PicachvMessages.HstackArgument.expressions)
+}
+inline void HstackArgument::add_expressions(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.expressions_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:PicachvMessages.HstackArgument.expressions)
+}
+inline void HstackArgument::add_expressions(const void* value, size_t size) {
+  _impl_.expressions_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.HstackArgument.expressions)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+HstackArgument::expressions() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.HstackArgument.expressions)
+  return _impl_.expressions_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+HstackArgument::mutable_expressions() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.HstackArgument.expressions)
+  return &_impl_.expressions_;
+}
 
 // -------------------------------------------------------------------
 
@@ -3538,7 +3554,81 @@ inline ::PicachvMessages::TransformArgument* PlanArgument::mutable_transform() {
   return _msg;
 }
 
-// .PicachvMessages.TransformInfo transform_info = 6;
+// .PicachvMessages.HstackArgument hstack = 6;
+inline bool PlanArgument::_internal_has_hstack() const {
+  return argument_case() == kHstack;
+}
+inline bool PlanArgument::has_hstack() const {
+  return _internal_has_hstack();
+}
+inline void PlanArgument::set_has_hstack() {
+  _impl_._oneof_case_[0] = kHstack;
+}
+inline void PlanArgument::clear_hstack() {
+  if (_internal_has_hstack()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.argument_.hstack_;
+    }
+    clear_has_argument();
+  }
+}
+inline ::PicachvMessages::HstackArgument* PlanArgument::release_hstack() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.PlanArgument.hstack)
+  if (_internal_has_hstack()) {
+    clear_has_argument();
+    ::PicachvMessages::HstackArgument* temp = _impl_.argument_.hstack_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.argument_.hstack_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::PicachvMessages::HstackArgument& PlanArgument::_internal_hstack() const {
+  return _internal_has_hstack()
+      ? *_impl_.argument_.hstack_
+      : reinterpret_cast< ::PicachvMessages::HstackArgument&>(::PicachvMessages::_HstackArgument_default_instance_);
+}
+inline const ::PicachvMessages::HstackArgument& PlanArgument::hstack() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.PlanArgument.hstack)
+  return _internal_hstack();
+}
+inline ::PicachvMessages::HstackArgument* PlanArgument::unsafe_arena_release_hstack() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:PicachvMessages.PlanArgument.hstack)
+  if (_internal_has_hstack()) {
+    clear_has_argument();
+    ::PicachvMessages::HstackArgument* temp = _impl_.argument_.hstack_;
+    _impl_.argument_.hstack_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void PlanArgument::unsafe_arena_set_allocated_hstack(::PicachvMessages::HstackArgument* hstack) {
+  clear_argument();
+  if (hstack) {
+    set_has_hstack();
+    _impl_.argument_.hstack_ = hstack;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.PlanArgument.hstack)
+}
+inline ::PicachvMessages::HstackArgument* PlanArgument::_internal_mutable_hstack() {
+  if (!_internal_has_hstack()) {
+    clear_argument();
+    set_has_hstack();
+    _impl_.argument_.hstack_ = CreateMaybeMessage< ::PicachvMessages::HstackArgument >(GetArenaForAllocation());
+  }
+  return _impl_.argument_.hstack_;
+}
+inline ::PicachvMessages::HstackArgument* PlanArgument::mutable_hstack() {
+  ::PicachvMessages::HstackArgument* _msg = _internal_mutable_hstack();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.PlanArgument.hstack)
+  return _msg;
+}
+
+// .PicachvMessages.TransformInfo transform_info = 7;
 inline bool PlanArgument::_internal_has_transform_info() const {
   return this != internal_default_instance() && _impl_.transform_info_ != nullptr;
 }

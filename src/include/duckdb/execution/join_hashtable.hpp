@@ -76,13 +76,18 @@ public:
 
 		explicit ScanStructure(JoinHashTable &ht, TupleDataChunkState &key_state);
 		//! Get the next batch of data from the scan structure
-		void Next(ClientContext &context, DataChunk &keys, DataChunk &left, DataChunk &result);
+		void Next(ClientContext &context, DataChunk &keys, DataChunk &left, DataChunk &result,
+		          const uint8_t *df_build_uuid);
 		//! Are pointer chains all pointing to NULL?
 		bool PointersExhausted();
 
+		//! Collect the indices.
+		vector<idx_t> CollectIndices(const SelectionVector &sel_vector, idx_t count);
+
 	private:
 		//! Next operator for the inner join
-		void NextInnerJoin(DataChunk &keys, DataChunk &left, DataChunk &result);
+		void NextInnerJoin(ClientContext &context, DataChunk &keys, DataChunk &left, DataChunk &result,
+		                   const uint8_t *build_uuid);
 		//! Next operator for the semi join
 		void NextSemiJoin(DataChunk &keys, DataChunk &left, DataChunk &result);
 		//! Next operator for the anti join

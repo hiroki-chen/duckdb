@@ -31,27 +31,26 @@ PhysicalProjection::PhysicalProjection(vector<LogicalType> types, vector<unique_
 
 OperatorResultType PhysicalProjection::Execute(ExecutionContext &context, DataChunk &input, DataChunk &chunk,
                                                GlobalOperatorState &gstate, OperatorState &state_p) const {
-	PicachvMessages::PlanArgument arg;
-	PicachvMessages::ProjectionArgument *proj = arg.mutable_projection();
-	duckdb_uuid_t out;
 	auto &state = state_p.Cast<ProjectionState>();
-
-	if (context.client.PolicyCheckingEnabled()) {
-		for (auto &child : select_list) {
-			child->CreateExprInArena(context.client);
-			proj->mutable_expression()->Add(string((char *)child->expr_uuid.uuid, PICACHV_UUID_LEN));
-		}
-	}
 
 	state.executor.is_query_executor = true;
 	state.executor.Execute(input, chunk);
 	state.executor.is_query_executor = false;
 
-	if (context.client.PolicyCheckingEnabled()) {
+	if (input.size() != 0 && context.client.PolicyCheckingEnabled()) {
+		PicachvMessages::PlanArgument arg;
+		PicachvMessages::ProjectionArgument *proj = arg.mutable_projection();
+		duckdb_uuid_t out;
+
+		for (auto &child : select_list) {
+			child->CreateExprInArena(context.client);
+			proj->mutable_expressions()->Add(string((char *)child->expr_uuid.uuid, PICACHV_UUID_LEN));
+		}
+
 		if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
 		                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, out.uuid,
 		                     PICACHV_UUID_LEN) != ErrorCode::Success) {
-			throw InternalException(GetErrorMessage());
+			throw InternalException("PhysicalProjection: " + GetErrorMessage());
 		}
 
 		chunk.SetActiveUUID(out.uuid);

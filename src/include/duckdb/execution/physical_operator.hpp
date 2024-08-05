@@ -11,13 +11,13 @@
 #include "duckdb/catalog/catalog.hpp"
 #include "duckdb/common/common.hpp"
 #include "duckdb/common/enums/operator_result_type.hpp"
+#include "duckdb/common/enums/order_preservation_type.hpp"
 #include "duckdb/common/enums/physical_operator_type.hpp"
+#include "duckdb/common/optional_idx.hpp"
 #include "duckdb/common/types/data_chunk.hpp"
 #include "duckdb/execution/execution_context.hpp"
-#include "duckdb/optimizer/join_order/join_node.hpp"
-#include "duckdb/common/optional_idx.hpp"
 #include "duckdb/execution/physical_operator_states.hpp"
-#include "duckdb/common/enums/order_preservation_type.hpp"
+#include "duckdb/optimizer/join_order/join_node.hpp"
 
 namespace duckdb {
 class Event;
@@ -211,6 +211,7 @@ public:
 	}
 
 	unique_ptr<DataChunk> cached_chunk;
+	vector<std::array<uint8_t, PICACHV_UUID_LEN>> uuids;
 	bool initialized = false;
 	//! Whether or not the chunk can be cached
 	bool can_cache_chunk = false;

@@ -1076,8 +1076,9 @@ bool ParquetReader::ScanInternal(ClientContext &client, ParquetReaderScanState &
 	}
 
 	state.group_offset += this_output_chunk_rows;
-
 	if (client.PolicyCheckingEnabled()) {
+		std::cout << "called policy checking\n";
+
 		std::vector<std::size_t> column_ids;
 		for (size_t i = 0; i < reader_data.column_ids.size(); i++) {
 			column_ids.push_back(i);
@@ -1096,9 +1097,14 @@ bool ParquetReader::ScanInternal(ClientContext &client, ParquetReaderScanState &
 		args.projection = column_ids.data();
 		args.projection_len = column_ids.size();
 		args.row_group = group.ordinal;
+		args.selection = nullptr;
 
-		if (!reader_data.filters) {
-			args.selection = nullptr;
+		if (reader_data.filters) {
+			args.selection = new bool[this_output_chunk_rows];
+			for (idx_t i = 0; i < this_output_chunk_rows; i++) {
+				args.selection[i] = bool(filter_mask[i]);
+			}
+			args.selection_len = this_output_chunk_rows;
 		}
 
 		if (register_policy_dataframe_from_row_group(client.ctx_uuid.uuid, PICACHV_UUID_LEN, &args) !=
@@ -1106,7 +1112,10 @@ bool ParquetReader::ScanInternal(ClientContext &client, ParquetReaderScanState &
 			throw InvalidInputException("Failed to register the dataframe from the row group: " + GetErrorMessage());
 		}
 
+		delete args.selection;
 		result.SetActiveUUID(uuid);
+		std::cout << "result size = " << result.size() << " with uuid = " << StringUtil::ByteArrayToString(uuid, 16)
+		          << std::endl;
 	}
 	return true;
 }

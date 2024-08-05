@@ -189,6 +189,8 @@ public:
 	atomic<idx_t> active_threads;
 	//! If any thread has called combine
 	atomic<bool> any_combined;
+	//! uuid.
+	std::array<uint8_t, PICACHV_UUID_LEN> agg_uuid;
 
 	//! Lock for uncombined_data/stored_allocators
 	mutex lock;
@@ -420,6 +422,8 @@ void RadixPartitionedHashTable::PopulateGroupChunk(DataChunk &group_chunk, DataC
 		D_ASSERT(group->type == ExpressionType::BOUND_REF);
 		auto &bound_ref_expr = group->Cast<BoundReferenceExpression>();
 		// Reference from input_chunk[group.index] -> group_chunk[chunk_index]
+		std::cout << "chunk_index: " << chunk_index << std::endl;
+		std::cout << "bound_ref_expr.index: " << bound_ref_expr.index << std::endl;
 		group_chunk.data[chunk_index++].Reference(input_chunk.data[bound_ref_expr.index]);
 	}
 	group_chunk.SetCardinality(input_chunk.size());
@@ -514,7 +518,7 @@ void RadixPartitionedHashTable::Sink(ExecutionContext &context, DataChunk &chunk
 	PopulateGroupChunk(group_chunk, chunk);
 
 	auto &ht = *lstate.ht;
-	auto new_group_count = ht.AddChunk(group_chunk, payload_input, filter);
+	ht.AddChunk(group_chunk, payload_input, filter);
 
 	if (ht.Count() + STANDARD_VECTOR_SIZE < ht.ResizeThreshold()) {
 		return; // We can fit another chunk
@@ -588,10 +592,6 @@ void RadixPartitionedHashTable::Combine(ExecutionContext &context, GlobalSinkSta
 void RadixPartitionedHashTable::Finalize(ClientContext &context, GlobalSinkState &gstate_p) const {
 	auto &gstate = gstate_p.Cast<RadixHTGlobalSinkState>();
 
-	for (auto &gv : gstate.radix_ht.grouping_set) {
-		std::cout << "gv: " << gv << std::endl;
-	}
-
 	if (gstate.uncombined_data) {
 		auto &uncombined_data = *gstate.uncombined_data;
 		gstate.count_before_combining = uncombined_data.Count(); // = #num_chunks * group_num = 30 * 4 = 120
@@ -654,9 +654,9 @@ void RadixPartitionedHashTable::Finalize(ClientContext &context, GlobalSinkState
 			chunk->mutable_groups()->Assign(message.begin(), message.end());
 		}
 
-		duckdb_uuid_t uuid;
 		if (execute_epilogue(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
-		                     arg.ByteSizeLong(), nullptr, 0, uuid.uuid, PICACHV_UUID_LEN) != 0) {
+		                     arg.ByteSizeLong(), nullptr, 0, gstate.agg_uuid.data(),
+		                     PICACHV_UUID_LEN) != ErrorCode::Success) {
 			throw InternalException("Failed to execute epilogue: " + GetErrorMessage());
 		}
 	}
@@ -1013,6 +1013,32 @@ SourceResultType RadixPartitionedHashTable::GetData(ExecutionContext &context, D
 	}
 
 	if (chunk.size() != 0) {
+
+		std::cout << "chunk looks like:" << std::endl;
+		chunk.Print();
+		std::cout << std::endl;
+
+		DataChunk hash_chunk;
+		hash_chunk.InitializeEmpty(group_types);
+		hash_chunk.SetCardinality(chunk.size());
+		std::cout << "radix: " << chunk.size() << std::endl;
+		PopulateGroupChunk(hash_chunk, chunk);
+
+		Vector hashes(LogicalType::HASH);
+		hash_chunk.Hash(hashes);
+
+		hashes.Flatten(hash_chunk.size());
+		auto final_hashes = FlatVector::GetData<hash_t>(hashes);
+
+		duckdb_uuid_t uuid;
+		if (select_group(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, sink.agg_uuid.data(), PICACHV_UUID_LEN,
+		                 (uint64_t *)final_hashes, hash_chunk.size(), uuid.uuid,
+		                 PICACHV_UUID_LEN) != ErrorCode::Success) {
+			throw InternalException("Failed to select group: " + GetErrorMessage());
+		}
+
+		chunk.SetActiveUUID(uuid.uuid);
+
 		return SourceResultType::HAVE_MORE_OUTPUT;
 	} else {
 		return SourceResultType::FINISHED;

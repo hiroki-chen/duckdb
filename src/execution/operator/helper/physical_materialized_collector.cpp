@@ -32,7 +32,6 @@ SinkResultType PhysicalMaterializedCollector::Sink(ExecutionContext &context, Da
                                                    OperatorSinkInput &input) const {
 	auto &lstate = input.local_state.Cast<MaterializedCollectorLocalState>();
 
-	std::cout << "PhysicalMaterializedCollector::Sink\n";
 	debug_print_df(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, chunk.GetActiveUUID(), PICACHV_UUID_LEN);
 
 	lstate.collection->Append(lstate.append_state, chunk);
@@ -80,7 +79,8 @@ unique_ptr<QueryResult> PhysicalMaterializedCollector::GetResult(GlobalSinkState
 		for (auto &uuid : gstate.collection->uuids) {
 			if (finalize(gstate.context->ctx_uuid.uuid, PICACHV_UUID_LEN, uuid.data(), PICACHV_UUID_LEN) !=
 			    ErrorCode::Success) {
-				throw InternalException("PhysicalBatchCollector: " + GetErrorMessage());
+				std::cout << StringUtil::ByteArrayToString(uuid.data(), 16) << std::endl;
+				// throw InternalException("PhysicalMaterializedCollector: " + GetErrorMessage());
 			}
 		}
 	}

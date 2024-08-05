@@ -14,6 +14,7 @@
 namespace duckdb {
 
 //! The PhysicalColumnDataScan scans a ColumnDataCollection
+// WTF is this?
 class PhysicalColumnDataScan : public PhysicalOperator {
 public:
 	static constexpr const PhysicalOperatorType TYPE = PhysicalOperatorType::COLUMN_DATA_SCAN;

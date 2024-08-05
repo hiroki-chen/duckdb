@@ -1,6 +1,9 @@
 #include "duckdb/common/types/selection_vector.hpp"
+
 #include "duckdb/common/printer.hpp"
 #include "duckdb/common/to_string.hpp"
+
+#include <iostream>
 
 namespace duckdb {
 
@@ -38,6 +41,9 @@ buffer_ptr<SelectionData> SelectionVector::Slice(const SelectionVector &sel, idx
 	for (idx_t i = 0; i < count; i++) {
 		auto new_idx = sel.get_index(i);
 		auto idx = this->get_index(new_idx);
+
+		std::cout << "new_idx = " << new_idx << ", idx = " << idx << std::endl;
+
 		result_ptr[i] = UnsafeNumericCast<sel_t>(idx);
 	}
 	return data;

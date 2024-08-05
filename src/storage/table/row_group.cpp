@@ -596,10 +596,16 @@ void RowGroup::Scan(TransactionData transaction, CollectionScanState &state, Dat
 		duckdb_uuid_t uuid, output;
 		idx_t start = (state.vector_index - 1) * duckdb_vector_size();
 		idx_t end = std::min(state.vector_index * duckdb_vector_size(), (idx_t)count);
-		if (create_slice(context->ctx_uuid.uuid, sizeof(duckdb_uuid_t), iter->second, sizeof(duckdb_uuid_t), start, end,
-		                 uuid.uuid, sizeof(duckdb_uuid_t)) != 0) {
+		sel_t *sel = new sel_t[end - start];
+		for (idx_t i = 0; i < end - start; i++) {
+			sel[i] = start + i;
+		}
+
+		if (create_slice(context->ctx_uuid.uuid, sizeof(duckdb_uuid_t), iter->second, sizeof(duckdb_uuid_t), sel,
+		                 end - start, uuid.uuid, sizeof(duckdb_uuid_t)) != 0) {
 			throw InvalidInputException("Could not create a slice of the dataframe.");
 		}
+		delete sel;
 
 		PicachvMessages::PlanArgument plan_arg;
 		PicachvMessages::TransformInfo *ti = plan_arg.mutable_transform_info();
@@ -607,7 +613,7 @@ void RowGroup::Scan(TransactionData transaction, CollectionScanState &state, Dat
 
 		const auto &column_ids = state.GetColumnIds();
 		// Set the early projection.
-		get->mutable_by_id()->mutable_project_list()->Assign(column_ids.begin(), column_ids.end());
+		get->mutable_project_list()->mutable_project_list()->Assign(column_ids.begin(), column_ids.end());
 		get->mutable_df_uuid()->assign(reinterpret_cast<const char *>(uuid.uuid), 16);
 		// Slicing is easy due to "filter".
 		// TODO: Add the filter:

@@ -38,10 +38,12 @@ void BatchedDataCollection::Append(DataChunk &input, idx_t batch_index) {
 	}
 	collection->Append(last_collection.append_state, input);
 
-	// store the UUID of the chunk.
-	std::array<uint8_t, 16> uuid;
-	std::copy(input.GetActiveUUID(), input.GetActiveUUID() + 16, uuid.begin());
-	uuids.push_back(uuid);
+	if (input.size() != 0) {
+		// store the UUID of the chunk.
+		std::array<uint8_t, 16> uuid;
+		std::copy(input.GetActiveUUID(), input.GetActiveUUID() + 16, uuid.begin());
+		uuids.push_back(uuid);
+	}
 }
 
 void BatchedDataCollection::Merge(BatchedDataCollection &other) {

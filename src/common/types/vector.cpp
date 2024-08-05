@@ -239,7 +239,6 @@ void Vector::Slice(const SelectionVector &sel, idx_t count) {
 		}
 		return;
 	}
-
 	if (GetVectorType() == VectorType::FSST_VECTOR) {
 		Flatten(sel, count);
 		return;

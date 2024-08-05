@@ -1147,35 +1147,30 @@ class UnionInformation final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kLhsDfUuidFieldNumber = 1,
-    kRhsDfUuidFieldNumber = 2,
+    kDfUuidsFieldNumber = 1,
   };
-  // bytes lhs_df_uuid = 1;
-  void clear_lhs_df_uuid();
-  const std::string& lhs_df_uuid() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_lhs_df_uuid(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_lhs_df_uuid();
-  PROTOBUF_NODISCARD std::string* release_lhs_df_uuid();
-  void set_allocated_lhs_df_uuid(std::string* lhs_df_uuid);
+  // repeated bytes df_uuids = 1;
+  int df_uuids_size() const;
   private:
-  const std::string& _internal_lhs_df_uuid() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_lhs_df_uuid(const std::string& value);
-  std::string* _internal_mutable_lhs_df_uuid();
+  int _internal_df_uuids_size() const;
   public:
-
-  // bytes rhs_df_uuid = 2;
-  void clear_rhs_df_uuid();
-  const std::string& rhs_df_uuid() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_rhs_df_uuid(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_rhs_df_uuid();
-  PROTOBUF_NODISCARD std::string* release_rhs_df_uuid();
-  void set_allocated_rhs_df_uuid(std::string* rhs_df_uuid);
+  void clear_df_uuids();
+  const std::string& df_uuids(int index) const;
+  std::string* mutable_df_uuids(int index);
+  void set_df_uuids(int index, const std::string& value);
+  void set_df_uuids(int index, std::string&& value);
+  void set_df_uuids(int index, const char* value);
+  void set_df_uuids(int index, const void* value, size_t size);
+  std::string* add_df_uuids();
+  void add_df_uuids(const std::string& value);
+  void add_df_uuids(std::string&& value);
+  void add_df_uuids(const char* value);
+  void add_df_uuids(const void* value, size_t size);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>& df_uuids() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>* mutable_df_uuids();
   private:
-  const std::string& _internal_rhs_df_uuid() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_rhs_df_uuid(const std::string& value);
-  std::string* _internal_mutable_rhs_df_uuid();
+  const std::string& _internal_df_uuids(int index) const;
+  std::string* _internal_add_df_uuids();
   public:
 
   // @@protoc_insertion_point(class_scope:PicachvMessages.UnionInformation)
@@ -1186,8 +1181,7 @@ class UnionInformation final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr lhs_df_uuid_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr rhs_df_uuid_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string> df_uuids_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2140,104 +2134,79 @@ GroupByInformation::mutable_group_by() {
 
 // UnionInformation
 
-// bytes lhs_df_uuid = 1;
-inline void UnionInformation::clear_lhs_df_uuid() {
-  _impl_.lhs_df_uuid_.ClearToEmpty();
+// repeated bytes df_uuids = 1;
+inline int UnionInformation::_internal_df_uuids_size() const {
+  return _impl_.df_uuids_.size();
 }
-inline const std::string& UnionInformation::lhs_df_uuid() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.UnionInformation.lhs_df_uuid)
-  return _internal_lhs_df_uuid();
+inline int UnionInformation::df_uuids_size() const {
+  return _internal_df_uuids_size();
 }
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void UnionInformation::set_lhs_df_uuid(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.lhs_df_uuid_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:PicachvMessages.UnionInformation.lhs_df_uuid)
+inline void UnionInformation::clear_df_uuids() {
+  _impl_.df_uuids_.Clear();
 }
-inline std::string* UnionInformation::mutable_lhs_df_uuid() {
-  std::string* _s = _internal_mutable_lhs_df_uuid();
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.UnionInformation.lhs_df_uuid)
+inline std::string* UnionInformation::add_df_uuids() {
+  std::string* _s = _internal_add_df_uuids();
+  // @@protoc_insertion_point(field_add_mutable:PicachvMessages.UnionInformation.df_uuids)
   return _s;
 }
-inline const std::string& UnionInformation::_internal_lhs_df_uuid() const {
-  return _impl_.lhs_df_uuid_.Get();
+inline const std::string& UnionInformation::_internal_df_uuids(int index) const {
+  return _impl_.df_uuids_.Get(index);
 }
-inline void UnionInformation::_internal_set_lhs_df_uuid(const std::string& value) {
-  
-  _impl_.lhs_df_uuid_.Set(value, GetArenaForAllocation());
+inline const std::string& UnionInformation::df_uuids(int index) const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.UnionInformation.df_uuids)
+  return _internal_df_uuids(index);
 }
-inline std::string* UnionInformation::_internal_mutable_lhs_df_uuid() {
-  
-  return _impl_.lhs_df_uuid_.Mutable(GetArenaForAllocation());
+inline std::string* UnionInformation::mutable_df_uuids(int index) {
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.UnionInformation.df_uuids)
+  return _impl_.df_uuids_.Mutable(index);
 }
-inline std::string* UnionInformation::release_lhs_df_uuid() {
-  // @@protoc_insertion_point(field_release:PicachvMessages.UnionInformation.lhs_df_uuid)
-  return _impl_.lhs_df_uuid_.Release();
+inline void UnionInformation::set_df_uuids(int index, const std::string& value) {
+  _impl_.df_uuids_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set:PicachvMessages.UnionInformation.df_uuids)
 }
-inline void UnionInformation::set_allocated_lhs_df_uuid(std::string* lhs_df_uuid) {
-  if (lhs_df_uuid != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.lhs_df_uuid_.SetAllocated(lhs_df_uuid, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.lhs_df_uuid_.IsDefault()) {
-    _impl_.lhs_df_uuid_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.UnionInformation.lhs_df_uuid)
+inline void UnionInformation::set_df_uuids(int index, std::string&& value) {
+  _impl_.df_uuids_.Mutable(index)->assign(std::move(value));
+  // @@protoc_insertion_point(field_set:PicachvMessages.UnionInformation.df_uuids)
 }
-
-// bytes rhs_df_uuid = 2;
-inline void UnionInformation::clear_rhs_df_uuid() {
-  _impl_.rhs_df_uuid_.ClearToEmpty();
+inline void UnionInformation::set_df_uuids(int index, const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.df_uuids_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:PicachvMessages.UnionInformation.df_uuids)
 }
-inline const std::string& UnionInformation::rhs_df_uuid() const {
-  // @@protoc_insertion_point(field_get:PicachvMessages.UnionInformation.rhs_df_uuid)
-  return _internal_rhs_df_uuid();
+inline void UnionInformation::set_df_uuids(int index, const void* value, size_t size) {
+  _impl_.df_uuids_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:PicachvMessages.UnionInformation.df_uuids)
 }
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void UnionInformation::set_rhs_df_uuid(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.rhs_df_uuid_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:PicachvMessages.UnionInformation.rhs_df_uuid)
+inline std::string* UnionInformation::_internal_add_df_uuids() {
+  return _impl_.df_uuids_.Add();
 }
-inline std::string* UnionInformation::mutable_rhs_df_uuid() {
-  std::string* _s = _internal_mutable_rhs_df_uuid();
-  // @@protoc_insertion_point(field_mutable:PicachvMessages.UnionInformation.rhs_df_uuid)
-  return _s;
+inline void UnionInformation::add_df_uuids(const std::string& value) {
+  _impl_.df_uuids_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:PicachvMessages.UnionInformation.df_uuids)
 }
-inline const std::string& UnionInformation::_internal_rhs_df_uuid() const {
-  return _impl_.rhs_df_uuid_.Get();
+inline void UnionInformation::add_df_uuids(std::string&& value) {
+  _impl_.df_uuids_.Add(std::move(value));
+  // @@protoc_insertion_point(field_add:PicachvMessages.UnionInformation.df_uuids)
 }
-inline void UnionInformation::_internal_set_rhs_df_uuid(const std::string& value) {
-  
-  _impl_.rhs_df_uuid_.Set(value, GetArenaForAllocation());
+inline void UnionInformation::add_df_uuids(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _impl_.df_uuids_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:PicachvMessages.UnionInformation.df_uuids)
 }
-inline std::string* UnionInformation::_internal_mutable_rhs_df_uuid() {
-  
-  return _impl_.rhs_df_uuid_.Mutable(GetArenaForAllocation());
+inline void UnionInformation::add_df_uuids(const void* value, size_t size) {
+  _impl_.df_uuids_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:PicachvMessages.UnionInformation.df_uuids)
 }
-inline std::string* UnionInformation::release_rhs_df_uuid() {
-  // @@protoc_insertion_point(field_release:PicachvMessages.UnionInformation.rhs_df_uuid)
-  return _impl_.rhs_df_uuid_.Release();
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>&
+UnionInformation::df_uuids() const {
+  // @@protoc_insertion_point(field_list:PicachvMessages.UnionInformation.df_uuids)
+  return _impl_.df_uuids_;
 }
-inline void UnionInformation::set_allocated_rhs_df_uuid(std::string* rhs_df_uuid) {
-  if (rhs_df_uuid != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.rhs_df_uuid_.SetAllocated(rhs_df_uuid, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.rhs_df_uuid_.IsDefault()) {
-    _impl_.rhs_df_uuid_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:PicachvMessages.UnionInformation.rhs_df_uuid)
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField<std::string>*
+UnionInformation::mutable_df_uuids() {
+  // @@protoc_insertion_point(field_mutable_list:PicachvMessages.UnionInformation.df_uuids)
+  return &_impl_.df_uuids_;
 }
 
 // -------------------------------------------------------------------

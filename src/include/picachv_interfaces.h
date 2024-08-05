@@ -113,14 +113,13 @@ ErrorCode reify_expression(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, co
  * @param [in] ctx_uuid_len The length of the context UUID.
  * @param [in] df_uuid The UUID of the dataframe.
  * @param [in] df_uuid_len The length of the dataframe UUID.
- * @param start The start index of the slice.
- * @param end The end index of the slice.
+ * @param [in] start The start index of the slice.
  * @param [out] slice_uuid The buffer for holding the UUID of the sliced
  * @param [in] slice_uuid_len The length of the slice UUID buffer.
  * @return ErrorCode
  */
 ErrorCode create_slice(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, const uint8_t *df_uuid,
-                       std::size_t df_uuid_len, uint64_t start, uint64_t end, uint8_t *slice_uuid,
+                       std::size_t df_uuid_len, const uint32_t *sel_vec, std::size_t sel_vec_len, uint8_t *slice_uuid,
                        std::size_t slice_uuid_len);
 
 /**
@@ -200,5 +199,22 @@ ErrorCode enable_profiling(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, bo
  * @return ErrorCode
  */
 ErrorCode enable_tracing(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, bool enable);
+
+/**
+ * @brief
+ *
+ * @param ctx_uuid
+ * @param ctx_uuid_len
+ * @param df_uuid
+ * @param df_uuid_len
+ * @param hashes
+ * @param hash_len
+ * @param result_uuid
+ * @param result_uuid_len
+ * @return ErrorCode
+ */
+ErrorCode select_group(const uint8_t *ctx_uuid, std::size_t ctx_uuid_len, const uint8_t *df_uuid,
+                       std::size_t df_uuid_len, const uint64_t *hashes, std::size_t hash_len, uint8_t *result_uuid,
+                       std::size_t result_uuid_len);
 }
 #endif

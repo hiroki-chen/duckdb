@@ -6,6 +6,9 @@
 #include "duckdb/common/vector_operations/vector_operations.hpp"
 #include "duckdb/main/client_context.hpp"
 #include "duckdb/storage/buffer_manager.hpp"
+#include "picachv_interfaces.h"
+#include "plan_args.pb.h"
+#include "transform.pb.h"
 
 #include <iostream>
 
@@ -52,6 +55,8 @@ JoinHashTable::JoinHashTable(BufferManager &buffer_manager_p, const vector<JoinC
 		layout_types.emplace_back(LogicalType::BOOLEAN);
 	}
 	layout_types.emplace_back(LogicalType::HASH);
+	// For keeping track of the row index
+	layout_types.emplace_back(LogicalType::UINTEGER);
 	layout.Initialize(layout_types, false);
 	row_matcher.Initialize(false, layout, predicates);
 	row_matcher_no_match_sel.Initialize(true, layout, predicates);
@@ -153,6 +158,7 @@ void JoinHashTable::Build(PartitionedTupleDataAppendState &append_state, DataChu
 		return;
 	}
 	// special case: correlated mark join
+	// We ignore this for the time being.
 	if (join_type == JoinType::MARK && !correlated_mark_join_info.correlated_types.empty()) {
 		auto &info = correlated_mark_join_info;
 		lock_guard<mutex> mj_lock(info.mj_lock);
@@ -175,24 +181,39 @@ void JoinHashTable::Build(PartitionedTupleDataAppendState &append_state, DataChu
 	}
 
 	// build a chunk to append to the data collection [keys, payload, (optional "found" boolean), hash]
+	// Additionally, we will keep track of thr row indices of each keys. So the data collection looks like
+	// [keys, payload, (optional "found" boolean), hash, row_id] <- we append this to the end so that
+	// the modification won't cause disruption to the existing codebase.
 	DataChunk source_chunk;
 	source_chunk.InitializeEmpty(layout.GetTypes());
+	// Initialize the keys here.
 	for (idx_t i = 0; i < keys.ColumnCount(); i++) {
 		source_chunk.data[i].Reference(keys.data[i]);
 	}
 	idx_t col_offset = keys.ColumnCount();
 	D_ASSERT(build_types.size() == payload.ColumnCount());
+	// Initialize the payload here.
 	for (idx_t i = 0; i < payload.ColumnCount(); i++) {
 		source_chunk.data[col_offset + i].Reference(payload.data[i]);
 	}
+	// Initialize the "found" boolean here.
 	col_offset += payload.ColumnCount();
 	if (PropagatesBuildSide(join_type)) {
 		// for FULL/RIGHT OUTER joins initialize the "found" boolean to false
 		source_chunk.data[col_offset].Reference(vfound);
 		col_offset++;
 	}
+	// Initialize the hash here.
 	Vector hash_values(LogicalType::HASH);
 	source_chunk.data[col_offset].Reference(hash_values);
+	// Initialize the row index here.
+	Vector row_index(LogicalType::UINTEGER);
+	source_chunk.data[col_offset + 1].Reference(row_index);
+	// Set indices.
+	for (idx_t i = 0; i < keys.size(); i++) {
+		row_index.SetValue(i, Value::UINTEGER(i));
+	}
+
 	source_chunk.SetCardinality(keys);
 
 	// ToUnifiedFormat the source chunk
@@ -376,7 +397,8 @@ ScanStructure::ScanStructure(JoinHashTable &ht_p, TupleDataChunkState &key_state
       finished(false) {
 }
 
-void ScanStructure::Next(ClientContext &context, DataChunk &keys, DataChunk &left, DataChunk &result) {
+void ScanStructure::Next(ClientContext &context, DataChunk &keys, DataChunk &left, DataChunk &result,
+                         const uint8_t *build_uuid) {
 	if (finished) {
 		return;
 	}
@@ -385,9 +407,7 @@ void ScanStructure::Next(ClientContext &context, DataChunk &keys, DataChunk &lef
 	case JoinType::RIGHT:
 	case JoinType::RIGHT_ANTI:
 	case JoinType::RIGHT_SEMI:
-		debug_print_df(context.ctx_uuid.uuid, PICACHV_UUID_LEN, left.GetActiveUUID(), PICACHV_UUID_LEN);
-
-		NextInnerJoin(keys, left, result);
+		NextInnerJoin(context, keys, left, result, build_uuid);
 		break;
 	case JoinType::SEMI:
 		NextSemiJoin(keys, left, result);
@@ -408,6 +428,29 @@ void ScanStructure::Next(ClientContext &context, DataChunk &keys, DataChunk &lef
 	default:
 		throw InternalException("Unhandled join type in JoinHashTable");
 	}
+
+	std::cout << "after join: result.size() => " << result.size() << std::endl;
+}
+
+// This function only works for non-nested data. Use with care.
+// But should be enough for the time being.
+vector<idx_t> ScanStructure::CollectIndices(const SelectionVector &sel, idx_t count) {
+	D_ASSERT(ht.layout.GetTypes().back() == LogicalType::UINTEGER);
+
+	auto source_locations = FlatVector::GetData<data_ptr_t>(pointers);
+	const auto indices_in_row = ht.layout.GetOffsets().back();
+	vector<idx_t> indices;
+e
+	for (idx_t i = 0; i < count; i++) {
+		const auto &source_row = source_locations[sel.get_index(i)];
+		const auto index = Load<idx_t>(source_row + indices_in_row);
+
+		indices.emplace_back(index);
+
+		std::cout << "index[" << i << "] => " << index << std::endl;
+	}
+
+	return indices;
 }
 
 bool ScanStructure::PointersExhausted() {
@@ -491,10 +534,13 @@ void ScanStructure::GatherResult(Vector &result, const SelectionVector &result_v
 
 void ScanStructure::GatherResult(Vector &result, const SelectionVector &sel_vector, const idx_t count,
                                  const idx_t col_idx) {
+	// selection vector is used to select the location of pointers; rather than
+	// the row number.
 	GatherResult(result, *FlatVector::IncrementalSelectionVector(), sel_vector, count, col_idx);
 }
 
-void ScanStructure::NextInnerJoin(DataChunk &keys, DataChunk &left, DataChunk &result) {
+void ScanStructure::NextInnerJoin(ClientContext &context, DataChunk &keys, DataChunk &left, DataChunk &result,
+                                  const uint8_t *build_uuid) {
 	if (ht.join_type != JoinType::RIGHT_SEMI && ht.join_type != JoinType::RIGHT_ANTI) {
 		D_ASSERT(result.ColumnCount() == left.ColumnCount() + ht.output_columns.size());
 	}
@@ -523,7 +569,9 @@ void ScanStructure::NextInnerJoin(DataChunk &keys, DataChunk &left, DataChunk &r
 			// construct the result
 			// on the LHS, we create a slice using the result vector
 			result.Slice(left, result_vector, result_count);
-
+			std::cout << "result => " << std::endl;
+			result.Print();
+			std::cout << std::endl;
 			// on the RHS, we need to fetch the data from the hash table
 			for (idx_t i = 0; i < ht.output_columns.size(); i++) {
 				auto &vector = result.data[left.ColumnCount() + i];
@@ -532,6 +580,44 @@ void ScanStructure::NextInnerJoin(DataChunk &keys, DataChunk &left, DataChunk &r
 				GatherResult(vector, result_vector, result_count, output_col_idx);
 			}
 		}
+
+		std::cout << "result => " << std::endl;
+		result.Print();
+		std::cout << std::endl;
+
+		if (context.PolicyCheckingEnabled()) {
+			const vector<idx_t> rhs_indices = CollectIndices(sel_vector, result_count);
+
+			PicachvMessages::PlanArgument arg;
+			(void)arg.mutable_transform();
+			PicachvMessages::JoinInformation *info = arg.mutable_transform_info()->mutable_join();
+
+			info->mutable_rhs_df_uuid()->assign((const char *)build_uuid, PICACHV_UUID_LEN);
+			info->mutable_lhs_df_uuid()->assign((const char *)left.GetActiveUUID(), PICACHV_UUID_LEN);
+			info->mutable_right_columns()->Assign(ht.output_columns.begin(), ht.output_columns.end());
+			for (idx_t i = 0; i < left.GetTypes().size(); i++) {
+				info->mutable_left_columns()->Add(i);
+			}
+
+			for (idx_t i = 0; i < result_count; i++) {
+				auto lhs_idx = result_vector.get_index(i);
+				auto rhs_idx = rhs_indices[i];
+
+				auto row = info->mutable_row_join_info()->Add();
+				row->set_left_row(lhs_idx);
+				row->set_right_row(rhs_idx);
+			}
+
+			duckdb_uuid_t uuid;
+			if (execute_epilogue(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
+			                     arg.ByteSizeLong(), nullptr, 0, uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
+				throw InternalException("NextInnerScan: " + GetErrorMessage());
+			}
+			result.SetActiveUUID(uuid.uuid);
+
+			std::cout << "after joining: " << StringUtil::ByteArrayToString(uuid.uuid, 16) << std::endl;
+		}
+
 		AdvancePointers();
 	}
 }
@@ -718,7 +804,7 @@ void ScanStructure::NextLeftJoin(DataChunk &keys, DataChunk &left, DataChunk &re
 	// a LEFT OUTER JOIN is identical to an INNER JOIN except all tuples that do
 	// not have a match must return at least one tuple (with the right side set
 	// to NULL in every column)
-	NextInnerJoin(keys, left, result);
+	// FIXME: NextInnerJoin(keys, left, result);
 	if (result.size() == 0) {
 		// no entries left from the normal join
 		// fill in the result of the remaining left tuples
