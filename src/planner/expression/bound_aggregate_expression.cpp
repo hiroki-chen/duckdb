@@ -17,6 +17,8 @@ static PicachvMessages::GroupByMethod FuncNameToGroupBy(const string &name) {
 		return PicachvMessages::GroupByMethod::Mean;
 	} else if (name.find("min") == 0) {
 		return PicachvMessages::GroupByMethod::Min;
+	} else if (name.find("first") == 0) {
+		return PicachvMessages::GroupByMethod::First;
 	} else if (name.find("max") == 0) {
 		return PicachvMessages::GroupByMethod::Max;
 	} else {
@@ -64,7 +66,7 @@ void BoundAggregateExpression::CreateExprInArena(ClientContext &context) const {
 
 	if (expr_from_args(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializePartialAsString().c_str(),
 	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
-		throw InternalException(GetErrorMessage());
+		throw InternalException("BoundAggregateExpression::CreateExprInArena: " + GetErrorMessage());
 	}
 }
 

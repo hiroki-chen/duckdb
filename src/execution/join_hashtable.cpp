@@ -440,7 +440,7 @@ vector<idx_t> ScanStructure::CollectIndices(const SelectionVector &sel, idx_t co
 	auto source_locations = FlatVector::GetData<data_ptr_t>(pointers);
 	const auto indices_in_row = ht.layout.GetOffsets().back();
 	vector<idx_t> indices;
-e
+
 	for (idx_t i = 0; i < count; i++) {
 		const auto &source_row = source_locations[sel.get_index(i)];
 		const auto index = Load<idx_t>(source_row + indices_in_row);
@@ -611,7 +611,7 @@ void ScanStructure::NextInnerJoin(ClientContext &context, DataChunk &keys, DataC
 			duckdb_uuid_t uuid;
 			if (execute_epilogue(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
 			                     arg.ByteSizeLong(), nullptr, 0, uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
-				throw InternalException("NextInnerScan: " + GetErrorMessage());
+				throw InternalException("ScanStructure::NextInnerScan: " + GetErrorMessage());
 			}
 			result.SetActiveUUID(uuid.uuid);
 

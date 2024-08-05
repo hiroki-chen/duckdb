@@ -657,7 +657,7 @@ void RadixPartitionedHashTable::Finalize(ClientContext &context, GlobalSinkState
 		if (execute_epilogue(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
 		                     arg.ByteSizeLong(), nullptr, 0, gstate.agg_uuid.data(),
 		                     PICACHV_UUID_LEN) != ErrorCode::Success) {
-			throw InternalException("Failed to execute epilogue: " + GetErrorMessage());
+			throw InternalException("RadixPartitionedHashTable::Finalize: " + GetErrorMessage());
 		}
 	}
 }

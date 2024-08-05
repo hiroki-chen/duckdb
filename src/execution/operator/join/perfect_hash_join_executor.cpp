@@ -259,7 +259,7 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 		if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
 		                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, uuid.uuid,
 		                     PICACHV_UUID_LEN) != ErrorCode::Success) {
-			throw InternalException(GetErrorMessage());
+			throw InternalException("ProbePerfectHashTable: " + GetErrorMessage());
 		}
 		result.SetActiveUUID(uuid.uuid);
 

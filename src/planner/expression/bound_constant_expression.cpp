@@ -40,7 +40,7 @@ void BoundConstantExpression::CreateExprInArena(ClientContext &context) const {
 	PicachvMessages::LiteralExpr *expr = arg.mutable_literal();
 	if (expr_from_args(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (const uint8_t *)arg.SerializeAsString().c_str(),
 	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
-		throw InternalException(GetErrorMessage());
+		throw InternalException("BoundConstantExpression::CreateExprInArena: " + GetErrorMessage());
 	}
 }
 } // namespace duckdb

@@ -52,7 +52,8 @@ void BoundReferenceExpression::CreateExprInArena(ClientContext &context) const {
 
 	if (expr_from_args(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
 	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
-		throw InternalException(GetErrorMessage());
+		throw InternalException("BoundReferenceExpression::CreateExprInArena: " + GetErrorMessage());
+
 	}
 }
 

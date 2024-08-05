@@ -330,7 +330,7 @@ OperatorFinalizeResultType CachingPhysicalOperator::FinalExecute(ExecutionContex
 			if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN,
 			                     (uint8_t *)arg.SerializeAsString().c_str(), arg.ByteSizeLong(), nullptr, 0, uuid.uuid,
 			                     PICACHV_UUID_LEN) != ErrorCode::Success) {
-				throw InternalException("FinalExecute: " + GetErrorMessage());
+				throw InternalException("CachingPhysicalOperator::FinalExecute: " + GetErrorMessage());
 			}
 
 			chunk.SetActiveUUID(uuid.uuid);

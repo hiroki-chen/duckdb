@@ -120,7 +120,7 @@ unique_ptr<LocalSinkState> PhysicalPerfectHashAggregate::GetLocalSinkState(Execu
 
 SinkResultType PhysicalPerfectHashAggregate::Sink(ExecutionContext &context, DataChunk &chunk,
                                                   OperatorSinkInput &input) const {
-  if (context.client.PolicyCheckingEnabled()) {
+	if (context.client.PolicyCheckingEnabled()) {
 		std::copy(chunk.GetActiveUUID(), chunk.GetActiveUUID() + PICACHV_UUID_LEN, df_uuid.begin());
 	}
 	auto &lstate = input.local_state.Cast<PerfectHashAggregateLocalState>();
@@ -221,7 +221,7 @@ SourceResultType PhysicalPerfectHashAggregate::GetData(ExecutionContext &context
 	if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
 	                     arg.ByteSizeLong(), df_uuid.data(), PICACHV_UUID_LEN, uuid.uuid,
 	                     PICACHV_UUID_LEN) != ErrorCode::Success) {
-		throw InternalException(GetErrorMessage());
+		throw InternalException("PhysicalPerfectHashAggregate::GetData: " + GetErrorMessage());
 	}
 
 	chunk.SetActiveUUID(uuid.uuid);

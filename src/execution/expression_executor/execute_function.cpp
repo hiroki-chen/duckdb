@@ -81,7 +81,7 @@ void ExpressionExecutor::Execute(const BoundFunctionExpression &expr, Expression
 		auto arrow_buffer = arguments.ToArrowIpc();
 		if (reify_expression(context.get()->ctx_uuid.uuid, PICACHV_UUID_LEN, expr.expr_uuid.uuid, PICACHV_UUID_LEN,
 		                     arrow_buffer->data(), arrow_buffer->size()) != ErrorCode::Success) {
-			// throw InternalException("Function error: " + expr.function.name + GetErrorMessage());
+			throw InternalException("Function error: " + expr.function.name + GetErrorMessage());
 			expr.function.function(arguments, *state, result);
 		}
 	}

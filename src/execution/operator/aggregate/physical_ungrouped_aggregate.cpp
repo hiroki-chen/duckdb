@@ -10,11 +10,14 @@
 #include "duckdb/execution/radix_partitioned_hashtable.hpp"
 #include "duckdb/main/client_context.hpp"
 #include "duckdb/parallel/base_pipeline_event.hpp"
+#include "duckdb/parallel/executor_task.hpp"
 #include "duckdb/parallel/interrupt.hpp"
 #include "duckdb/parallel/thread_context.hpp"
-#include "duckdb/parallel/executor_task.hpp"
 #include "duckdb/planner/expression/bound_aggregate_expression.hpp"
 #include "duckdb/planner/expression/bound_reference_expression.hpp"
+#include "picachv_interfaces.h"
+#include "plan_args.pb.h"
+#include "transform.pb.h"
 
 #include <functional>
 
@@ -114,6 +117,10 @@ public:
 	ArenaAllocator allocator;
 	//! Allocator pool
 	mutable vector<unique_ptr<ArenaAllocator>> stored_allocators;
+	//! Data chunk uuids.
+	vector<std::array<uint8_t, PICACHV_UUID_LEN>> chunk_uuids;
+	//! Final one.
+	std::array<uint8_t, PICACHV_UUID_LEN> final_uuid;
 };
 
 class UngroupedAggregateLocalSinkState : public LocalSinkState {
@@ -256,6 +263,9 @@ SinkResultType PhysicalUngroupedAggregate::Sink(ExecutionContext &context, DataC
                                                 OperatorSinkInput &input) const {
 	auto &sink = input.local_state.Cast<UngroupedAggregateLocalSinkState>();
 
+	std::cout << "PhysicalUngroupedAggregate::Sink: " << StringUtil::ByteArrayToString(chunk.GetActiveUUID(), 16)
+	          << std::endl;
+
 	// perform the aggregation inside the local state
 	sink.Reset();
 
@@ -263,6 +273,7 @@ SinkResultType PhysicalUngroupedAggregate::Sink(ExecutionContext &context, DataC
 		SinkDistinct(context, chunk, input);
 	}
 
+	// We don't use radix table.
 	DataChunk &payload_chunk = sink.aggregate_input_chunk;
 
 	idx_t payload_idx = 0;
@@ -281,6 +292,7 @@ SinkResultType PhysicalUngroupedAggregate::Sink(ExecutionContext &context, DataC
 		idx_t payload_cnt = 0;
 		// resolve the filter (if any)
 		if (aggregate.filter) {
+			// FIXME: We don't have this for the time being.
 			auto &filtered_data = sink.filter_set.GetFilterData(aggr_idx);
 			auto count = filtered_data.ApplyFilter(chunk);
 
@@ -289,6 +301,7 @@ SinkResultType PhysicalUngroupedAggregate::Sink(ExecutionContext &context, DataC
 		} else {
 			sink.child_executor.SetChunk(chunk);
 			payload_chunk.SetCardinality(chunk);
+			payload_chunk.SetActiveUUID(chunk.GetActiveUUID());
 		}
 
 #ifdef DEBUG
@@ -366,6 +379,12 @@ SinkCombineResultType PhysicalUngroupedAggregate::Combine(ExecutionContext &cont
 	auto &client_profiler = QueryProfiler::Get(context.client);
 	context.thread.profiler.Flush(*this, lstate.child_executor, "child_executor", 0);
 	client_profiler.Flush(context.thread.profiler);
+
+	if (lstate.aggregate_input_chunk.size() != 0) {
+		std::array<uint8_t, PICACHV_UUID_LEN> chunk_uuid;
+		memcpy(chunk_uuid.data(), lstate.aggregate_input_chunk.GetActiveUUID(), PICACHV_UUID_LEN);
+		gstate.chunk_uuids.emplace_back(chunk_uuid);
+	}
 
 	return SinkCombineResultType::FINISHED;
 }
@@ -599,6 +618,26 @@ SinkFinalizeType PhysicalUngroupedAggregate::Finalize(Pipeline &pipeline, Event 
 		return FinalizeDistinct(pipeline, event, context, input.global_state);
 	}
 
+	if (!gstate.chunk_uuids.empty()) {
+		gstate.final_uuid = gstate.chunk_uuids.front();
+	}
+
+	if (context.PolicyCheckingEnabled() && gstate.chunk_uuids.size() >= 2) {
+		PicachvMessages::PlanArgument arg;
+		(void)arg.mutable_transform();
+		PicachvMessages::TransformInfo *ti = arg.mutable_transform_info();
+
+		for (auto &uuid : gstate.chunk_uuids) {
+			ti->mutable_union_()->add_df_uuids(std::string(uuid.begin(), uuid.end()));
+		}
+
+		if (execute_epilogue(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().data(),
+		                     arg.ByteSizeLong(), nullptr, 0, gstate.final_uuid.data(),
+		                     PICACHV_UUID_LEN) != ErrorCode::Success) {
+			throw InternalException("PhysicalUngroupedAggregate::Finalize: " + GetErrorMessage());
+		}
+	}
+
 	D_ASSERT(!gstate.finished);
 	gstate.finished = true;
 	return SinkFinalizeType::READY;
@@ -636,6 +675,32 @@ SourceResultType PhysicalUngroupedAggregate::GetData(ExecutionContext &context, 
 		aggregate.function.finalize(state_vector, aggr_input_data, chunk.data[aggr_idx], 1, 0);
 	}
 	VerifyNullHandling(chunk, gstate.state, aggregates);
+
+	if (context.client.PolicyCheckingEnabled()) {
+		PicachvMessages::PlanArgument arg;
+		PicachvMessages::AggregateArgument *agg = arg.mutable_aggregate();
+
+		for (auto &child : aggregates) {
+			auto &aggr = child->Cast<BoundAggregateExpression>();
+			for (auto &agg_child : aggr.children) {
+				agg_child->CreateExprInArena(context.client);
+			}
+			child->CreateExprInArena(context.client);
+
+			agg->mutable_aggs_uuid()->Add(string((char *)child->expr_uuid.uuid, PICACHV_UUID_LEN));
+			(void)agg->mutable_group_by_proxy()->mutable_no_group();
+
+			duckdb_uuid_t uuid;
+			if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN,
+			                     (uint8_t *)arg.SerializeAsString().data(), arg.ByteSizeLong(),
+			                     gstate.final_uuid.data(), PICACHV_UUID_LEN, uuid.uuid,
+			                     PICACHV_UUID_LEN) != ErrorCode::Success) {
+				throw InternalException("PhysicalUngroupedAggregate::GetData: " + GetErrorMessage());
+			}
+
+			chunk.SetActiveUUID(uuid.uuid);
+		}
+	}
 
 	return SourceResultType::FINISHED;
 }

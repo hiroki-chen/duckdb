@@ -138,7 +138,7 @@ static void TableScanFunc(ClientContext &context, TableFunctionInput &data_p, Da
 			if (early_projection(context.ctx_uuid.uuid, PICACHV_UUID_LEN, state.all_columns.GetActiveUUID(),
 			                     PICACHV_UUID_LEN, gstate.projection_ids.data(), gstate.projection_ids.size(),
 			                     output_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
-				throw InternalException(GetErrorMessage());
+				throw InternalException("TableScanFunc: " + GetErrorMessage());
 			}
 			output.SetActiveUUID(output_uuid.uuid);
 		} else {

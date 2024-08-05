@@ -23,6 +23,7 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/arenastring.h>
+#include <google/protobuf/generated_message_bases.h>
 #include <google/protobuf/generated_message_util.h>
 #include <google/protobuf/metadata_lite.h>
 #include <google/protobuf/generated_message_reflection.h>
@@ -82,6 +83,9 @@ extern PrimitiveValueDefaultTypeInternal _PrimitiveValue_default_instance_;
 class PrimitiveValue_Duration;
 struct PrimitiveValue_DurationDefaultTypeInternal;
 extern PrimitiveValue_DurationDefaultTypeInternal _PrimitiveValue_Duration_default_instance_;
+class UngroupedGroupBy;
+struct UngroupedGroupByDefaultTypeInternal;
+extern UngroupedGroupByDefaultTypeInternal _UngroupedGroupBy_default_instance_;
 }  // namespace PicachvMessages
 PROTOBUF_NAMESPACE_OPEN
 template<> ::PicachvMessages::BinaryOperator* Arena::CreateMaybeMessage<::PicachvMessages::BinaryOperator>(Arena*);
@@ -96,6 +100,7 @@ template<> ::PicachvMessages::GroupByProxy* Arena::CreateMaybeMessage<::PicachvM
 template<> ::PicachvMessages::GroupBySlice* Arena::CreateMaybeMessage<::PicachvMessages::GroupBySlice>(Arena*);
 template<> ::PicachvMessages::PrimitiveValue* Arena::CreateMaybeMessage<::PicachvMessages::PrimitiveValue>(Arena*);
 template<> ::PicachvMessages::PrimitiveValue_Duration* Arena::CreateMaybeMessage<::PicachvMessages::PrimitiveValue_Duration>(Arena*);
+template<> ::PicachvMessages::UngroupedGroupBy* Arena::CreateMaybeMessage<::PicachvMessages::UngroupedGroupBy>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace PicachvMessages {
 
@@ -1560,6 +1565,124 @@ class GroupByIdxMultiple final :
 };
 // -------------------------------------------------------------------
 
+class UngroupedGroupBy final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:PicachvMessages.UngroupedGroupBy) */ {
+ public:
+  inline UngroupedGroupBy() : UngroupedGroupBy(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR UngroupedGroupBy(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  UngroupedGroupBy(const UngroupedGroupBy& from);
+  UngroupedGroupBy(UngroupedGroupBy&& from) noexcept
+    : UngroupedGroupBy() {
+    *this = ::std::move(from);
+  }
+
+  inline UngroupedGroupBy& operator=(const UngroupedGroupBy& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline UngroupedGroupBy& operator=(UngroupedGroupBy&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const UngroupedGroupBy& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const UngroupedGroupBy* internal_default_instance() {
+    return reinterpret_cast<const UngroupedGroupBy*>(
+               &_UngroupedGroupBy_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  friend void swap(UngroupedGroupBy& a, UngroupedGroupBy& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(UngroupedGroupBy* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(UngroupedGroupBy* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  UngroupedGroupBy* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<UngroupedGroupBy>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const UngroupedGroupBy& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const UngroupedGroupBy& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "PicachvMessages.UngroupedGroupBy";
+  }
+  protected:
+  explicit UngroupedGroupBy(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:PicachvMessages.UngroupedGroupBy)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_basic_2eproto;
+};
+// -------------------------------------------------------------------
+
 class GroupBySlice final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:PicachvMessages.GroupBySlice) */ {
  public:
@@ -1608,7 +1731,7 @@ class GroupBySlice final :
                &_GroupBySlice_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    8;
 
   friend void swap(GroupBySlice& a, GroupBySlice& b) {
     a.Swap(&b);
@@ -1769,6 +1892,7 @@ class GroupByProxy final :
     kGroupByIdx = 1,
     kGroupByIdxMultiple = 2,
     kGroupBySlice = 3,
+    kNoGroup = 4,
     GROUP_BY_NOT_SET = 0,
   };
 
@@ -1777,7 +1901,7 @@ class GroupByProxy final :
                &_GroupByProxy_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(GroupByProxy& a, GroupByProxy& b) {
     a.Swap(&b);
@@ -1853,6 +1977,7 @@ class GroupByProxy final :
     kGroupByIdxFieldNumber = 1,
     kGroupByIdxMultipleFieldNumber = 2,
     kGroupBySliceFieldNumber = 3,
+    kNoGroupFieldNumber = 4,
   };
   // .PicachvMessages.GroupByIdx group_by_idx = 1;
   bool has_group_by_idx() const;
@@ -1908,6 +2033,24 @@ class GroupByProxy final :
       ::PicachvMessages::GroupBySlice* group_by_slice);
   ::PicachvMessages::GroupBySlice* unsafe_arena_release_group_by_slice();
 
+  // .PicachvMessages.UngroupedGroupBy no_group = 4;
+  bool has_no_group() const;
+  private:
+  bool _internal_has_no_group() const;
+  public:
+  void clear_no_group();
+  const ::PicachvMessages::UngroupedGroupBy& no_group() const;
+  PROTOBUF_NODISCARD ::PicachvMessages::UngroupedGroupBy* release_no_group();
+  ::PicachvMessages::UngroupedGroupBy* mutable_no_group();
+  void set_allocated_no_group(::PicachvMessages::UngroupedGroupBy* no_group);
+  private:
+  const ::PicachvMessages::UngroupedGroupBy& _internal_no_group() const;
+  ::PicachvMessages::UngroupedGroupBy* _internal_mutable_no_group();
+  public:
+  void unsafe_arena_set_allocated_no_group(
+      ::PicachvMessages::UngroupedGroupBy* no_group);
+  ::PicachvMessages::UngroupedGroupBy* unsafe_arena_release_no_group();
+
   void clear_group_by();
   GroupByCase group_by_case() const;
   // @@protoc_insertion_point(class_scope:PicachvMessages.GroupByProxy)
@@ -1916,6 +2059,7 @@ class GroupByProxy final :
   void set_has_group_by_idx();
   void set_has_group_by_idx_multiple();
   void set_has_group_by_slice();
+  void set_has_no_group();
 
   inline bool has_group_by() const;
   inline void clear_has_group_by();
@@ -1930,6 +2074,7 @@ class GroupByProxy final :
       ::PicachvMessages::GroupByIdx* group_by_idx_;
       ::PicachvMessages::GroupByIdxMultiple* group_by_idx_multiple_;
       ::PicachvMessages::GroupBySlice* group_by_slice_;
+      ::PicachvMessages::UngroupedGroupBy* no_group_;
     } group_by_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t _oneof_case_[1];
@@ -1988,7 +2133,7 @@ class PrimitiveValue_Duration final :
                &_PrimitiveValue_Duration_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   friend void swap(PrimitiveValue_Duration& a, PrimitiveValue_Duration& b) {
     a.Swap(&b);
@@ -2164,7 +2309,7 @@ class PrimitiveValue final :
                &_PrimitiveValue_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    11;
 
   friend void swap(PrimitiveValue& a, PrimitiveValue& b) {
     a.Swap(&b);
@@ -2539,7 +2684,7 @@ class BinaryOperator final :
                &_BinaryOperator_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    12;
 
   friend void swap(BinaryOperator& a, BinaryOperator& b) {
     a.Swap(&b);
@@ -3210,6 +3355,10 @@ GroupByIdxMultiple::chunks() const {
 
 // -------------------------------------------------------------------
 
+// UngroupedGroupBy
+
+// -------------------------------------------------------------------
+
 // GroupBySlice
 
 // repeated uint64 groups = 1;
@@ -3482,6 +3631,80 @@ inline ::PicachvMessages::GroupBySlice* GroupByProxy::_internal_mutable_group_by
 inline ::PicachvMessages::GroupBySlice* GroupByProxy::mutable_group_by_slice() {
   ::PicachvMessages::GroupBySlice* _msg = _internal_mutable_group_by_slice();
   // @@protoc_insertion_point(field_mutable:PicachvMessages.GroupByProxy.group_by_slice)
+  return _msg;
+}
+
+// .PicachvMessages.UngroupedGroupBy no_group = 4;
+inline bool GroupByProxy::_internal_has_no_group() const {
+  return group_by_case() == kNoGroup;
+}
+inline bool GroupByProxy::has_no_group() const {
+  return _internal_has_no_group();
+}
+inline void GroupByProxy::set_has_no_group() {
+  _impl_._oneof_case_[0] = kNoGroup;
+}
+inline void GroupByProxy::clear_no_group() {
+  if (_internal_has_no_group()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.group_by_.no_group_;
+    }
+    clear_has_group_by();
+  }
+}
+inline ::PicachvMessages::UngroupedGroupBy* GroupByProxy::release_no_group() {
+  // @@protoc_insertion_point(field_release:PicachvMessages.GroupByProxy.no_group)
+  if (_internal_has_no_group()) {
+    clear_has_group_by();
+    ::PicachvMessages::UngroupedGroupBy* temp = _impl_.group_by_.no_group_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.group_by_.no_group_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::PicachvMessages::UngroupedGroupBy& GroupByProxy::_internal_no_group() const {
+  return _internal_has_no_group()
+      ? *_impl_.group_by_.no_group_
+      : reinterpret_cast< ::PicachvMessages::UngroupedGroupBy&>(::PicachvMessages::_UngroupedGroupBy_default_instance_);
+}
+inline const ::PicachvMessages::UngroupedGroupBy& GroupByProxy::no_group() const {
+  // @@protoc_insertion_point(field_get:PicachvMessages.GroupByProxy.no_group)
+  return _internal_no_group();
+}
+inline ::PicachvMessages::UngroupedGroupBy* GroupByProxy::unsafe_arena_release_no_group() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:PicachvMessages.GroupByProxy.no_group)
+  if (_internal_has_no_group()) {
+    clear_has_group_by();
+    ::PicachvMessages::UngroupedGroupBy* temp = _impl_.group_by_.no_group_;
+    _impl_.group_by_.no_group_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void GroupByProxy::unsafe_arena_set_allocated_no_group(::PicachvMessages::UngroupedGroupBy* no_group) {
+  clear_group_by();
+  if (no_group) {
+    set_has_no_group();
+    _impl_.group_by_.no_group_ = no_group;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:PicachvMessages.GroupByProxy.no_group)
+}
+inline ::PicachvMessages::UngroupedGroupBy* GroupByProxy::_internal_mutable_no_group() {
+  if (!_internal_has_no_group()) {
+    clear_group_by();
+    set_has_no_group();
+    _impl_.group_by_.no_group_ = CreateMaybeMessage< ::PicachvMessages::UngroupedGroupBy >(GetArenaForAllocation());
+  }
+  return _impl_.group_by_.no_group_;
+}
+inline ::PicachvMessages::UngroupedGroupBy* GroupByProxy::mutable_no_group() {
+  ::PicachvMessages::UngroupedGroupBy* _msg = _internal_mutable_no_group();
+  // @@protoc_insertion_point(field_mutable:PicachvMessages.GroupByProxy.no_group)
   return _msg;
 }
 
@@ -4250,6 +4473,8 @@ inline BinaryOperator::OperatorCase BinaryOperator::operator_case() const {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

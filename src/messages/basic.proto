@@ -66,6 +66,9 @@ message GroupByIdxMultiple {
     repeated Chunk chunks = 1;
 }
 
+message UngroupedGroupBy {
+}
+
 message GroupBySlice {
     // A vector of group indices.
     repeated uint64 groups = 1;
@@ -76,6 +79,7 @@ message GroupByProxy {
         GroupByIdx group_by_idx = 1;
         GroupByIdxMultiple group_by_idx_multiple = 2;
         GroupBySlice group_by_slice = 3;
+        UngroupedGroupBy no_group = 4;
     }
 }
 
