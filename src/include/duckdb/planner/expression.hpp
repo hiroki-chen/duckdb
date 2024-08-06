@@ -29,6 +29,9 @@ public:
 	//! The UUID of this expression.
 	mutable duckdb_uuid_t expr_uuid;
 
+	//! Whether this expression has been initialized.
+	mutable bool is_validated;
+
 public:
 	bool IsAggregate() const override;
 	bool IsWindow() const override;

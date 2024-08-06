@@ -78,7 +78,8 @@ bool PipelineExecutor::TryFlushCachingOperators() {
 		    flushing_idx + 1 >= intermediate_chunks.size() ? final_chunk : *intermediate_chunks[flushing_idx + 1];
 		auto &current_operator = pipeline.operators[flushing_idx].get();
 
-		std::cout << "flushing_idx = " << flushing_idx << ", inermediate_chunks.size() = " << intermediate_chunks.size() << std::endl;
+		std::cout << "flushing_idx = " << flushing_idx << ", inermediate_chunks.size() = " << intermediate_chunks.size()
+		          << std::endl;
 		std::cout << "in_process_operators.empty() = true ? " << (in_process_operators.empty()) << std::endl;
 
 		OperatorFinalizeResultType finalize_result;
@@ -230,7 +231,6 @@ PipelineExecuteResult PipelineExecutor::Execute(idx_t max_chunks) {
 				continue;
 			}
 
-      std::cout << "source chunk size is " << source_chunk.size() << "\n";
 			result = ExecutePushInternal(source_chunk);
 		} else {
 			throw InternalException("Unexpected state reached in pipeline executor");
@@ -505,7 +505,6 @@ SourceResultType PipelineExecutor::FetchFromSource(DataChunk &result) {
 
 	OperatorSourceInput source_input = {*pipeline.source_state, *local_source_state, interrupt_state};
 	auto res = GetData(result, source_input);
-	std::cout << "get data returned " << StringUtil::ByteArrayToString(result.GetActiveUUID(), 16) << ", " << result.size() << std::endl;
 	// Ensures Sinks only return empty results when Blocking or Finished
 	D_ASSERT(res != SourceResultType::BLOCKED || result.size() == 0);
 

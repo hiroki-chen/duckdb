@@ -34,6 +34,7 @@ struct PerfectHashJoinStats {
 //! PhysicalHashJoin represents a hash loop join between two tables
 class PerfectHashJoinExecutor {
 	using PerfectHashTable = vector<Vector>;
+	using IndexMapping = unordered_map<idx_t, idx_t>;
 
 public:
 	explicit PerfectHashJoinExecutor(const PhysicalHashJoin &join, JoinHashTable &ht, PerfectHashJoinStats pjoin_stats);
@@ -75,8 +76,7 @@ private:
 	idx_t unique_keys = 0;
 	//! For us to locate how the data is moved from the original spaec to
 	//! the perfect hash table.
-	SelectionVector sel_tuples;
-	SelectionVector sel_build;
+	IndexMapping idx_mapping;
 };
 
 } // namespace duckdb

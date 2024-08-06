@@ -261,11 +261,6 @@ OperatorResultType CachingPhysicalOperator::Execute(ExecutionContext &context, D
 	// Execute child operator
 	auto child_result = ExecuteInternal(context, input, chunk, gstate, state);
 
-	std::cout << "after execute internal, we have " << std::endl;
-	chunk.Print();
-	std::cout << std::endl;
-
-
 #if STANDARD_VECTOR_SIZE >= 128
 	if (!state.initialized) {
 		state.initialized = true;

@@ -48,6 +48,10 @@ hash_t BoundAggregateExpression::Hash() const {
 }
 
 void BoundAggregateExpression::CreateExprInArena(ClientContext &context) const {
+	if (is_validated) {
+		return;
+	}
+
 	PicachvMessages::ExprArgument arg;
 
 	if (children.size() > 1) {
@@ -56,7 +60,7 @@ void BoundAggregateExpression::CreateExprInArena(ClientContext &context) const {
 
 	// Special case: count(*)
 	if (children.empty()) {
-		PicachvMessages::CountExpr *ce = arg.mutable_count();
+		(void)arg.mutable_count();
 		D_ASSERT(function.name.find("count") == 0);
 	} else {
 		PicachvMessages::AggExpr *ae = arg.mutable_agg();
@@ -68,6 +72,8 @@ void BoundAggregateExpression::CreateExprInArena(ClientContext &context) const {
 	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
 		throw InternalException("BoundAggregateExpression::CreateExprInArena: " + GetErrorMessage());
 	}
+
+	is_validated = true;
 }
 
 bool BoundAggregateExpression::Equals(const BaseExpression &other_p) const {

@@ -256,8 +256,6 @@ unique_ptr<LocalSinkState> PhysicalHashJoin::GetLocalSinkState(ExecutionContext 
 // currently there is only one table involved; in the probe phase, the hash table is probed with the
 // join keys of the *larger* relation.
 SinkResultType PhysicalHashJoin::Sink(ExecutionContext &context, DataChunk &chunk, OperatorSinkInput &input) const {
-	std::cout << "join: sinking the chunk with size " << chunk.size() << "\n";
-
 	auto &lstate = input.local_state.Cast<HashJoinLocalSinkState>();
 	// resolve the join keys for the right chunk
 	lstate.join_keys.Reset();

@@ -2,15 +2,15 @@
 
 #include "duckdb/common/exception.hpp"
 #include "duckdb/common/types/hash.hpp"
+#include "duckdb/parser/expression_util.hpp"
+#include "duckdb/planner/expression/list.hpp"
 #include "duckdb/planner/expression_iterator.hpp"
 #include "duckdb/storage/statistics/base_statistics.hpp"
-#include "duckdb/planner/expression/list.hpp"
-#include "duckdb/parser/expression_util.hpp"
 
 namespace duckdb {
 
 Expression::Expression(ExpressionType type, ExpressionClass expression_class, LogicalType return_type)
-    : BaseExpression(type, expression_class), return_type(std::move(return_type)) {
+    : BaseExpression(type, expression_class), return_type(std::move(return_type)), is_validated(false) {
 }
 
 Expression::~Expression() {

@@ -1060,13 +1060,14 @@ void TupleDataCollection::Gather(Vector &row_locations, const SelectionVector &s
 	Vector::Verify(result, target_sel, scan_count);
 }
 
+// Figure out how perfect hash join uses this.
 template <class T>
 static void TupleDataTemplatedGather(const TupleDataLayout &layout, Vector &row_locations, const idx_t col_idx,
                                      const SelectionVector &scan_sel, const idx_t scan_count, Vector &target,
                                      const SelectionVector &target_sel, optional_ptr<Vector> dummy_vector,
                                      const vector<TupleDataGatherFunction> &child_functions) {
 	// Source
-	auto source_locations = FlatVector::GetData<data_ptr_t>(row_locations); //row_locations = pointer
+	auto source_locations = FlatVector::GetData<data_ptr_t>(row_locations); // row_locations = pointer
 
 	// Target
 	auto target_data = FlatVector::GetData<T>(target);
@@ -1077,8 +1078,14 @@ static void TupleDataTemplatedGather(const TupleDataLayout &layout, Vector &row_
 	idx_t idx_in_entry;
 	ValidityBytes::GetEntryIndex(col_idx, entry_idx, idx_in_entry);
 
+  // obtained by the tuple layout.
 	const auto offset_in_row = layout.GetOffsets()[col_idx];
 	for (idx_t i = 0; i < scan_count; i++) {
+		// so, scan_sel[i] selects the "address" of the data in source_locations
+		// and put it to the target_sel[i] position.
+		//
+		// what if we put index to the data?
+		// but how to do this for perfect join?
 		const auto &source_row = source_locations[scan_sel.get_index(i)];
 		const auto target_idx = target_sel.get_index(i);
 		ValidityBytes row_mask(source_row);

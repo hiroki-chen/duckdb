@@ -18,6 +18,14 @@ namespace duckdb {
 
 RadixPartitionedHashTable::RadixPartitionedHashTable(GroupingSet &grouping_set_p, const GroupedAggregateData &op_p)
     : grouping_set(grouping_set_p), op(op_p) {
+
+	for (auto &agg : op.aggregates) {
+		std::cout << "agg validated? " << agg->is_validated << "\n";
+	}
+	for (auto &g : op.groups) {
+		std::cout << "group validated? " << g->is_validated << "\n";
+	}
+
 	auto groups_count = op.GroupCount();
 	for (idx_t i = 0; i < groups_count; i++) {
 		if (grouping_set.find(i) == grouping_set.end()) {
@@ -636,6 +644,7 @@ void RadixPartitionedHashTable::Finalize(ClientContext &context, GlobalSinkState
 		// Set group by and aggregate.
 		for (auto &agg_expr : op.aggregates) {
 			D_ASSERT(agg_expr->type == ExpressionType::BOUND_AGGREGATE);
+			D_ASSERT(agg_expr->is_validated);
 
 			// expr_uuid is empty? create expr in arena is not invoked?
 			agg->mutable_aggs_uuid()->Add(
@@ -644,6 +653,11 @@ void RadixPartitionedHashTable::Finalize(ClientContext &context, GlobalSinkState
 
 		for (auto &gb : op.groups) {
 			D_ASSERT(gb->type == ExpressionType::BOUND_REF);
+			D_ASSERT(gb->is_validated);
+
+			std::cout << "in radix partitioned hash table agg: "
+			          << StringUtil::ByteArrayToString(gb->expr_uuid.uuid, PICACHV_UUID_LEN) << std::endl;
+
 			agg->mutable_keys()->Add(std::string(reinterpret_cast<char *>(gb->expr_uuid.uuid), PICACHV_UUID_LEN));
 		}
 

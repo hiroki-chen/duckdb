@@ -1077,8 +1077,6 @@ bool ParquetReader::ScanInternal(ClientContext &client, ParquetReaderScanState &
 
 	state.group_offset += this_output_chunk_rows;
 	if (client.PolicyCheckingEnabled()) {
-		std::cout << "called policy checking\n";
-
 		std::vector<std::size_t> column_ids;
 		for (size_t i = 0; i < reader_data.column_ids.size(); i++) {
 			column_ids.push_back(i);
@@ -1114,8 +1112,6 @@ bool ParquetReader::ScanInternal(ClientContext &client, ParquetReaderScanState &
 
 		delete args.selection;
 		result.SetActiveUUID(uuid);
-		std::cout << "result size = " << result.size() << " with uuid = " << StringUtil::ByteArrayToString(uuid, 16)
-		          << std::endl;
 	}
 	return true;
 }

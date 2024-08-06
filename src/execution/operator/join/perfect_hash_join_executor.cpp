@@ -51,17 +51,20 @@ bool PerfectHashJoinExecutor::FullScanHashTable(LogicalType &key_type) {
 		key_count = ht.FillWithHTOffsets(join_ht_state, tuples_addresses);
 	}
 
-	std::cout << "key_count is " << key_count << std::endl;
-
 	// Scan the build keys in the hash table
 	Vector build_vector(key_type, key_count);
+	// layout??
 	RowOperations::FullScanColumn(ht.layout, tuples_addresses, build_vector, key_count, 0);
-
 	// Now fill the selection vector using the build keys and create a sequential vector
 	// TODO: add check for fast pass when probe is part of build domain
-	sel_build = SelectionVector(key_count + 1);
-	sel_tuples = SelectionVector(key_count + 1);
+	SelectionVector sel_build(key_count + 1);
+	SelectionVector sel_tuples(key_count + 1);
+
 	bool success = FillSelectionVectorSwitchBuild(build_vector, sel_build, sel_tuples, key_count);
+
+	for (idx_t i = 0; i < key_count; i++) {
+		idx_mapping[sel_build.get_index(i)] = sel_tuples.get_index(i);
+	}
 
 	// early out
 	if (!success) {
@@ -71,7 +74,6 @@ bool PerfectHashJoinExecutor::FullScanHashTable(LogicalType &key_type) {
 		perfect_join_statistics.is_build_dense = true;
 	}
 	key_count = unique_keys; // do not consider keys out of the range
-	std::cout << "unique_keys is " << unique_keys << std::endl;
 
 	// Full scan the remaining build columns and fill the perfect hash table
 	//
@@ -219,11 +221,6 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 	}
 
 	if (context.client.PolicyCheckingEnabled()) {
-		unordered_map<idx_t, idx_t> recover;
-		for (idx_t i = 0; i < probe_sel_count; i++) {
-			recover[sel_build[i]] = sel_tuples[i];
-		}
-
 		PicachvMessages::PlanArgument arg;
 		PicachvMessages::JoinInformation *join_info = arg.mutable_transform_info()->mutable_join();
 		google::protobuf::RepeatedPtrField<PicachvMessages::RowJoinInformation> *row_join_info =
@@ -232,7 +229,12 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 		for (idx_t i = 0; i < probe_sel_count; i++) {
 			idx_t left = state.probe_sel_vec.get_index(i);
 			idx_t right = state.build_sel_vec.get_index(i);
-			right = recover[right];
+
+			if (idx_mapping.find(right) == idx_mapping.end()) {
+				throw InternalException("ProbePerfectHashTable: recover not found: " + std::to_string(right));
+			}
+
+			right = idx_mapping[right];
 
 			PicachvMessages::RowJoinInformation row_info;
 			row_info.set_left_row(left);
@@ -259,11 +261,10 @@ OperatorResultType PerfectHashJoinExecutor::ProbePerfectHashTable(ExecutionConte
 		if (execute_epilogue(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, (uint8_t *)arg.SerializeAsString().c_str(),
 		                     arg.ByteSizeLong(), input.GetActiveUUID(), PICACHV_UUID_LEN, uuid.uuid,
 		                     PICACHV_UUID_LEN) != ErrorCode::Success) {
+
 			throw InternalException("ProbePerfectHashTable: " + GetErrorMessage());
 		}
 		result.SetActiveUUID(uuid.uuid);
-
-		std::cout << "result have " << result.GetTypes().size() << " columns\n";
 	}
 
 	return OperatorResultType::NEED_MORE_INPUT;

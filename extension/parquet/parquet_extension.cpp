@@ -617,21 +617,16 @@ public:
 			if (gstate.CanRemoveFilterColumns()) {
 				data.all_columns.Reset();
 				data.reader->Scan(context, data.scan_state, data.all_columns);
-				// std::cout << "all columns => " << StringUtil::ByteArrayToString(data.all_columns.GetActiveUUID(), 16) << "\n";
 				MultiFileReader::FinalizeChunk(bind_data.reader_bind, data.reader->reader_data, data.all_columns);
 				output.ReferenceColumns(data.all_columns, gstate.projection_ids);
 			} else {
 				data.reader->Scan(context, data.scan_state, output);
-				// std::cout << "but output is => " << StringUtil::ByteArrayToString(output.GetActiveUUID(), 16) << "\n";
 
 				MultiFileReader::FinalizeChunk(bind_data.reader_bind, data.reader->reader_data, output);
 			}
 
 			bind_data.chunk_count++;
 			if (output.size() > 0) {
-
-				// Sometimes output => 00000??
-				std::cout << StringUtil::ByteArrayToString(output.GetActiveUUID(), 16) << "\n";
 				return;
 			}
 			if (!ParquetParallelStateNext(context, bind_data, data, gstate)) {

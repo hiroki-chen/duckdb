@@ -105,6 +105,29 @@ bool PhysicalHashAggregate::CanSkipRegularSink() const {
 	return true;
 }
 
+static void PhysicalHashAggregatePrepareUuids(ClientContext &context, const vector<unique_ptr<Expression>> &aggregates,
+                                              const vector<unique_ptr<Expression>> &groups) {
+	if (!context.PolicyCheckingEnabled()) {
+		return;
+	}
+
+	for (auto &group : groups) {
+		D_ASSERT(group->type == ExpressionType::BOUND_REF);
+		auto &bound_ref_expr = group->Cast<BoundReferenceExpression>();
+		bound_ref_expr.CreateExprInArena(context);
+	}
+
+	for (auto &aggregate : aggregates) {
+		auto &aggr = aggregate->Cast<BoundAggregateExpression>();
+		for (auto &child : aggr.children) {
+			D_ASSERT(child->type == ExpressionType::BOUND_REF);
+			auto &bound_ref_expr = child->Cast<BoundReferenceExpression>();
+			bound_ref_expr.CreateExprInArena(context);
+		}
+		aggr.CreateExprInArena(context);
+	}
+}
+
 PhysicalHashAggregate::PhysicalHashAggregate(ClientContext &context, vector<LogicalType> types,
                                              vector<unique_ptr<Expression>> expressions, idx_t estimated_cardinality)
     : PhysicalHashAggregate(context, std::move(types), std::move(expressions), {}, estimated_cardinality) {
@@ -117,6 +140,7 @@ PhysicalHashAggregate::PhysicalHashAggregate(ClientContext &context, vector<Logi
                             estimated_cardinality) {
 }
 
+// Perhaps we need to the uuids of expressions here?
 PhysicalHashAggregate::PhysicalHashAggregate(ClientContext &context, vector<LogicalType> types,
                                              vector<unique_ptr<Expression>> expressions,
                                              vector<unique_ptr<Expression>> groups_p,
@@ -125,6 +149,8 @@ PhysicalHashAggregate::PhysicalHashAggregate(ClientContext &context, vector<Logi
                                              idx_t estimated_cardinality)
     : PhysicalOperator(PhysicalOperatorType::HASH_GROUP_BY, std::move(types), estimated_cardinality),
       grouping_sets(std::move(grouping_sets_p)) {
+	PhysicalHashAggregatePrepareUuids(context, expressions, groups_p);
+
 	// get a list of all aggregates to be computed
 	const idx_t group_count = groups_p.size();
 	if (grouping_sets.empty()) {
@@ -174,6 +200,10 @@ PhysicalHashAggregate::PhysicalHashAggregate(ClientContext &context, vector<Logi
 
 	for (idx_t i = 0; i < grouping_sets.size(); i++) {
 		groupings.emplace_back(grouping_sets[i], grouped_aggregate_data, distinct_collection_info);
+
+		for (auto &agg : grouped_aggregate_data.aggregates) {
+			std::cout << "validated? " << agg->is_validated << "\n";
+		}
 	}
 }
 
@@ -370,8 +400,8 @@ SinkResultType PhysicalHashAggregate::Sink(ExecutionContext &context, DataChunk 
 	for (idx_t group_idx = 0; group_idx < groups.size(); group_idx++) {
 		auto &group = groups[group_idx];
 		D_ASSERT(group->type == ExpressionType::BOUND_REF);
-		auto &bound_ref_expr = group->Cast<BoundReferenceExpression>();
-		bound_ref_expr.CreateExprInArena(context.client);
+		// auto &bound_ref_expr = group->Cast<BoundReferenceExpression>();
+		// bound_ref_expr.CreateExprInArena(context.client);
 	}
 
 	// Populate the aggregate child vectors
@@ -381,10 +411,10 @@ SinkResultType PhysicalHashAggregate::Sink(ExecutionContext &context, DataChunk 
 			D_ASSERT(child_expr->type == ExpressionType::BOUND_REF);
 			auto &bound_ref_expr = child_expr->Cast<BoundReferenceExpression>();
 			D_ASSERT(bound_ref_expr.index < chunk.data.size());
-			bound_ref_expr.CreateExprInArena(context.client);
+			// bound_ref_expr.CreateExprInArena(context.client);
 			aggregate_input_chunk.data[aggregate_input_idx++].Reference(chunk.data[bound_ref_expr.index]);
 		}
-		aggr.CreateExprInArena(context.client);
+		// aggr.CreateExprInArena(context.client);
 	}
 	// Populate the filter vectors
 	for (auto &aggregate : aggregates) {
@@ -920,7 +950,7 @@ SourceResultType PhysicalHashAggregate::GetData(ExecutionContext &context, DataC
 		}
 		lstate.radix_idx = gstate.state_index.load();
 	}
-	
+
 	return chunk.size() == 0 ? SourceResultType::FINISHED : SourceResultType::HAVE_MORE_OUTPUT;
 }
 

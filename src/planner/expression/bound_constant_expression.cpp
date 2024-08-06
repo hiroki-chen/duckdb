@@ -36,11 +36,17 @@ unique_ptr<Expression> BoundConstantExpression::Copy() {
 }
 
 void BoundConstantExpression::CreateExprInArena(ClientContext &context) const {
+	if (is_validated) {
+		return;
+	}
+
 	PicachvMessages::ExprArgument arg;
-	PicachvMessages::LiteralExpr *expr = arg.mutable_literal();
+	(void)arg.mutable_literal();
 	if (expr_from_args(context.ctx_uuid.uuid, PICACHV_UUID_LEN, (const uint8_t *)arg.SerializeAsString().c_str(),
 	                   arg.ByteSizeLong(), expr_uuid.uuid, PICACHV_UUID_LEN) != ErrorCode::Success) {
 		throw InternalException("BoundConstantExpression::CreateExprInArena: " + GetErrorMessage());
 	}
+
+	is_validated = true;
 }
 } // namespace duckdb

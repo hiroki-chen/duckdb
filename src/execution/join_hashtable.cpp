@@ -56,7 +56,7 @@ JoinHashTable::JoinHashTable(BufferManager &buffer_manager_p, const vector<JoinC
 	}
 	layout_types.emplace_back(LogicalType::HASH);
 	// For keeping track of the row index
-	layout_types.emplace_back(LogicalType::UINTEGER);
+	layout_types.emplace_back(LogicalType::BIGINT);
 	layout.Initialize(layout_types, false);
 	row_matcher.Initialize(false, layout, predicates);
 	row_matcher_no_match_sel.Initialize(true, layout, predicates);
@@ -207,12 +207,13 @@ void JoinHashTable::Build(PartitionedTupleDataAppendState &append_state, DataChu
 	Vector hash_values(LogicalType::HASH);
 	source_chunk.data[col_offset].Reference(hash_values);
 	// Initialize the row index here.
-	Vector row_index(LogicalType::UINTEGER);
-	source_chunk.data[col_offset + 1].Reference(row_index);
+	Vector row_index(LogicalType::BIGINT);
+	row_index.Initialize(false, keys.size());
 	// Set indices.
 	for (idx_t i = 0; i < keys.size(); i++) {
-		row_index.SetValue(i, Value::UINTEGER(i));
+		row_index.SetValue(i, Value::BIGINT(i));
 	}
+	source_chunk.data[col_offset + 1].Reference(row_index);
 
 	source_chunk.SetCardinality(keys);
 
@@ -236,7 +237,6 @@ void JoinHashTable::Build(PartitionedTupleDataAppendState &append_state, DataChu
 
 	// Re-reference and ToUnifiedFormat the hash column after computing it
 	source_chunk.data[col_offset].Reference(hash_values);
-	hash_values.ToUnifiedFormat(source_chunk.size(), append_state.chunk_state.vector_data.back().unified);
 
 	// We already called TupleDataCollection::ToUnifiedFormat, so we can AppendUnified here
 	sink_collection->AppendUnified(append_state, source_chunk, *current_sel, added_count);
@@ -428,14 +428,12 @@ void ScanStructure::Next(ClientContext &context, DataChunk &keys, DataChunk &lef
 	default:
 		throw InternalException("Unhandled join type in JoinHashTable");
 	}
-
-	std::cout << "after join: result.size() => " << result.size() << std::endl;
 }
 
 // This function only works for non-nested data. Use with care.
 // But should be enough for the time being.
 vector<idx_t> ScanStructure::CollectIndices(const SelectionVector &sel, idx_t count) {
-	D_ASSERT(ht.layout.GetTypes().back() == LogicalType::UINTEGER);
+	D_ASSERT(ht.layout.GetTypes().back() == LogicalType::BIGINT);
 
 	auto source_locations = FlatVector::GetData<data_ptr_t>(pointers);
 	const auto indices_in_row = ht.layout.GetOffsets().back();
@@ -443,11 +441,14 @@ vector<idx_t> ScanStructure::CollectIndices(const SelectionVector &sel, idx_t co
 
 	for (idx_t i = 0; i < count; i++) {
 		const auto &source_row = source_locations[sel.get_index(i)];
-		const auto index = Load<idx_t>(source_row + indices_in_row);
+		const auto index = Load<int64_t>(source_row + indices_in_row);
+
+		for (auto offset : ht.layout.GetOffsets()) {
+			std::cout << "source_row[" << offset << "]: " << Load<int64_t>(source_row + offset) << " ";
+		}
+		std::cout << std::endl;
 
 		indices.emplace_back(index);
-
-		std::cout << "index[" << i << "] => " << index << std::endl;
 	}
 
 	return indices;
@@ -569,9 +570,6 @@ void ScanStructure::NextInnerJoin(ClientContext &context, DataChunk &keys, DataC
 			// construct the result
 			// on the LHS, we create a slice using the result vector
 			result.Slice(left, result_vector, result_count);
-			std::cout << "result => " << std::endl;
-			result.Print();
-			std::cout << std::endl;
 			// on the RHS, we need to fetch the data from the hash table
 			for (idx_t i = 0; i < ht.output_columns.size(); i++) {
 				auto &vector = result.data[left.ColumnCount() + i];
@@ -580,10 +578,6 @@ void ScanStructure::NextInnerJoin(ClientContext &context, DataChunk &keys, DataC
 				GatherResult(vector, result_vector, result_count, output_col_idx);
 			}
 		}
-
-		std::cout << "result => " << std::endl;
-		result.Print();
-		std::cout << std::endl;
 
 		if (context.PolicyCheckingEnabled()) {
 			const vector<idx_t> rhs_indices = CollectIndices(sel_vector, result_count);

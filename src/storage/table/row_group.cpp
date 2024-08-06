@@ -608,7 +608,7 @@ void RowGroup::Scan(TransactionData transaction, CollectionScanState &state, Dat
 		delete sel;
 
 		PicachvMessages::PlanArgument plan_arg;
-		PicachvMessages::TransformInfo *ti = plan_arg.mutable_transform_info();
+		(void)plan_arg.mutable_transform_info();
 		PicachvMessages::GetDataInMemory *get = plan_arg.mutable_get_data()->mutable_in_memory();
 
 		const auto &column_ids = state.GetColumnIds();
