@@ -16,7 +16,7 @@ static bool ShouldPass(const BoundFunctionExpression &func) {
 	auto iter = std::find_if(identity_function.begin(), identity_function.end(),
 	                         [&](const string &name) { return func.function.name.find(name) == 0; });
 
-	return iter != identity_function.end() && func.children.size() == 1;
+	return iter != identity_function.end();
 }
 
 BoundFunctionExpression::BoundFunctionExpression(LogicalType return_type, ScalarFunction bound_function,
@@ -128,6 +128,8 @@ void BoundFunctionExpression::CreateExprInArena(ClientContext &context) const {
 	if (!ShouldPass(*this)) {
 		children[0]->CreateExprInArena(context);
 		memcpy(expr_uuid.uuid, children[0]->expr_uuid.uuid, PICACHV_UUID_LEN);
+
+		is_validated = true;
 
 		return;
 	}

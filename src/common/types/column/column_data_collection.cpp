@@ -791,9 +791,6 @@ void ColumnDataCollection::Append(ColumnDataAppendState &state, DataChunk &input
 		const uint8_t *uuid = input.GetActiveUUID();
 		std::copy(uuid, uuid + PICACHV_UUID_LEN, element.begin());
 		uuids.emplace_back(std::move(element));
-
-		std::cout << "appending " << StringUtil::ByteArrayToString(input.GetActiveUUID(), 16) << " with size " << input.size() << std::endl;
-		input.Print();
 	}
 
 	auto &segment = *segments.back();
@@ -955,6 +952,7 @@ bool ColumnDataCollection::Scan(ColumnDataScanState &state, DataChunk &result) c
 	state.current_chunk_state.properties = state.properties;
 	segment.ReadChunk(chunk_index, state.current_chunk_state, result, state.column_ids);
 	result.Verify();
+	result.SetActiveUUID(uuids[row_index].data());
 	return true;
 }
 

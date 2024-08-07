@@ -61,7 +61,7 @@ class CrossProductExecutor {
 public:
 	explicit CrossProductExecutor(ColumnDataCollection &rhs);
 
-	OperatorResultType Execute(DataChunk &input, DataChunk &output);
+	OperatorResultType Execute(ClientContext &client, DataChunk &input, DataChunk &output);
 
 	// returns if the left side is scanned as a constant vector
 	bool ScanLHS() {

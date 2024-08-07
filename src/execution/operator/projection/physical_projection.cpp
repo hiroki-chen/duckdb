@@ -33,6 +33,14 @@ OperatorResultType PhysicalProjection::Execute(ExecutionContext &context, DataCh
                                                GlobalOperatorState &gstate, OperatorState &state_p) const {
 	auto &state = state_p.Cast<ProjectionState>();
 
+         
+// │     l_utinyint(#1, 42)
+// multiple arguments => ignore ??
+	for (auto &child : select_list) {
+		child->CreateExprInArena(context.client);
+		D_ASSERT(child->is_validated);
+	}
+
 	state.executor.is_query_executor = true;
 	state.executor.Execute(input, chunk);
 	state.executor.is_query_executor = false;
@@ -43,7 +51,6 @@ OperatorResultType PhysicalProjection::Execute(ExecutionContext &context, DataCh
 		duckdb_uuid_t out;
 
 		for (auto &child : select_list) {
-			child->CreateExprInArena(context.client);
 			proj->mutable_expressions()->Add(string((char *)child->expr_uuid.uuid, PICACHV_UUID_LEN));
 		}
 

@@ -18,14 +18,6 @@ namespace duckdb {
 
 RadixPartitionedHashTable::RadixPartitionedHashTable(GroupingSet &grouping_set_p, const GroupedAggregateData &op_p)
     : grouping_set(grouping_set_p), op(op_p) {
-
-	for (auto &agg : op.aggregates) {
-		std::cout << "agg validated? " << agg->is_validated << "\n";
-	}
-	for (auto &g : op.groups) {
-		std::cout << "group validated? " << g->is_validated << "\n";
-	}
-
 	auto groups_count = op.GroupCount();
 	for (idx_t i = 0; i < groups_count; i++) {
 		if (grouping_set.find(i) == grouping_set.end()) {

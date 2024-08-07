@@ -139,7 +139,7 @@ OperatorResultType PhysicalBlockwiseNLJoin::ExecuteInternal(ExecutionContext &co
 	bool found_match[STANDARD_VECTOR_SIZE] = {false};
 
 	do {
-		auto result = state.cross_product.Execute(input, *intermediate_chunk);
+		auto result = state.cross_product.Execute(context.client, input, *intermediate_chunk);
 		if (result == OperatorResultType::NEED_MORE_INPUT) {
 			// exhausted input, have to pull new LHS chunk
 			if (state.left_outer.Enabled()) {
