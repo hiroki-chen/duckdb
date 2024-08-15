@@ -78,10 +78,6 @@ bool PipelineExecutor::TryFlushCachingOperators() {
 		    flushing_idx + 1 >= intermediate_chunks.size() ? final_chunk : *intermediate_chunks[flushing_idx + 1];
 		auto &current_operator = pipeline.operators[flushing_idx].get();
 
-		std::cout << "flushing_idx = " << flushing_idx << ", inermediate_chunks.size() = " << intermediate_chunks.size()
-		          << std::endl;
-		std::cout << "in_process_operators.empty() = true ? " << (in_process_operators.empty()) << std::endl;
-
 		OperatorFinalizeResultType finalize_result;
 		OperatorResultType push_result;
 
@@ -415,7 +411,6 @@ OperatorResultType PipelineExecutor::Execute(DataChunk &input, DataChunk &result
 			// if current_idx > source_idx, we pass the previous operators' output through the Execute of the current
 			// operator
 			StartOperator(current_operator);
-			std::cout << "Execute operator " << current_operator.GetName() << std::endl;
 			auto result = current_operator.Execute(context, prev_chunk, current_chunk, *current_operator.op_state,
 			                                       *intermediate_states[current_intermediate - 1]);
 			EndOperator(current_operator, &current_chunk);
@@ -476,7 +471,6 @@ SourceResultType PipelineExecutor::GetData(DataChunk &chunk, OperatorSourceInput
 	}
 #endif
 
-	std::cout << "GetData called " << pipeline.source->GetName() << std::endl;
 	return pipeline.source->GetData(context, chunk, input);
 }
 

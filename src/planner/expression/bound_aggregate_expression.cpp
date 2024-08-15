@@ -59,9 +59,8 @@ void BoundAggregateExpression::CreateExprInArena(ClientContext &context) const {
 	}
 
 	// Special case: count(*)
-	if (children.empty()) {
+	if (function.name.find("count") == 0) {
 		(void)arg.mutable_count();
-		D_ASSERT(function.name.find("count") == 0);
 	} else {
 		PicachvMessages::AggExpr *ae = arg.mutable_agg();
 		ae->mutable_input_uuid()->assign(reinterpret_cast<const char *>(children[0]->expr_uuid.uuid), PICACHV_UUID_LEN);

@@ -12,7 +12,7 @@
 
 namespace duckdb {
 
-static bool ShouldPass(const BoundFunctionExpression &func) {
+bool ShouldPass(const BoundFunctionExpression &func) {
 	auto iter = std::find_if(identity_function.begin(), identity_function.end(),
 	                         [&](const string &name) { return func.function.name.find(name) == 0; });
 
@@ -125,7 +125,7 @@ void BoundFunctionExpression::CreateExprInArena(ClientContext &context) const {
 		return;
 	}
 
-	if (!ShouldPass(*this)) {
+	if (ShouldPass(*this)) {
 		children[0]->CreateExprInArena(context);
 		memcpy(expr_uuid.uuid, children[0]->expr_uuid.uuid, PICACHV_UUID_LEN);
 

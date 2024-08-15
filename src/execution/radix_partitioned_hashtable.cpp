@@ -105,7 +105,7 @@ public:
 
 	array<uint8_t, PICACHV_UUID_LEN> uuid;
 
-	explicit RadixHashState(Vector hash, idx_t group_size_p, const uint8_t *uuid_p);
+	RadixHashState(Vector hash, idx_t group_size_p, const uint8_t *uuid_p);
 
 	//! Transform the inner opaque hash vector into a vector of hashes.
 	vector<hash_t> Transform();
@@ -395,6 +395,9 @@ public:
 
 	//! Data that is abandoned ends up here (only if we're doing external aggregation)
 	unique_ptr<PartitionedTupleData> abandoned_data;
+
+	//! Vector of history hashes of each chunk.
+	vector<RadixHashState> chunk_hashes;
 };
 
 RadixHTLocalSinkState::RadixHTLocalSinkState(ClientContext &, const RadixPartitionedHashTable &radix_ht) {
@@ -422,8 +425,6 @@ void RadixPartitionedHashTable::PopulateGroupChunk(DataChunk &group_chunk, DataC
 		D_ASSERT(group->type == ExpressionType::BOUND_REF);
 		auto &bound_ref_expr = group->Cast<BoundReferenceExpression>();
 		// Reference from input_chunk[group.index] -> group_chunk[chunk_index]
-		std::cout << "chunk_index: " << chunk_index << std::endl;
-		std::cout << "bound_ref_expr.index: " << bound_ref_expr.index << std::endl;
 		group_chunk.data[chunk_index++].Reference(input_chunk.data[bound_ref_expr.index]);
 	}
 	group_chunk.SetCardinality(input_chunk.size());
@@ -520,6 +521,15 @@ void RadixPartitionedHashTable::Sink(ExecutionContext &context, DataChunk &chunk
 	auto &ht = *lstate.ht;
 	ht.AddChunk(group_chunk, payload_input, filter);
 
+	if (context.client.PolicyCheckingEnabled()) {
+		Vector hashes(LogicalType::HASH);
+		group_chunk.Hash(hashes);
+		hashes.Flatten(group_chunk.size());
+
+		lstate.chunk_hashes.emplace_back(std::move(hashes), lstate.group_chunk.size(),
+		                                 lstate.group_chunk.GetActiveUUID());
+	}
+
 	if (ht.Count() + STANDARD_VECTOR_SIZE < ht.ResizeThreshold()) {
 		return; // We can fit another chunk
 	}
@@ -580,11 +590,12 @@ void RadixPartitionedHashTable::Combine(ExecutionContext &context, GlobalSinkSta
 	gstate.stored_allocators.emplace_back(ht.GetAggregateAllocator());
 
 	if (context.client.PolicyCheckingEnabled()) {
-		Vector hashes(LogicalType::HASH);
-		lstate.group_chunk.Hash(hashes);
-		// FIXME: UUIDs = 0?
-		gstate.chunk_hashes.emplace_back(std::move(hashes), lstate.group_chunk.size(),
-		                                 lstate.group_chunk.GetActiveUUID());
+		// `Vector` deletes the implicit move assignment operator; so we use `emplace_back`.
+		// We cannot use `std::make_move_iterator` since it invokes move assignment operator.
+		gstate.chunk_hashes.reserve(gstate.chunk_hashes.size() + lstate.chunk_hashes.size());
+		for (auto it = lstate.chunk_hashes.begin(); it != lstate.chunk_hashes.end(); ++it) {
+			gstate.chunk_hashes.emplace_back(std::move(*it));
+		}
 	}
 }
 
@@ -646,9 +657,6 @@ void RadixPartitionedHashTable::Finalize(ClientContext &context, GlobalSinkState
 		for (auto &gb : op.groups) {
 			D_ASSERT(gb->type == ExpressionType::BOUND_REF);
 			D_ASSERT(gb->is_validated);
-
-			std::cout << "in radix partitioned hash table agg: "
-			          << StringUtil::ByteArrayToString(gb->expr_uuid.uuid, PICACHV_UUID_LEN) << std::endl;
 
 			agg->mutable_keys()->Add(std::string(reinterpret_cast<char *>(gb->expr_uuid.uuid), PICACHV_UUID_LEN));
 		}
@@ -1019,15 +1027,9 @@ SourceResultType RadixPartitionedHashTable::GetData(ExecutionContext &context, D
 	}
 
 	if (chunk.size() != 0) {
-
-		std::cout << "chunk looks like:" << std::endl;
-		chunk.Print();
-		std::cout << std::endl;
-
 		DataChunk hash_chunk;
 		hash_chunk.InitializeEmpty(group_types);
 		hash_chunk.SetCardinality(chunk.size());
-		std::cout << "radix: " << chunk.size() << std::endl;
 		PopulateGroupChunk(hash_chunk, chunk);
 
 		Vector hashes(LogicalType::HASH);

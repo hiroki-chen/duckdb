@@ -15,9 +15,11 @@ namespace duckdb {
 class ScalarFunctionCatalogEntry;
 
 static const vector<string> identity_function = {
-	"identity",
-	"__internal_compress_integral",
+    "identity",
+    "__internal_compress_integral",
 };
+
+bool ShouldPass(const BoundFunctionExpression &func);
 
 //! Represents a function call that has been bound to a base function
 class BoundFunctionExpression : public Expression {

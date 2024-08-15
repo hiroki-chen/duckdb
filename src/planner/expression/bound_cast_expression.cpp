@@ -1,10 +1,11 @@
 #include "duckdb/planner/expression/bound_cast_expression.hpp"
+
+#include "duckdb/function/cast/cast_function_set.hpp"
+#include "duckdb/function/cast_rules.hpp"
+#include "duckdb/main/config.hpp"
+#include "duckdb/planner/expression/bound_constant_expression.hpp"
 #include "duckdb/planner/expression/bound_default_expression.hpp"
 #include "duckdb/planner/expression/bound_parameter_expression.hpp"
-#include "duckdb/planner/expression/bound_constant_expression.hpp"
-#include "duckdb/function/cast_rules.hpp"
-#include "duckdb/function/cast/cast_function_set.hpp"
-#include "duckdb/main/config.hpp"
 
 namespace duckdb {
 
@@ -214,4 +215,16 @@ unique_ptr<Expression> BoundCastExpression::Copy() {
 	return std::move(copy);
 }
 
+void BoundCastExpression::CreateExprInArena(ClientContext &context) const {
+	if (is_validated) {
+		return;
+	}
+
+	if (context.PolicyCheckingEnabled()) {
+		child->CreateExprInArena(context);
+
+		memcpy(expr_uuid.uuid, child->expr_uuid.uuid, PICACHV_UUID_LEN);
+		is_validated = true;
+	}
+}
 } // namespace duckdb

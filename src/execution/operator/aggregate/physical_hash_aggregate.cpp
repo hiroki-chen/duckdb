@@ -200,10 +200,6 @@ PhysicalHashAggregate::PhysicalHashAggregate(ClientContext &context, vector<Logi
 
 	for (idx_t i = 0; i < grouping_sets.size(); i++) {
 		groupings.emplace_back(grouping_sets[i], grouped_aggregate_data, distinct_collection_info);
-
-		for (auto &agg : grouped_aggregate_data.aggregates) {
-			std::cout << "validated? " << agg->is_validated << "\n";
-		}
 	}
 }
 

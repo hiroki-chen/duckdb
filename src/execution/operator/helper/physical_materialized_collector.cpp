@@ -32,8 +32,6 @@ SinkResultType PhysicalMaterializedCollector::Sink(ExecutionContext &context, Da
                                                    OperatorSinkInput &input) const {
 	auto &lstate = input.local_state.Cast<MaterializedCollectorLocalState>();
 
-	debug_print_df(context.client.ctx_uuid.uuid, PICACHV_UUID_LEN, chunk.GetActiveUUID(), PICACHV_UUID_LEN);
-
 	lstate.collection->Append(lstate.append_state, chunk);
 	return SinkResultType::NEED_MORE_INPUT;
 }

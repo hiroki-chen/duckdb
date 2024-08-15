@@ -263,9 +263,6 @@ SinkResultType PhysicalUngroupedAggregate::Sink(ExecutionContext &context, DataC
                                                 OperatorSinkInput &input) const {
 	auto &sink = input.local_state.Cast<UngroupedAggregateLocalSinkState>();
 
-	std::cout << "PhysicalUngroupedAggregate::Sink: " << StringUtil::ByteArrayToString(chunk.GetActiveUUID(), 16)
-	          << std::endl;
-
 	// perform the aggregation inside the local state
 	sink.Reset();
 

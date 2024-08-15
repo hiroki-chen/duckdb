@@ -77,14 +77,13 @@ void ExpressionExecutor::Execute(const BoundFunctionExpression &expr, Expression
 	arguments.SetCardinality(count);
 	arguments.Verify();
 
-	if (is_query_executor && context->PolicyCheckingEnabled()) {
+	if (is_query_executor && context->PolicyCheckingEnabled() && !ShouldPass(expr)) {
 		D_ASSERT(expr.is_validated);
 
 		auto arrow_buffer = arguments.ToArrowIpc();
 		if (reify_expression(context.get()->ctx_uuid.uuid, PICACHV_UUID_LEN, expr.expr_uuid.uuid, PICACHV_UUID_LEN,
 		                     arrow_buffer->data(), arrow_buffer->size()) != ErrorCode::Success) {
 			throw InternalException("ExpressionExecutor::Execute: " + expr.function.name + GetErrorMessage());
-			expr.function.function(arguments, *state, result);
 		}
 	}
 

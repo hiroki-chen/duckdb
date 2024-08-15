@@ -76,10 +76,10 @@ public:
 		SetCapacity(other.capacity);
 	}
 	inline void SetActiveUUID(const uint8_t *uuid) {
-		memcpy(active_uuid.data(), uuid, PICACHV_UUID_LEN);
+		active_uuid = vector<uint8_t>(uuid, uuid + PICACHV_UUID_LEN);
 	}
-	inline std::array<uint8_t, PICACHV_UUID_LEN> GetActiveUUIDArray() const {
-		return active_uuid;
+	inline const vector<uint8_t>* GetActiveUUIDArray() const {
+		return &active_uuid;
 	}
 
 	DUCKDB_API Value GetValue(idx_t col_idx, idx_t index) const;
@@ -186,7 +186,7 @@ private:
 	idx_t capacity;
 	//! Vector caches, used to store data when ::Initialize is called
 	vector<VectorCache> vector_caches;
-	//! The active uuid for this data chunk. TODO: Ownership problem. Need to allocate this on the heap.
-	std::array<uint8_t, PICACHV_UUID_LEN> active_uuid;
+	//! The active uuid for this data chunk.
+	vector<uint8_t> active_uuid;
 };
 } // namespace duckdb

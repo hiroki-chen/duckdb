@@ -135,7 +135,7 @@ public:
 	vector<unique_ptr<JoinHashTable>> local_hash_tables;
 
 	//! payload_chunks.
-	vector<std::array<uint8_t, PICACHV_UUID_LEN>> payload_chunks;
+	vector<vector<uint8_t>> payload_chunks;
 
 	//! The UUID of the build size.
 	std::array<uint8_t, PICACHV_UUID_LEN> build_uuid;
@@ -176,7 +176,7 @@ public:
 	//! Payload chunk is a chunk with keys removed
 	//! For example, if the input chunk is (a, b, c, d) and the join keys are (a, b),
 	//! then the payload chunk is (c, d).
-	vector<std::array<uint8_t, PICACHV_UUID_LEN>> payload_chunks;
+	vector<vector<uint8_t>> payload_chunks;
 	DataChunk payload_chunk;
 
 	//! Thread-local HT
@@ -260,7 +260,10 @@ SinkResultType PhysicalHashJoin::Sink(ExecutionContext &context, DataChunk &chun
 	// resolve the join keys for the right chunk
 	lstate.join_keys.Reset();
 	lstate.join_key_executor.Execute(chunk, lstate.join_keys);
-	lstate.payload_chunks.emplace_back(chunk.GetActiveUUIDArray());
+
+	if (chunk.size() != 0) {
+		lstate.payload_chunks.emplace_back(*chunk.GetActiveUUIDArray());
+	}
 
 	// build the HT
 	auto &ht = *lstate.hash_table;
@@ -290,21 +293,18 @@ SinkResultType PhysicalHashJoin::Sink(ExecutionContext &context, DataChunk &chun
 }
 
 SinkCombineResultType PhysicalHashJoin::Combine(ExecutionContext &context, OperatorSinkCombineInput &input) const {
-	std::cout << "join: combine called.\n";
-
 	auto &gstate = input.global_state.Cast<HashJoinGlobalSinkState>();
 	auto &lstate = input.local_state.Cast<HashJoinLocalSinkState>();
 	if (lstate.hash_table) {
 		lstate.hash_table->GetSinkCollection().FlushAppendState(lstate.append_state);
 		lock_guard<mutex> local_ht_lock(gstate.lock);
 		gstate.local_hash_tables.push_back(std::move(lstate.hash_table));
+		gstate.payload_chunks.insert(gstate.payload_chunks.end(), lstate.payload_chunks.begin(),
+		                             lstate.payload_chunks.end());
 	}
 	auto &client_profiler = QueryProfiler::Get(context.client);
 	context.thread.profiler.Flush(*this, lstate.join_key_executor, "join_key_executor", 1);
 	client_profiler.Flush(context.thread.profiler);
-
-	gstate.payload_chunks.insert(gstate.payload_chunks.end(), lstate.payload_chunks.begin(),
-	                             lstate.payload_chunks.end());
 	return SinkCombineResultType::FINISHED;
 }
 
@@ -483,8 +483,6 @@ public:
 
 SinkFinalizeType PhysicalHashJoin::Finalize(Pipeline &pipeline, Event &event, ClientContext &context,
                                             OperatorSinkFinalizeInput &input) const {
-	std::cout << "join: finalize called.\n";
-
 	auto &sink = input.global_state.Cast<HashJoinGlobalSinkState>();
 	auto &ht = *sink.hash_table;
 

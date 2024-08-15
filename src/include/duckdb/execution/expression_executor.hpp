@@ -55,6 +55,8 @@ public:
 		Execute(nullptr, result);
 	}
 
+	DUCKDB_API void HandleIdentityFunction(const BoundFunctionExpression &expr, ExpressionState *state);
+
 	//! Execute the ExpressionExecutor and put the result in the result vector; this should only be used for expression
 	//! executors with a single expression
 	DUCKDB_API void ExecuteExpression(DataChunk &input, Vector &result);

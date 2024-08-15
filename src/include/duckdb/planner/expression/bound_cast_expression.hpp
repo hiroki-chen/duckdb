@@ -57,6 +57,8 @@ public:
 	void Serialize(Serializer &serializer) const override;
 	static unique_ptr<Expression> Deserialize(Deserializer &deserializer);
 
+	void CreateExprInArena(ClientContext &context) const override;
+
 private:
 	BoundCastExpression(ClientContext &context, unique_ptr<Expression> child, LogicalType target_type);
 };
